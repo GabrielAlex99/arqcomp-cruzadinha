@@ -1002,17 +1002,38 @@ function setupBinaryEasterEgg() {
   let clickStreak = 0;
   let streakTimeout = null;
   let modeTimeout = null;
+  let hideToastTimeout = null;
+
+  function playLampAnimation() {
+    trigger.classList.remove("lamp-bounce");
+    void trigger.offsetWidth;
+    trigger.classList.add("lamp-bounce");
+  }
 
   function hideToast() {
-    toast.hidden = true;
+    toast.classList.remove("is-visible");
+    if (hideToastTimeout) {
+      window.clearTimeout(hideToastTimeout);
+    }
+    hideToastTimeout = window.setTimeout(() => {
+      toast.hidden = true;
+    }, 220);
   }
 
   function showToast() {
+    if (hideToastTimeout) {
+      window.clearTimeout(hideToastTimeout);
+      hideToastTimeout = null;
+    }
     toast.hidden = false;
+    requestAnimationFrame(() => {
+      toast.classList.add("is-visible");
+    });
   }
 
   function deactivateMode() {
     document.body.classList.remove("binary-light-mode");
+    trigger.classList.remove("lamp-on");
     if (modeTimeout) {
       window.clearTimeout(modeTimeout);
       modeTimeout = null;
@@ -1021,16 +1042,19 @@ function setupBinaryEasterEgg() {
 
   function activateMode() {
     document.body.classList.add("binary-light-mode");
+    trigger.classList.add("lamp-on");
     showToast();
     if (modeTimeout) {
       window.clearTimeout(modeTimeout);
     }
     modeTimeout = window.setTimeout(() => {
-      document.body.classList.remove("binary-light-mode");
+      deactivateMode();
+      hideToast();
     }, 8000);
   }
 
   trigger.addEventListener("click", () => {
+    playLampAnimation();
     clickStreak += 1;
     if (streakTimeout) {
       window.clearTimeout(streakTimeout);
