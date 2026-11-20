@@ -871,6 +871,66 @@ function printStudyGuide() {
   window.print();
 }
 
+function setupBinaryEasterEgg() {
+  const trigger = document.getElementById("binary-trigger");
+  const toast = document.getElementById("binary-toast");
+  const closeButton = document.getElementById("binary-toast-close");
+
+  let clickStreak = 0;
+  let streakTimeout = null;
+  let modeTimeout = null;
+
+  function hideToast() {
+    toast.hidden = true;
+  }
+
+  function showToast() {
+    toast.hidden = false;
+  }
+
+  function deactivateMode() {
+    document.body.classList.remove("binary-light-mode");
+    if (modeTimeout) {
+      window.clearTimeout(modeTimeout);
+      modeTimeout = null;
+    }
+  }
+
+  function activateMode() {
+    document.body.classList.add("binary-light-mode");
+    showToast();
+    if (modeTimeout) {
+      window.clearTimeout(modeTimeout);
+    }
+    modeTimeout = window.setTimeout(() => {
+      document.body.classList.remove("binary-light-mode");
+    }, 8000);
+  }
+
+  trigger.addEventListener("click", () => {
+    clickStreak += 1;
+    if (streakTimeout) {
+      window.clearTimeout(streakTimeout);
+    }
+    streakTimeout = window.setTimeout(() => {
+      clickStreak = 0;
+    }, 1400);
+
+    if (clickStreak >= 3) {
+      clickStreak = 0;
+      activateMode();
+    }
+  });
+
+  closeButton.addEventListener("click", hideToast);
+
+  return {
+    activateMode,
+    deactivateMode,
+    hideToast
+  };
+}
+
 function setupControls(state) {
   const { entries, cellsByKey, inputsByKey, clueItemByWordKey } = state;
   const totalWords = entries.length;
@@ -878,6 +938,7 @@ function setupControls(state) {
   const resetButton = document.getElementById("reset-button");
   const pdfButton = document.getElementById("pdf-button");
   const reviewPanel = document.getElementById("review-panel");
+  const binaryMode = setupBinaryEasterEgg();
   let lastIncorrectEntries = [];
   let hasCheckedAtLeastOnce = false;
   let previousResults = null;
@@ -895,6 +956,10 @@ function setupControls(state) {
     hasCheckedAtLeastOnce = true;
     previousResults = results;
     renderLearningPanel(entries);
+
+    if (correctCount === totalWords) {
+      binaryMode.activateMode();
+    }
   });
 
   resetButton.addEventListener("click", () => {
@@ -907,6 +972,8 @@ function setupControls(state) {
     reviewPanel.classList.remove("review-panel-open");
     lastIncorrectEntries = [];
     previousResults = null;
+    binaryMode.deactivateMode();
+    binaryMode.hideToast();
     const firstInput = inputsByKey.get(entries[0].cells[0]);
     if (firstInput) {
       firstInput.focus();
