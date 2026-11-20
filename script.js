@@ -245,6 +245,41 @@ const ARCH_COMPONENTS = [
   { id: "MEMORIADEMASSA", label: "MEMORIA DE MASSA" }
 ];
 
+function showAppNotice(message, type = "warning", dedupeKey = message) {
+  const id = "app-notice-stack";
+  let stack = document.getElementById(id);
+
+  if (!stack) {
+    stack = document.createElement("div");
+    stack.id = id;
+    stack.className = "app-notice-stack";
+    document.body.appendChild(stack);
+  }
+
+  const alreadyShown = Array.from(stack.children).some(
+    (node) => node.dataset && node.dataset.noticeKey === String(dedupeKey)
+  );
+  if (alreadyShown) {
+    return;
+  }
+
+  const notice = document.createElement("div");
+  notice.className = `app-notice app-notice-${type}`;
+  notice.dataset.noticeKey = dedupeKey;
+
+  const text = document.createElement("span");
+  text.textContent = message;
+
+  const close = document.createElement("button");
+  close.type = "button";
+  close.textContent = "Fechar";
+  close.addEventListener("click", () => notice.remove());
+
+  notice.appendChild(text);
+  notice.appendChild(close);
+  stack.appendChild(notice);
+}
+
 function validateAndBuildGrid(words) {
   const cellMap = new Map();
   const intersections = new Map(words.map(({ word }) => [word, new Set()]));
@@ -380,6 +415,9 @@ function buildGameModel(words) {
 
 function renderBoard(gridData, startNumbers) {
   const board = document.getElementById("board");
+  if (!board) {
+    return { cellsByKey: new Map(), inputsByKey: new Map() };
+  }
   board.style.gridTemplateColumns = `repeat(${gridData.cols}, 34px)`;
   const cellsByKey = new Map();
   const inputsByKey = new Map();
@@ -422,6 +460,7 @@ function renderClues(words, startNumbers) {
   const acrossList = document.getElementById("across-clues");
   const downList = document.getElementById("down-clues");
   const clueItemByWordKey = new Map();
+  if (!acrossList || !downList) return clueItemByWordKey;
 
   const sorted = [...words].sort((a, b) => {
     const n1 = startNumbers.get(`${a.row},${a.col}`);
@@ -558,13 +597,17 @@ function setupInteractions(state) {
 
     if (previousDirection && previousDirection !== nextDirection) {
       const classToAdd = nextDirection === "H" ? "dir-switch-h" : "dir-switch-v";
-      boardElement.classList.remove("dir-switch-h", "dir-switch-v");
-      boardElement.classList.add(classToAdd);
+      if (boardElement) {
+        boardElement.classList.remove("dir-switch-h", "dir-switch-v");
+        boardElement.classList.add(classToAdd);
+      }
       if (directionFeedbackTimeout) {
         window.clearTimeout(directionFeedbackTimeout);
       }
       directionFeedbackTimeout = window.setTimeout(() => {
-        boardElement.classList.remove("dir-switch-h", "dir-switch-v");
+        if (boardElement) {
+          boardElement.classList.remove("dir-switch-h", "dir-switch-v");
+        }
       }, 220);
     }
 
@@ -756,6 +799,10 @@ function applyValidationStyles(entries, results, cellsByKey, clueItemByWordKey, 
 
 function updateCounter(correctCount, total) {
   const counter = document.getElementById("progress-counter");
+  if (!counter) {
+    showAppNotice("Contador da cruzadinha não foi carregado corretamente.");
+    return;
+  }
   counter.textContent = `${correctCount} de ${total} palavras`;
 }
 
@@ -779,7 +826,13 @@ function loadDiagnostics() {
 }
 
 function saveDiagnostics(data) {
-  localStorage.setItem(DIAGNOSTIC_STORAGE_KEY, JSON.stringify(data));
+  try {
+    localStorage.setItem(DIAGNOSTIC_STORAGE_KEY, JSON.stringify(data));
+    return true;
+  } catch {
+    showAppNotice("Não foi possível salvar o histórico de dificuldades neste navegador.");
+    return false;
+  }
 }
 
 function registerDifficulties(incorrectWords) {
@@ -795,12 +848,20 @@ function updateReinforceIndicator() {
   const diagnostics = loadDiagnostics();
   const reinforceCount = Object.values(diagnostics).filter((count) => count > 0).length;
   const indicator = document.getElementById("reinforce-indicator");
+  if (!indicator) {
+    showAppNotice("Indicador de reforço não foi carregado corretamente.");
+    return;
+  }
   indicator.textContent = `${reinforceCount} conceitos para reforço`;
 }
 
 function renderLearningPanel(entries) {
   const panel = document.getElementById("review-panel");
   const content = document.getElementById("review-content");
+  if (!panel || !content) {
+    showAppNotice("Painel de revisão não está disponível nesta página.");
+    return;
+  }
 
   if (content.children.length === 0) {
     entries.forEach((entry, index) => {
@@ -835,6 +896,10 @@ function renderLearningPanel(entries) {
 
 function fillStudyGuide(incorrectEntries) {
   const container = document.getElementById("study-guide-content");
+  if (!container) {
+    showAppNotice("Área de impressão do PDF não foi encontrada.");
+    return;
+  }
   const diagnostics = loadDiagnostics();
   container.innerHTML = "";
 
@@ -889,6 +954,11 @@ function setupTabs() {
     crossword: document.getElementById("tab-crossword"),
     architecture: document.getElementById("tab-architecture")
   };
+  const hasAllPanels = Object.values(panels).every(Boolean);
+  if (tabs.length === 0 || !hasAllPanels) {
+    showAppNotice("Abas principais não carregadas. Exibindo somente a visualização padrão.");
+    return;
+  }
 
   function activate(target) {
     for (const tab of tabs) {
@@ -901,6 +971,12 @@ function setupTabs() {
       panel.hidden = name !== target;
       panel.classList.toggle("is-active", name === target);
     }
+
+    document.dispatchEvent(
+      new CustomEvent("app:tabchange", {
+        detail: { target }
+      })
+    );
   }
 
   tabs.forEach((tab) => {
@@ -914,6 +990,14 @@ function setupBinaryEasterEgg() {
   const trigger = document.getElementById("binary-trigger");
   const toast = document.getElementById("binary-toast");
   const closeButton = document.getElementById("binary-toast-close");
+  if (!trigger || !toast || !closeButton) {
+    showAppNotice("Modo Luz Binária indisponível: elementos do easter egg não encontrados.");
+    return {
+      activateMode() {},
+      deactivateMode() {},
+      hideToast() {}
+    };
+  }
 
   let clickStreak = 0;
   let streakTimeout = null;
@@ -973,10 +1057,19 @@ function setupBinaryEasterEgg() {
 function setupArchitectureChallenge() {
   const bank = document.getElementById("arch-cards-bank");
   const diagram = document.getElementById("arch-diagram");
-  const slots = Array.from(diagram.querySelectorAll(".arch-slot"));
   const checkButton = document.getElementById("arch-check");
   const resetButton = document.getElementById("arch-reset");
   const status = document.getElementById("arch-status");
+  if (!bank || !diagram || !checkButton || !resetButton || !status) {
+    showAppNotice("Desafio de Arquitetura indisponível: estrutura da aba não foi carregada.");
+    return;
+  }
+
+  const slots = Array.from(diagram.querySelectorAll(".arch-slot"));
+  if (slots.length === 0) {
+    showAppNotice("Desafio de Arquitetura sem áreas de encaixe.");
+    return;
+  }
 
   const slotById = new Map(slots.map((slot) => [slot.dataset.slot, slot]));
   const cardsById = new Map();
@@ -1138,6 +1231,12 @@ function setupArchitectureChallenge() {
   checkButton.addEventListener("click", evaluateDiagram);
   resetButton.addEventListener("click", resetDiagram);
 
+  document.addEventListener("app:tabchange", (event) => {
+    if (event.detail?.target !== "architecture") {
+      setSelectedCard(null);
+    }
+  });
+
   ARCH_COMPONENTS.forEach((component) => {
     bank.appendChild(createCard(component));
   });
@@ -1151,6 +1250,10 @@ function setupControls(state) {
   const resetButton = document.getElementById("reset-button");
   const pdfButton = document.getElementById("pdf-button");
   const reviewPanel = document.getElementById("review-panel");
+  if (!checkButton || !resetButton || !pdfButton || !reviewPanel) {
+    showAppNotice("Controles da cruzadinha não carregados corretamente.");
+    return;
+  }
   const binaryMode = setupBinaryEasterEgg();
   let lastIncorrectEntries = [];
   let hasCheckedAtLeastOnce = false;
@@ -1210,29 +1313,34 @@ function setupControls(state) {
 }
 
 function init() {
-  setupTabs();
-  setupArchitectureChallenge();
+  try {
+    setupTabs();
+    setupArchitectureChallenge();
 
-  const gridData = validateAndBuildGrid(WORDS);
-  const startNumbers = getStartNumbers(WORDS);
-  const { entries, cellToWords } = buildGameModel(WORDS);
-  const { cellsByKey, inputsByKey } = renderBoard(gridData, startNumbers);
-  const clueItemByWordKey = renderClues(entries, startNumbers);
-  setupInteractions({
-    entries,
-    cellToWords,
-    cellsByKey,
-    inputsByKey,
-    clueItemByWordKey,
-    gridRows: gridData.rows,
-    gridCols: gridData.cols
-  });
-  setupControls({
-    entries,
-    cellsByKey,
-    inputsByKey,
-    clueItemByWordKey
-  });
+    const gridData = validateAndBuildGrid(WORDS);
+    const startNumbers = getStartNumbers(WORDS);
+    const { entries, cellToWords } = buildGameModel(WORDS);
+    const { cellsByKey, inputsByKey } = renderBoard(gridData, startNumbers);
+    const clueItemByWordKey = renderClues(entries, startNumbers);
+    setupInteractions({
+      entries,
+      cellToWords,
+      cellsByKey,
+      inputsByKey,
+      clueItemByWordKey,
+      gridRows: gridData.rows,
+      gridCols: gridData.cols
+    });
+    setupControls({
+      entries,
+      cellsByKey,
+      inputsByKey,
+      clueItemByWordKey
+    });
+  } catch (error) {
+    showAppNotice("Ocorreu uma falha ao inicializar o jogo. Recarregue a página.");
+    console.error(error);
+  }
 }
 
 init();
