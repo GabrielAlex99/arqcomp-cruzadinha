@@ -134,7 +134,7 @@ body {
 .title-banner {
   grid-area: title;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   border: 1px solid rgba(176, 204, 239, 0.38);
   border-radius: 12px;
   padding: 12px 14px;
@@ -150,10 +150,18 @@ body {
   z-index: 1;
 }
 
-.binary-trigger {
+.binary-easteregg {
   position: absolute;
   right: 12px;
   top: 10px;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.binary-trigger {
+  position: relative;
   z-index: 2;
   display: inline-flex;
   align-items: center;
@@ -207,9 +215,7 @@ body {
 }
 
 .binary-hint {
-  position: absolute;
-  right: 62px;
-  top: 20px;
+  position: static;
   z-index: 2;
   font-size: 0.72rem;
   letter-spacing: 0.03em;
@@ -249,7 +255,7 @@ body {
 
 .binary-toast {
   position: absolute;
-  right: 62px;
+  right: 0;
   top: 48px;
   z-index: 5;
   display: flex;
@@ -877,21 +883,17 @@ body {
     align-items: stretch;
   }
 
-  .binary-trigger {
-    position: static;
-    margin-top: 8px;
-  }
-
-  .binary-hint {
-    position: static;
-    display: inline-block;
-    margin-top: 8px;
+  .binary-easteregg {
+    right: 8px;
+    top: 8px;
+    gap: 6px;
   }
 
   .binary-toast {
-    right: 10px;
-    top: 74px;
-    left: 10px;
+    right: 0;
+    left: auto;
+    top: 46px;
+    max-width: min(88vw, 360px);
   }
 
   .top-controls .controls-actions {
