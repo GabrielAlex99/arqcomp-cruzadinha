@@ -211,9 +211,46 @@ function getStartNumbers(words) {
   return numbered;
 }
 
-function renderBoard(words, gridData, startNumbers) {
+function buildGameModel(words) {
+  const entries = words.map((item, index) => {
+    const key = `${index}:${item.word}:${item.dir}:${item.row},${item.col}`;
+    const cells = [];
+    const cellIndex = new Map();
+
+    for (let i = 0; i < item.word.length; i += 1) {
+      const row = item.row + (item.dir === "V" ? i : 0);
+      const col = item.col + (item.dir === "H" ? i : 0);
+      const coordKey = `${row},${col}`;
+      cells.push(coordKey);
+      cellIndex.set(coordKey, i);
+    }
+
+    return {
+      ...item,
+      key,
+      cells,
+      cellIndex
+    };
+  });
+
+  const cellToWords = new Map();
+  for (const entry of entries) {
+    for (const cellKey of entry.cells) {
+      if (!cellToWords.has(cellKey)) {
+        cellToWords.set(cellKey, []);
+      }
+      cellToWords.get(cellKey).push(entry);
+    }
+  }
+
+  return { entries, cellToWords };
+}
+
+function renderBoard(gridData, startNumbers) {
   const board = document.getElementById("board");
   board.style.gridTemplateColumns = `repeat(${gridData.cols}, 34px)`;
+  const cellsByKey = new Map();
+  const inputsByKey = new Map();
 
   for (let row = 0; row < gridData.rows; row += 1) {
     for (let col = 0; col < gridData.cols; col += 1) {
@@ -229,10 +266,10 @@ function renderBoard(words, gridData, startNumbers) {
         input.type = "text";
         input.maxLength = 1;
         input.setAttribute("aria-label", `Linha ${row + 1}, coluna ${col + 1}`);
-        input.addEventListener("input", (event) => {
-          event.target.value = event.target.value.toUpperCase().replace(/[^A-Z]/g, "");
-        });
+        input.dataset.cellKey = key;
         cell.appendChild(input);
+        cellsByKey.set(key, cell);
+        inputsByKey.set(key, input);
 
         if (startNumbers.has(key)) {
           const number = document.createElement("span");
@@ -245,11 +282,14 @@ function renderBoard(words, gridData, startNumbers) {
       board.appendChild(cell);
     }
   }
+
+  return { cellsByKey, inputsByKey };
 }
 
 function renderClues(words, startNumbers) {
   const acrossList = document.getElementById("across-clues");
   const downList = document.getElementById("down-clues");
+  const clueItemByWordKey = new Map();
 
   const sorted = [...words].sort((a, b) => {
     const n1 = startNumbers.get(`${a.row},${a.col}`);
@@ -263,6 +303,8 @@ function renderClues(words, startNumbers) {
     const li = document.createElement("li");
     li.value = number;
     li.textContent = item.clue;
+    li.dataset.wordKey = item.key;
+    clueItemByWordKey.set(item.key, li);
 
     if (item.dir === "H") {
       acrossList.appendChild(li);
@@ -270,13 +312,251 @@ function renderClues(words, startNumbers) {
       downList.appendChild(li);
     }
   }
+
+  return clueItemByWordKey;
+}
+
+function injectInteractionStyles() {
+  const style = document.createElement("style");
+  style.textContent = `
+    .cell.word-highlight { background: #d8e9ff; }
+    .cell.current-cell { background: #a9ccff; }
+    .clue-active { background: #fff0b8; font-weight: 700; padding: 1px 2px; }
+  `;
+  document.head.appendChild(style);
+}
+
+function setupInteractions(state) {
+  const {
+    entries,
+    cellToWords,
+    cellsByKey,
+    inputsByKey,
+    clueItemByWordKey,
+    gridRows,
+    gridCols
+  } = state;
+
+  const wordByKey = new Map(entries.map((entry) => [entry.key, entry]));
+  let activeCellKey = entries[0].cells[0];
+  let activeDirection = entries[0].dir;
+  let activeWordKey = entries[0].key;
+  let highlightedCells = [];
+  let highlightedClue = null;
+  let lastClickedCellKey = null;
+
+  function getCellCoords(cellKey) {
+    const [row, col] = cellKey.split(",").map(Number);
+    return { row, col };
+  }
+
+  function getWordForCellByDirection(cellKey, direction) {
+    const wordsAtCell = cellToWords.get(cellKey) || [];
+    return wordsAtCell.find((entry) => entry.dir === direction) || null;
+  }
+
+  function chooseDirectionForCell(cellKey, preferredDirection) {
+    const wordsAtCell = cellToWords.get(cellKey) || [];
+    const hasH = wordsAtCell.some((entry) => entry.dir === "H");
+    const hasV = wordsAtCell.some((entry) => entry.dir === "V");
+
+    if (preferredDirection && wordsAtCell.some((entry) => entry.dir === preferredDirection)) {
+      return preferredDirection;
+    }
+    if (activeDirection && wordsAtCell.some((entry) => entry.dir === activeDirection)) {
+      return activeDirection;
+    }
+    if (hasH) return "H";
+    if (hasV) return "V";
+    return "H";
+  }
+
+  function applyHighlights() {
+    for (const key of highlightedCells) {
+      const cell = cellsByKey.get(key);
+      if (cell) {
+        cell.classList.remove("word-highlight");
+        cell.classList.remove("current-cell");
+      }
+    }
+    highlightedCells = [];
+
+    if (highlightedClue) {
+      highlightedClue.classList.remove("clue-active");
+      highlightedClue = null;
+    }
+
+    const activeWord = wordByKey.get(activeWordKey);
+    if (!activeWord) return;
+
+    for (const key of activeWord.cells) {
+      const cell = cellsByKey.get(key);
+      if (cell) {
+        cell.classList.add("word-highlight");
+        highlightedCells.push(key);
+      }
+    }
+
+    const currentCell = cellsByKey.get(activeCellKey);
+    if (currentCell) {
+      currentCell.classList.add("current-cell");
+    }
+
+    highlightedClue = clueItemByWordKey.get(activeWordKey) || null;
+    if (highlightedClue) {
+      highlightedClue.classList.add("clue-active");
+    }
+  }
+
+  function setActiveCell(cellKey, options = {}) {
+    if (!inputsByKey.has(cellKey)) return;
+
+    const { preferredDirection = null, toggleDirection = false, focus = true } = options;
+    let nextDirection = chooseDirectionForCell(cellKey, preferredDirection);
+
+    if (toggleDirection) {
+      const wordsAtCell = cellToWords.get(cellKey) || [];
+      const hasH = wordsAtCell.some((entry) => entry.dir === "H");
+      const hasV = wordsAtCell.some((entry) => entry.dir === "V");
+      if (hasH && hasV) {
+        nextDirection = nextDirection === "H" ? "V" : "H";
+      }
+    }
+
+    const nextWord = getWordForCellByDirection(cellKey, nextDirection);
+    if (!nextWord) return;
+
+    activeCellKey = cellKey;
+    activeDirection = nextDirection;
+    activeWordKey = nextWord.key;
+    applyHighlights();
+
+    if (focus) {
+      const input = inputsByKey.get(cellKey);
+      input.focus();
+      input.select();
+    }
+  }
+
+  function moveInsideActiveWord(step) {
+    const activeWord = wordByKey.get(activeWordKey);
+    if (!activeWord) return null;
+    const idx = activeWord.cellIndex.get(activeCellKey);
+    if (idx === undefined) return null;
+    const nextIdx = idx + step;
+    if (nextIdx < 0 || nextIdx >= activeWord.cells.length) return null;
+    return activeWord.cells[nextIdx];
+  }
+
+  function findNextActiveCellByArrow(startCellKey, direction) {
+    const vectors = {
+      ArrowLeft: [0, -1],
+      ArrowRight: [0, 1],
+      ArrowUp: [-1, 0],
+      ArrowDown: [1, 0]
+    };
+    const [dr, dc] = vectors[direction];
+    let { row, col } = getCellCoords(startCellKey);
+
+    while (true) {
+      row += dr;
+      col += dc;
+      if (row < 0 || row >= gridRows || col < 0 || col >= gridCols) {
+        return null;
+      }
+      const key = `${row},${col}`;
+      if (inputsByKey.has(key)) {
+        return key;
+      }
+    }
+  }
+
+  function handleCellClick(cellKey) {
+    const shouldToggle = lastClickedCellKey === cellKey;
+    setActiveCell(cellKey, { toggleDirection: shouldToggle });
+    lastClickedCellKey = cellKey;
+  }
+
+  for (const [cellKey, input] of inputsByKey.entries()) {
+    input.addEventListener("focus", () => {
+      setActiveCell(cellKey, { focus: false });
+      lastClickedCellKey = null;
+    });
+
+    input.addEventListener("click", () => {
+      handleCellClick(cellKey);
+    });
+
+    input.addEventListener("input", (event) => {
+      const sanitized = event.target.value.toUpperCase().replace(/[^A-Z]/g, "").slice(0, 1);
+      event.target.value = sanitized;
+      if (sanitized) {
+        const nextCell = moveInsideActiveWord(1);
+        if (nextCell) {
+          setActiveCell(nextCell);
+        }
+      }
+    });
+
+    input.addEventListener("keydown", (event) => {
+      const key = event.key;
+
+      if (/^[a-zA-Z]$/.test(key)) {
+        event.preventDefault();
+        input.value = key.toUpperCase();
+        lastClickedCellKey = null;
+        const nextCell = moveInsideActiveWord(1);
+        if (nextCell) {
+          setActiveCell(nextCell);
+        }
+        return;
+      }
+
+      if (key === "Backspace") {
+        event.preventDefault();
+        lastClickedCellKey = null;
+        if (input.value) {
+          input.value = "";
+        } else {
+          const previousCell = moveInsideActiveWord(-1);
+          if (previousCell) {
+            setActiveCell(previousCell);
+            inputsByKey.get(previousCell).value = "";
+          }
+        }
+        return;
+      }
+
+      if (key === "ArrowLeft" || key === "ArrowRight" || key === "ArrowUp" || key === "ArrowDown") {
+        event.preventDefault();
+        lastClickedCellKey = null;
+        const nextCell = findNextActiveCellByArrow(cellKey, key);
+        if (!nextCell) return;
+        const preferredDirection = key === "ArrowLeft" || key === "ArrowRight" ? "H" : "V";
+        setActiveCell(nextCell, { preferredDirection });
+      }
+    });
+  }
+
+  setActiveCell(activeCellKey, { focus: false });
 }
 
 function init() {
   const gridData = validateAndBuildGrid(WORDS);
   const startNumbers = getStartNumbers(WORDS);
-  renderBoard(WORDS, gridData, startNumbers);
-  renderClues(WORDS, startNumbers);
+  const { entries, cellToWords } = buildGameModel(WORDS);
+  const { cellsByKey, inputsByKey } = renderBoard(gridData, startNumbers);
+  const clueItemByWordKey = renderClues(entries, startNumbers);
+  injectInteractionStyles();
+  setupInteractions({
+    entries,
+    cellToWords,
+    cellsByKey,
+    inputsByKey,
+    clueItemByWordKey,
+    gridRows: gridData.rows,
+    gridCols: gridData.cols
+  });
 }
 
 init();
