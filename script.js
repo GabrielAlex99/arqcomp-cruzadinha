@@ -212,6 +212,27 @@ const LEARNING_DATA = {
   }
 };
 
+const MEMORY_TIPS = {
+  CPU: "Lembre de CPU como o 'chefe' que coordena tudo.",
+  ULA: "Associe ULA a operações de conta e comparação.",
+  UC: "Pense na UC como regente que sincroniza o processador.",
+  REGISTRADORES: "Visualize registradores como bolsos rápidos da CPU.",
+  RAM: "RAM: memória de trabalho temporária.",
+  ROM: "ROM: instruções permanentes de partida do sistema.",
+  EEPROM: "EEPROM: versão regravável em partes pequenas.",
+  FLASH: "FLASH: regrava por blocos, comum em SSD e pendrive.",
+  CACHE: "CACHE: atalho veloz entre CPU e RAM.",
+  MEMORIADEMASSA: "Memória de massa: grande capacidade e persistência.",
+  DMA: "DMA: transferência direta sem CPU a todo momento.",
+  ADDRESSBUS: "ADDRESSBUS aponta 'onde' está o dado.",
+  DATABUS: "DATABUS carrega 'qual' dado está sendo transferido.",
+  MICROCONTROLADOR: "Microcontrolador: computador completo em um único chip.",
+  DUALCORE: "DUALCORE: dois núcleos físicos para paralelismo.",
+  QUADCORE: "QUADCORE: quatro núcleos para multitarefa."
+};
+
+const DIAGNOSTIC_STORAGE_KEY = "cruzadinha_arqcomp_dificuldades_v1";
+
 function validateAndBuildGrid(words) {
   const cellMap = new Map();
   const intersections = new Map(words.map(({ word }) => [word, new Set()]));
@@ -647,7 +668,8 @@ function evaluateWords(entries, inputsByKey) {
   for (const entry of entries) {
     const attempt = entry.cells.map((cellKey) => (inputsByKey.get(cellKey)?.value || "").toUpperCase()).join("");
     const isCorrect = attempt.length === entry.word.length && attempt === entry.word;
-    results.set(entry.key, { isCorrect });
+    const isBlank = attempt.trim().length === 0;
+    results.set(entry.key, { isCorrect, isBlank, attempt });
     if (isCorrect) correctCount += 1;
   }
 
@@ -694,6 +716,45 @@ function updateCounter(correctCount, total) {
   counter.textContent = `${correctCount} de ${total} palavras`;
 }
 
+function loadDiagnostics() {
+  try {
+    const raw = localStorage.getItem(DIAGNOSTIC_STORAGE_KEY);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== "object") return {};
+
+    const clean = {};
+    for (const [word, value] of Object.entries(parsed)) {
+      if (Number.isFinite(value) && value > 0) {
+        clean[word] = Math.floor(value);
+      }
+    }
+    return clean;
+  } catch {
+    return {};
+  }
+}
+
+function saveDiagnostics(data) {
+  localStorage.setItem(DIAGNOSTIC_STORAGE_KEY, JSON.stringify(data));
+}
+
+function registerDifficulties(incorrectWords) {
+  const diagnostics = loadDiagnostics();
+  for (const word of incorrectWords) {
+    diagnostics[word] = (diagnostics[word] || 0) + 1;
+  }
+  saveDiagnostics(diagnostics);
+  return diagnostics;
+}
+
+function updateReinforceIndicator() {
+  const diagnostics = loadDiagnostics();
+  const reinforceCount = Object.values(diagnostics).filter((count) => count > 0).length;
+  const indicator = document.getElementById("reinforce-indicator");
+  indicator.textContent = `${reinforceCount} conceitos para reforço`;
+}
+
 function renderLearningPanel(entries) {
   const panel = document.getElementById("review-panel");
   const content = document.getElementById("review-content");
@@ -719,19 +780,77 @@ function renderLearningPanel(entries) {
   panel.hidden = false;
 }
 
+function fillStudyGuide(incorrectEntries) {
+  const container = document.getElementById("study-guide-content");
+  const diagnostics = loadDiagnostics();
+  container.innerHTML = "";
+
+  if (incorrectEntries.length === 0) {
+    const message = document.createElement("p");
+    message.textContent = "Nenhum conceito com erro na última conferência. Continue praticando para consolidar o conhecimento.";
+    container.appendChild(message);
+    return;
+  }
+
+  const dateLine = document.createElement("p");
+  dateLine.textContent = `Gerado em: ${new Date().toLocaleDateString("pt-BR")}`;
+  container.appendChild(dateLine);
+
+  for (const entry of incorrectEntries) {
+    const data = LEARNING_DATA[entry.word];
+    const item = document.createElement("article");
+    item.className = "study-guide-item";
+
+    const title = document.createElement("h3");
+    title.textContent = entry.word;
+
+    const definition = document.createElement("p");
+    definition.innerHTML = `<strong>Definição:</strong> ${entry.clue}`;
+
+    const functioning = document.createElement("p");
+    functioning.innerHTML = `<strong>Funcionamento na arquitetura:</strong> ${data.explanation} ${data.example}`;
+
+    const tip = document.createElement("p");
+    tip.innerHTML = `<strong>Dica de memorização:</strong> ${MEMORY_TIPS[entry.word]}`;
+
+    const history = document.createElement("p");
+    history.innerHTML = `<strong>Frequência de dificuldade:</strong> ${diagnostics[entry.word] || 0} conferência(s).`;
+
+    item.appendChild(title);
+    item.appendChild(definition);
+    item.appendChild(functioning);
+    item.appendChild(tip);
+    item.appendChild(history);
+    container.appendChild(item);
+  }
+}
+
+function printStudyGuide() {
+  document.body.classList.add("printing-study-guide");
+  window.print();
+}
+
 function setupControls(state) {
   const { entries, cellsByKey, inputsByKey, clueItemByWordKey } = state;
   const totalWords = entries.length;
   const checkButton = document.getElementById("check-button");
   const resetButton = document.getElementById("reset-button");
+  const pdfButton = document.getElementById("pdf-button");
   const reviewPanel = document.getElementById("review-panel");
+  let lastIncorrectEntries = [];
+  let hasCheckedAtLeastOnce = false;
 
   updateCounter(0, totalWords);
+  updateReinforceIndicator();
 
   checkButton.addEventListener("click", () => {
     const { results, correctCount } = evaluateWords(entries, inputsByKey);
     applyValidationStyles(entries, results, cellsByKey, clueItemByWordKey);
     updateCounter(correctCount, totalWords);
+    lastIncorrectEntries = entries.filter((entry) => !results.get(entry.key).isCorrect);
+    registerDifficulties(lastIncorrectEntries.map((entry) => entry.word));
+    updateReinforceIndicator();
+    hasCheckedAtLeastOnce = true;
     renderLearningPanel(entries);
   });
 
@@ -742,11 +861,26 @@ function setupControls(state) {
     clearValidationStyles(cellsByKey, clueItemByWordKey);
     updateCounter(0, totalWords);
     reviewPanel.hidden = true;
+    lastIncorrectEntries = [];
     const firstInput = inputsByKey.get(entries[0].cells[0]);
     if (firstInput) {
       firstInput.focus();
       firstInput.select();
     }
+  });
+
+  pdfButton.addEventListener("click", () => {
+    if (!hasCheckedAtLeastOnce) {
+      window.alert("Primeiro clique em Conferir para gerar o material personalizado.");
+      return;
+    }
+
+    fillStudyGuide(lastIncorrectEntries);
+    printStudyGuide();
+  });
+
+  window.addEventListener("afterprint", () => {
+    document.body.classList.remove("printing-study-guide");
   });
 }
 
