@@ -236,8 +236,10 @@ body {
 }
 
 .binary-toast {
-  grid-column: 1 / -1;
-  justify-self: end;
+  position: fixed;
+  right: 14px;
+  top: 78px;
+  z-index: 1200;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -250,6 +252,10 @@ body {
   transform: translateY(8px) scale(0.98);
   transition: opacity 0.22s ease, transform 0.22s ease;
   pointer-events: none;
+}
+
+.binary-toast[hidden] {
+  display: none !important;
 }
 
 .binary-toast.is-visible {
@@ -862,6 +868,13 @@ body {
   .binary-trigger {
     position: static;
     margin-top: 8px;
+  }
+
+  .binary-toast {
+    right: 10px;
+    left: 10px;
+    top: auto;
+    bottom: 10px;
   }
 
   .top-controls .controls-actions {
