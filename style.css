@@ -216,12 +216,16 @@ body {
 
 .binary-hint {
   position: static;
+  order: 1;
   z-index: 2;
   font-size: 0.72rem;
   letter-spacing: 0.03em;
-  color: rgba(223, 238, 255, 0.9);
-  opacity: 0.88;
+  color: #dcecff;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(8, 16, 28, 0.55);
+  opacity: 1;
   user-select: none;
+  white-space: nowrap;
 }
 
 .binary-trigger.lamp-bounce {
@@ -749,28 +753,84 @@ body {
   gap: 12px;
 }
 
-.arch-node {
+.arch-block {
   border: 1px solid #c8d9ef;
   background: #f8fbff;
   border-radius: 10px;
   padding: 8px;
 }
 
-.arch-node h4 {
+.arch-block h4 {
   margin: 0 0 6px;
-  font-size: 0.88rem;
+  font-size: 0.95rem;
   color: #23486f;
 }
 
-.arch-cpu {
-  position: relative;
-}
-
-.arch-subgrid {
+.arch-grid-3,
+.arch-grid-2,
+.arch-grid-4 {
   margin-top: 8px;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
+}
+
+.arch-grid-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.arch-grid-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.arch-grid-4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.arch-slot-card {
+  border: 1px solid #dbe8f8;
+  border-radius: 8px;
+  background: #fff;
+  padding: 7px;
+}
+
+.arch-slot-card p {
+  margin: 0 0 7px;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: #325b85;
+}
+
+.arch-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 999px;
+  border: 1px solid #b9d2f0;
+  background: #ecf4ff;
+  color: #2b5a8a;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.arch-connector-wrap {
+  display: flex;
+  justify-content: center;
+}
+
+.arch-connector {
+  width: 140px;
+  height: 26px;
+}
+
+.arch-connector path {
+  fill: none;
+  stroke: #7fa9d6;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .arch-subnode span {
@@ -783,13 +843,7 @@ body {
 .arch-bus-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
-.arch-memory-row {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
+  gap: 8px;
 }
 
 .arch-slot {
@@ -854,8 +908,12 @@ body {
     grid-template-columns: 1fr;
   }
 
-  .arch-memory-row {
+  .arch-grid-4 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .arch-grid-3 {
+    grid-template-columns: 1fr;
   }
 
   .top-controls .controls-actions {
@@ -889,6 +947,13 @@ body {
     gap: 6px;
   }
 
+  .binary-hint {
+    font-size: 0.66rem;
+    max-width: 130px;
+    white-space: normal;
+    text-align: right;
+  }
+
   .binary-toast {
     right: 0;
     left: auto;
@@ -905,9 +970,9 @@ body {
     width: 100%;
   }
 
-  .arch-subgrid,
-  .arch-bus-row,
-  .arch-memory-row {
+  .arch-grid-2,
+  .arch-grid-3,
+  .arch-grid-4 {
     grid-template-columns: 1fr;
   }
 

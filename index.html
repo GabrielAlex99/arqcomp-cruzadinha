@@ -121,9 +121,9 @@
         </header>
 
         <section class="architecture-controls">
-          <p id="arch-status" aria-live="polite">0 de 10 componentes corretos</p>
+          <p id="arch-status" aria-live="polite">0 de 9 componentes corretos</p>
           <div class="controls-actions">
-            <button id="arch-check" type="button">Conferir diagrama</button>
+            <button id="arch-check" type="button">Conferir Diagrama</button>
             <button id="arch-reset" type="button">Reiniciar diagrama</button>
           </div>
         </section>
@@ -137,52 +137,71 @@
           <section class="architecture-diagram-panel">
             <h3>Diagrama em blocos</h3>
             <div id="arch-diagram" class="arch-diagram">
-              <div class="arch-node arch-cpu">
-                <h4>CPU</h4>
-                <div class="arch-slot" data-slot="CPU" data-expected="CPU" tabindex="0"></div>
-                <div class="arch-subgrid">
-                  <div class="arch-subnode">
-                    <span>ULA</span>
-                    <div class="arch-slot" data-slot="ULA" data-expected="ULA" tabindex="0"></div>
+              <div class="arch-block arch-processor">
+                <h4>Processador (CPU)</h4>
+                <div class="arch-grid-3">
+                  <div class="arch-slot-card">
+                    <p>Executa cálculos matemáticos e comparações lógicas</p>
+                    <div class="arch-slot" data-slot="S1" data-expected="ULA" tabindex="0"></div>
                   </div>
-                  <div class="arch-subnode">
-                    <span>UC</span>
-                    <div class="arch-slot" data-slot="UC" data-expected="UC" tabindex="0"></div>
+                  <div class="arch-slot-card">
+                    <p>Coordena o fluxo de dados e decodifica instruções</p>
+                    <div class="arch-slot" data-slot="S2" data-expected="UC" tabindex="0"></div>
                   </div>
-                  <div class="arch-subnode">
-                    <span>Registradores</span>
-                    <div class="arch-slot" data-slot="REGISTRADORES" data-expected="REGISTRADORES" tabindex="0"></div>
+                  <div class="arch-slot-card">
+                    <p>Memória interna ultrarrápida para dados em uso imediato</p>
+                    <div class="arch-slot" data-slot="S3" data-expected="REGISTRADORES" tabindex="0"></div>
                   </div>
                 </div>
               </div>
 
-              <div class="arch-bus-row">
-                <div class="arch-node arch-bus">
-                  <h4>Address Bus</h4>
-                  <div class="arch-slot" data-slot="ADDRESSBUS" data-expected="ADDRESSBUS" tabindex="0"></div>
-                </div>
-                <div class="arch-node arch-bus">
-                  <h4>Data Bus</h4>
-                  <div class="arch-slot" data-slot="DATABUS" data-expected="DATABUS" tabindex="0"></div>
+              <div class="arch-connector-wrap">
+                <svg class="arch-connector arch-down" viewBox="0 0 120 26" aria-hidden="true">
+                  <path d="M4 4H116M60 4V22M52 14L60 22L68 14" />
+                </svg>
+              </div>
+
+              <div class="arch-block arch-buses">
+                <h4>Barramentos do Sistema</h4>
+                <div class="arch-grid-2">
+                  <div class="arch-slot-card">
+                    <div class="arch-arrow one-way" aria-hidden="true">↦</div>
+                    <p>Transporta exclusivamente o endereço de memória a ser acessado</p>
+                    <div class="arch-slot" data-slot="S4" data-expected="ADDRESSBUS" tabindex="0"></div>
+                  </div>
+                  <div class="arch-slot-card">
+                    <div class="arch-arrow two-way" aria-hidden="true">↔</div>
+                    <p>Transporta os dados efetivos entre processador e memória</p>
+                    <div class="arch-slot" data-slot="S5" data-expected="DATABUS" tabindex="0"></div>
+                  </div>
                 </div>
               </div>
 
-              <div class="arch-memory-row">
-                <div class="arch-node arch-memory">
-                  <h4>Cache</h4>
-                  <div class="arch-slot" data-slot="CACHE" data-expected="CACHE" tabindex="0"></div>
-                </div>
-                <div class="arch-node arch-memory">
-                  <h4>RAM</h4>
-                  <div class="arch-slot" data-slot="RAM" data-expected="RAM" tabindex="0"></div>
-                </div>
-                <div class="arch-node arch-memory">
-                  <h4>ROM</h4>
-                  <div class="arch-slot" data-slot="ROM" data-expected="ROM" tabindex="0"></div>
-                </div>
-                <div class="arch-node arch-memory">
-                  <h4>Memória de Massa</h4>
-                  <div class="arch-slot" data-slot="MEMORIADEMASSA" data-expected="MEMORIADEMASSA" tabindex="0"></div>
+              <div class="arch-connector-wrap">
+                <svg class="arch-connector arch-down" viewBox="0 0 120 26" aria-hidden="true">
+                  <path d="M4 4H116M60 4V22M52 14L60 22L68 14" />
+                </svg>
+              </div>
+
+              <div class="arch-block arch-memory">
+                <h4>Hierarquia de Memória</h4>
+                <div class="arch-grid-4">
+                  <div class="arch-slot-card">
+                    <p>Memória intermediária ultrarrápida próxima aos núcleos</p>
+                    <div class="arch-slot" data-slot="S6" data-expected="CACHE" tabindex="0"></div>
+                  </div>
+                  <div class="arch-slot-card">
+                    <p>Memória principal volátil para programas em execução</p>
+                    <div class="arch-slot" data-slot="S7" data-expected="RAM" tabindex="0"></div>
+                  </div>
+                  <div class="arch-slot-card">
+                    <p>Memória não volátil gravada de fábrica para inicialização</p>
+                    <div class="arch-slot" data-slot="S8" data-expected="ROM" tabindex="0"></div>
+                  </div>
+                  <div class="arch-slot-card">
+                    <p>Armazenamento secundário permanente de alta capacidade</p>
+                    <div class="arch-slot" data-slot="S9" data-expected="MEMORIADEMASSA" tabindex="0"></div>
+                  </div>
                 </div>
               </div>
             </div>

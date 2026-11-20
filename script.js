@@ -232,8 +232,8 @@ const MEMORY_TIPS = {
 };
 
 const DIAGNOSTIC_STORAGE_KEY = "cruzadinha_arqcomp_dificuldades_v1";
+const ARCH_DIAGNOSTIC_STORAGE_KEY = "desafio_arqcomp_dificuldades_v1";
 const ARCH_COMPONENTS = [
-  { id: "CPU", label: "CPU" },
   { id: "ULA", label: "ULA" },
   { id: "UC", label: "UC" },
   { id: "REGISTRADORES", label: "REGISTRADORES" },
@@ -1100,6 +1100,34 @@ function setupArchitectureChallenge() {
   const locationByCard = new Map();
   let selectedCardId = null;
 
+  function loadArchDiagnostics() {
+    try {
+      const raw = localStorage.getItem(ARCH_DIAGNOSTIC_STORAGE_KEY);
+      if (!raw) return {};
+      const parsed = JSON.parse(raw);
+      if (!parsed || typeof parsed !== "object") return {};
+      const clean = {};
+      for (const [key, value] of Object.entries(parsed)) {
+        if (Number.isFinite(value) && value > 0) {
+          clean[key] = Math.floor(value);
+        }
+      }
+      return clean;
+    } catch {
+      return {};
+    }
+  }
+
+  function saveArchDiagnostics(data) {
+    try {
+      localStorage.setItem(ARCH_DIAGNOSTIC_STORAGE_KEY, JSON.stringify(data));
+      return true;
+    } catch {
+      showAppNotice("Não foi possível salvar o diagnóstico do desafio de arquitetura.");
+      return false;
+    }
+  }
+
   function clearSlotState() {
     slots.forEach((slot) => {
       slot.classList.remove("arch-correct", "arch-incorrect", "is-over");
@@ -1190,6 +1218,7 @@ function setupArchitectureChallenge() {
   function evaluateDiagram() {
     clearSlotState();
     let correct = 0;
+    const diagnostics = loadArchDiagnostics();
 
     slots.forEach((slot) => {
       const card = slot.querySelector(".arch-card");
@@ -1197,8 +1226,12 @@ function setupArchitectureChallenge() {
       const isCorrect = !!card && card.dataset.cardId === expected;
       slot.classList.add(isCorrect ? "arch-correct" : "arch-incorrect");
       if (isCorrect) correct += 1;
+      if (!isCorrect) {
+        diagnostics[expected] = (diagnostics[expected] || 0) + 1;
+      }
     });
 
+    saveArchDiagnostics(diagnostics);
     status.textContent = `${correct} de ${slots.length} componentes corretos`;
   }
 
