@@ -206,6 +206,18 @@ body {
   filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.3));
 }
 
+.binary-hint {
+  position: absolute;
+  right: 62px;
+  top: 20px;
+  z-index: 2;
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  color: rgba(223, 238, 255, 0.9);
+  opacity: 0.88;
+  user-select: none;
+}
+
 .binary-trigger.lamp-bounce {
   animation: lampBounce 560ms ease;
 }
@@ -236,10 +248,10 @@ body {
 }
 
 .binary-toast {
-  position: fixed;
-  right: 14px;
-  top: 78px;
-  z-index: 1200;
+  position: absolute;
+  right: 62px;
+  top: 48px;
+  z-index: 5;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -870,11 +882,16 @@ body {
     margin-top: 8px;
   }
 
+  .binary-hint {
+    position: static;
+    display: inline-block;
+    margin-top: 8px;
+  }
+
   .binary-toast {
     right: 10px;
+    top: 74px;
     left: 10px;
-    top: auto;
-    bottom: 10px;
   }
 
   .top-controls .controls-actions {
