@@ -51,6 +51,7 @@ body {
   grid-template-columns: minmax(540px, 1.05fr) minmax(320px, 0.95fr);
   grid-template-areas:
     "title title"
+    "controls controls"
     "board clues";
   gap: 18px 20px;
 }
@@ -61,6 +62,49 @@ h1 {
   color: #eef5ff;
   font-size: clamp(1.25rem, 2.8vw, 1.85rem);
   letter-spacing: 0.02em;
+}
+
+.top-controls {
+  grid-area: controls;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: linear-gradient(180deg, #fafdff 0%, #eef5ff 100%);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+
+.progress-counter {
+  margin: 0;
+  font-weight: 700;
+  color: #173255;
+}
+
+.controls-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.controls-actions button {
+  border: 1px solid #98b5da;
+  background: #ffffff;
+  color: #173255;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.controls-actions button:hover {
+  background: #eff6ff;
+}
+
+.controls-actions button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .board-section {
@@ -135,6 +179,31 @@ h1 {
     0 0 0 2px rgba(47, 128, 237, 0.26);
 }
 
+.board .cell.active.cell-check-correct {
+  background: #dff6e8;
+  box-shadow: inset 0 0 0 2px #2a9f63;
+}
+
+.board .cell.active.cell-check-incorrect {
+  background: #fde7ea;
+  box-shadow: inset 0 0 0 2px #d15267;
+}
+
+.board .cell.active.cell-check-correct.word-highlight {
+  background: #c8efd8;
+}
+
+.board .cell.active.cell-check-incorrect.word-highlight {
+  background: #f9d2d9;
+}
+
+.board .cell.active.current-cell.cell-check-correct,
+.board .cell.active.current-cell.cell-check-incorrect {
+  box-shadow:
+    inset 0 0 0 2px var(--accent),
+    0 0 0 2px rgba(47, 128, 237, 0.26);
+}
+
 .cell.active input:focus {
   outline: none;
 }
@@ -196,6 +265,60 @@ h1 {
   font-weight: 700;
 }
 
+.clues-section li.clue-correct {
+  background: #e6f6ed;
+  color: #185a3b;
+}
+
+.clues-section li.clue-incorrect {
+  background: #fdecef;
+  color: #842334;
+}
+
+.review-panel {
+  grid-column: 1 / -1;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius);
+  box-shadow: 0 10px 26px rgba(9, 26, 46, 0.2);
+  padding: 14px 16px;
+}
+
+.review-panel h2 {
+  margin: 0 0 8px;
+  color: #173255;
+}
+
+.review-panel p {
+  margin: 0 0 12px;
+  color: #35506f;
+}
+
+.review-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 10px;
+}
+
+.review-item {
+  border: 1px solid #d5e3f4;
+  border-radius: 10px;
+  padding: 10px;
+  background: #f8fbff;
+}
+
+.review-item h3 {
+  margin: 0 0 6px;
+  font-size: 0.95rem;
+  color: #173255;
+}
+
+.review-item p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
 @media (max-width: 1080px) {
   :root {
     --cell-size: 35px;
@@ -205,6 +328,7 @@ h1 {
     grid-template-columns: 1fr;
     grid-template-areas:
       "title"
+      "controls"
       "board"
       "clues";
   }
@@ -229,8 +353,19 @@ h1 {
     gap: 12px;
   }
 
+  .top-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .controls-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
   .board-section,
-  .clues-section {
+  .clues-section,
+  .review-panel {
     border-radius: 10px;
     padding: 10px;
   }

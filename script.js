@@ -113,6 +113,105 @@ const WORDS = [
   }
 ];
 
+const LEARNING_DATA = {
+  CPU: {
+    explanation:
+      "A CPU coordena o ciclo buscar-decodificar-executar e controla o processamento geral do sistema.",
+    example:
+      "Exemplo: ao abrir um navegador, a CPU interpreta instruções e distribui tarefas."
+  },
+  ULA: {
+    explanation:
+      "A ULA executa operações aritméticas e lógicas, como soma, subtração e comparações binárias.",
+    example:
+      "Exemplo: calcular a média de notas usa somas e comparações feitas na ULA."
+  },
+  UC: {
+    explanation:
+      "A UC define sinais de controle para sincronizar CPU, registradores, memória e barramentos.",
+    example:
+      "Exemplo: durante um LOAD, a UC aciona leitura da RAM e escrita em registrador."
+  },
+  REGISTRADORES: {
+    explanation:
+      "Registradores armazenam dados imediatos com latência mínima dentro do processador.",
+    example:
+      "Exemplo: o contador de programa e acumuladores guardam endereços e resultados temporários."
+  },
+  RAM: {
+    explanation:
+      "A RAM mantém dados e código em uso; é volátil e perde conteúdo sem energia.",
+    example:
+      "Exemplo: editores e jogos carregam recursos na RAM para resposta rápida."
+  },
+  ROM: {
+    explanation:
+      "A ROM guarda firmware essencial e instruções permanentes de inicialização.",
+    example:
+      "Exemplo: BIOS/UEFI inicia testes de hardware antes de carregar o sistema operacional."
+  },
+  EEPROM: {
+    explanation:
+      "A EEPROM permite regravação elétrica byte a byte em memória não volátil.",
+    example:
+      "Exemplo: armazenamento de configurações persistentes de dispositivos embarcados."
+  },
+  FLASH: {
+    explanation:
+      "Memória flash é não volátil e regravada em blocos, com alta densidade de armazenamento.",
+    example:
+      "Exemplo: SSDs e pendrives usam flash para guardar arquivos sem energia."
+  },
+  CACHE: {
+    explanation:
+      "Cache reduz a diferença de velocidade entre CPU e RAM com dados acessados frequentemente.",
+    example:
+      "Exemplo: loops repetitivos aproveitam cache L1/L2 para reduzir leituras na RAM."
+  },
+  MEMORIADEMASSA: {
+    explanation:
+      "Memória de massa oferece grande capacidade não volátil para armazenamento permanente.",
+    example:
+      "Exemplo: HD/SSD guardam sistema operacional, documentos e aplicações instaladas."
+  },
+  DMA: {
+    explanation:
+      "DMA transfere blocos de dados entre periféricos e RAM sem ocupar continuamente a CPU.",
+    example:
+      "Exemplo: controladora de disco move dados para memória enquanto a CPU executa outro processo."
+  },
+  ADDRESSBUS: {
+    explanation:
+      "O barramento de endereços seleciona posições de memória e linhas de I/O a acessar.",
+    example:
+      "Exemplo: ao ler um byte, a CPU envia o endereço exato pelo ADDRESSBUS."
+  },
+  DATABUS: {
+    explanation:
+      "O barramento de dados transporta efetivamente valores entre CPU, memória e periféricos.",
+    example:
+      "Exemplo: uma instrução carregada da RAM chega ao processador via DATABUS."
+  },
+  MICROCONTROLADOR: {
+    explanation:
+      "Microcontrolador integra CPU, memória e periféricos no mesmo chip para sistemas dedicados.",
+    example:
+      "Exemplo: controle de temperatura em eletrodomésticos com sensores e atuadores."
+  },
+  DUALCORE: {
+    explanation:
+      "Dual-core possui dois núcleos físicos capazes de processar tarefas em paralelo.",
+    example:
+      "Exemplo: um núcleo renderiza vídeo enquanto outro mantém interface responsiva."
+  },
+  QUADCORE: {
+    explanation:
+      "Quad-core integra quatro núcleos físicos para maior paralelismo e melhor multitarefa.",
+    example:
+      "Exemplo: editar imagens, tocar música e navegar simultaneamente com menor travamento."
+  }
+};
+
 function validateAndBuildGrid(words) {
   const cellMap = new Map();
   const intersections = new Map(words.map(({ word }) => [word, new Set()]));
@@ -314,16 +413,6 @@ function renderClues(words, startNumbers) {
   }
 
   return clueItemByWordKey;
-}
-
-function injectInteractionStyles() {
-  const style = document.createElement("style");
-  style.textContent = `
-    .cell.word-highlight { background: #d8e9ff; }
-    .cell.current-cell { background: #a9ccff; }
-    .clue-active { background: #fff0b8; font-weight: 700; padding: 1px 2px; }
-  `;
-  document.head.appendChild(style);
 }
 
 function setupInteractions(state) {
@@ -541,13 +630,132 @@ function setupInteractions(state) {
   setActiveCell(activeCellKey, { focus: false });
 }
 
+function clearValidationStyles(cellsByKey, clueItemByWordKey) {
+  for (const cell of cellsByKey.values()) {
+    cell.classList.remove("cell-check-correct", "cell-check-incorrect");
+  }
+
+  for (const clueItem of clueItemByWordKey.values()) {
+    clueItem.classList.remove("clue-correct", "clue-incorrect");
+  }
+}
+
+function evaluateWords(entries, inputsByKey) {
+  const results = new Map();
+  let correctCount = 0;
+
+  for (const entry of entries) {
+    const attempt = entry.cells.map((cellKey) => (inputsByKey.get(cellKey)?.value || "").toUpperCase()).join("");
+    const isCorrect = attempt.length === entry.word.length && attempt === entry.word;
+    results.set(entry.key, { isCorrect });
+    if (isCorrect) correctCount += 1;
+  }
+
+  return { results, correctCount };
+}
+
+function applyValidationStyles(entries, results, cellsByKey, clueItemByWordKey) {
+  clearValidationStyles(cellsByKey, clueItemByWordKey);
+
+  const cellState = new Map();
+  for (const entry of entries) {
+    const status = results.get(entry.key);
+    for (const cellKey of entry.cells) {
+      if (!cellState.has(cellKey)) {
+        cellState.set(cellKey, { hasCorrect: false, hasIncorrect: false });
+      }
+      const state = cellState.get(cellKey);
+      if (status.isCorrect) {
+        state.hasCorrect = true;
+      } else {
+        state.hasIncorrect = true;
+      }
+    }
+
+    const clueItem = clueItemByWordKey.get(entry.key);
+    if (clueItem) {
+      clueItem.classList.add(status.isCorrect ? "clue-correct" : "clue-incorrect");
+    }
+  }
+
+  for (const [cellKey, state] of cellState.entries()) {
+    const cell = cellsByKey.get(cellKey);
+    if (!cell) continue;
+    if (state.hasIncorrect) {
+      cell.classList.add("cell-check-incorrect");
+    } else if (state.hasCorrect) {
+      cell.classList.add("cell-check-correct");
+    }
+  }
+}
+
+function updateCounter(correctCount, total) {
+  const counter = document.getElementById("progress-counter");
+  counter.textContent = `${correctCount} de ${total} palavras`;
+}
+
+function renderLearningPanel(entries) {
+  const panel = document.getElementById("review-panel");
+  const content = document.getElementById("review-content");
+
+  if (content.children.length === 0) {
+    for (const entry of entries) {
+      const data = LEARNING_DATA[entry.word];
+      const item = document.createElement("article");
+      item.className = "review-item";
+
+      const title = document.createElement("h3");
+      title.textContent = entry.word;
+
+      const text = document.createElement("p");
+      text.textContent = `${data.explanation} ${data.example}`;
+
+      item.appendChild(title);
+      item.appendChild(text);
+      content.appendChild(item);
+    }
+  }
+
+  panel.hidden = false;
+}
+
+function setupControls(state) {
+  const { entries, cellsByKey, inputsByKey, clueItemByWordKey } = state;
+  const totalWords = entries.length;
+  const checkButton = document.getElementById("check-button");
+  const resetButton = document.getElementById("reset-button");
+  const reviewPanel = document.getElementById("review-panel");
+
+  updateCounter(0, totalWords);
+
+  checkButton.addEventListener("click", () => {
+    const { results, correctCount } = evaluateWords(entries, inputsByKey);
+    applyValidationStyles(entries, results, cellsByKey, clueItemByWordKey);
+    updateCounter(correctCount, totalWords);
+    renderLearningPanel(entries);
+  });
+
+  resetButton.addEventListener("click", () => {
+    for (const input of inputsByKey.values()) {
+      input.value = "";
+    }
+    clearValidationStyles(cellsByKey, clueItemByWordKey);
+    updateCounter(0, totalWords);
+    reviewPanel.hidden = true;
+    const firstInput = inputsByKey.get(entries[0].cells[0]);
+    if (firstInput) {
+      firstInput.focus();
+      firstInput.select();
+    }
+  });
+}
+
 function init() {
   const gridData = validateAndBuildGrid(WORDS);
   const startNumbers = getStartNumbers(WORDS);
   const { entries, cellToWords } = buildGameModel(WORDS);
   const { cellsByKey, inputsByKey } = renderBoard(gridData, startNumbers);
   const clueItemByWordKey = renderClues(entries, startNumbers);
-  injectInteractionStyles();
   setupInteractions({
     entries,
     cellToWords,
@@ -556,6 +764,12 @@ function init() {
     clueItemByWordKey,
     gridRows: gridData.rows,
     gridCols: gridData.cols
+  });
+  setupControls({
+    entries,
+    cellsByKey,
+    inputsByKey,
+    clueItemByWordKey
   });
 }
 

@@ -10,6 +10,14 @@
   <main class="container">
     <h1>Cruzadinha de Arquitetura Computacional</h1>
 
+    <section class="top-controls" aria-label="Controles do jogo">
+      <p id="progress-counter" class="progress-counter" aria-live="polite">0 de 16 palavras</p>
+      <div class="controls-actions">
+        <button id="check-button" type="button">Conferir</button>
+        <button id="reset-button" type="button">Reiniciar</button>
+      </div>
+    </section>
+
     <section class="board-section">
       <div id="board" class="board" aria-label="Tabuleiro da cruzadinha"></div>
     </section>
@@ -23,6 +31,12 @@
         <h2>Verticais</h2>
         <ol id="down-clues"></ol>
       </div>
+    </section>
+
+    <section id="review-panel" class="review-panel" hidden>
+      <h2>Modo de aprendizagem ativa</h2>
+      <p>Revise os conceitos após a conferência das respostas.</p>
+      <div id="review-content" class="review-content"></div>
     </section>
   </main>
 
