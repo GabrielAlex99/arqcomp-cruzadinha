@@ -232,6 +232,18 @@ const MEMORY_TIPS = {
 };
 
 const DIAGNOSTIC_STORAGE_KEY = "cruzadinha_arqcomp_dificuldades_v1";
+const ARCH_COMPONENTS = [
+  { id: "CPU", label: "CPU" },
+  { id: "ULA", label: "ULA" },
+  { id: "UC", label: "UC" },
+  { id: "REGISTRADORES", label: "REGISTRADORES" },
+  { id: "ADDRESSBUS", label: "ADDRESSBUS" },
+  { id: "DATABUS", label: "DATABUS" },
+  { id: "CACHE", label: "CACHE" },
+  { id: "RAM", label: "RAM" },
+  { id: "ROM", label: "ROM" },
+  { id: "MEMORIADEMASSA", label: "MEMORIA DE MASSA" }
+];
 
 function validateAndBuildGrid(words) {
   const cellMap = new Map();
@@ -871,6 +883,33 @@ function printStudyGuide() {
   window.print();
 }
 
+function setupTabs() {
+  const tabs = Array.from(document.querySelectorAll(".top-tab"));
+  const panels = {
+    crossword: document.getElementById("tab-crossword"),
+    architecture: document.getElementById("tab-architecture")
+  };
+
+  function activate(target) {
+    for (const tab of tabs) {
+      const isActive = tab.dataset.tabTarget === target;
+      tab.classList.toggle("is-active", isActive);
+      tab.setAttribute("aria-selected", isActive ? "true" : "false");
+    }
+
+    for (const [name, panel] of Object.entries(panels)) {
+      panel.hidden = name !== target;
+      panel.classList.toggle("is-active", name === target);
+    }
+  }
+
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => activate(tab.dataset.tabTarget));
+  });
+
+  activate("crossword");
+}
+
 function setupBinaryEasterEgg() {
   const trigger = document.getElementById("binary-trigger");
   const toast = document.getElementById("binary-toast");
@@ -929,6 +968,180 @@ function setupBinaryEasterEgg() {
     deactivateMode,
     hideToast
   };
+}
+
+function setupArchitectureChallenge() {
+  const bank = document.getElementById("arch-cards-bank");
+  const diagram = document.getElementById("arch-diagram");
+  const slots = Array.from(diagram.querySelectorAll(".arch-slot"));
+  const checkButton = document.getElementById("arch-check");
+  const resetButton = document.getElementById("arch-reset");
+  const status = document.getElementById("arch-status");
+
+  const slotById = new Map(slots.map((slot) => [slot.dataset.slot, slot]));
+  const cardsById = new Map();
+  const locationByCard = new Map();
+  let selectedCardId = null;
+
+  function clearSlotState() {
+    slots.forEach((slot) => {
+      slot.classList.remove("arch-correct", "arch-incorrect", "is-over");
+    });
+  }
+
+  function setSelectedCard(cardId) {
+    selectedCardId = cardId;
+    for (const [id, card] of cardsById.entries()) {
+      card.classList.toggle("is-selected", id === selectedCardId);
+    }
+  }
+
+  function updateSlotHasCard(slot) {
+    const hasCard = !!slot.querySelector(".arch-card");
+    slot.classList.toggle("has-card", hasCard);
+  }
+
+  function moveCardToBank(cardId) {
+    const card = cardsById.get(cardId);
+    if (!card) return;
+    const previousLocation = locationByCard.get(cardId);
+    bank.appendChild(card);
+    locationByCard.set(cardId, "bank");
+    if (previousLocation && previousLocation !== "bank") {
+      const previousSlot = slotById.get(previousLocation);
+      if (previousSlot) {
+        updateSlotHasCard(previousSlot);
+      }
+    }
+  }
+
+  function placeCardInSlot(cardId, slot) {
+    const card = cardsById.get(cardId);
+    if (!card || !slot) return;
+
+    const currentLocation = locationByCard.get(cardId);
+    if (currentLocation && currentLocation !== "bank") {
+      const currentSlot = slotById.get(currentLocation);
+      if (currentSlot && currentSlot !== slot) {
+        updateSlotHasCard(currentSlot);
+      }
+    }
+
+    const existingCard = slot.querySelector(".arch-card");
+    if (existingCard && existingCard.dataset.cardId !== cardId) {
+      moveCardToBank(existingCard.dataset.cardId);
+    }
+
+    slot.appendChild(card);
+    locationByCard.set(cardId, slot.dataset.slot);
+    updateSlotHasCard(slot);
+    if (currentLocation && currentLocation !== "bank" && currentLocation !== slot.dataset.slot) {
+      const oldSlot = slotById.get(currentLocation);
+      if (oldSlot) updateSlotHasCard(oldSlot);
+    }
+    clearSlotState();
+    setSelectedCard(null);
+  }
+
+  function createCard(component) {
+    const card = document.createElement("button");
+    card.type = "button";
+    card.className = "arch-card";
+    card.textContent = component.label;
+    card.dataset.cardId = component.id;
+    card.draggable = true;
+
+    card.addEventListener("click", () => {
+      if (selectedCardId === component.id) {
+        setSelectedCard(null);
+      } else {
+        setSelectedCard(component.id);
+      }
+    });
+
+    card.addEventListener("dragstart", (event) => {
+      event.dataTransfer.setData("text/plain", component.id);
+      event.dataTransfer.effectAllowed = "move";
+      setSelectedCard(component.id);
+    });
+
+    cardsById.set(component.id, card);
+    locationByCard.set(component.id, "bank");
+    return card;
+  }
+
+  function evaluateDiagram() {
+    clearSlotState();
+    let correct = 0;
+
+    slots.forEach((slot) => {
+      const card = slot.querySelector(".arch-card");
+      const expected = slot.dataset.expected;
+      const isCorrect = !!card && card.dataset.cardId === expected;
+      slot.classList.add(isCorrect ? "arch-correct" : "arch-incorrect");
+      if (isCorrect) correct += 1;
+    });
+
+    status.textContent = `${correct} de ${slots.length} componentes corretos`;
+  }
+
+  function resetDiagram() {
+    clearSlotState();
+    setSelectedCard(null);
+    status.textContent = `0 de ${slots.length} componentes corretos`;
+
+    const shuffled = [...ARCH_COMPONENTS].sort(() => Math.random() - 0.5);
+    for (const component of shuffled) {
+      moveCardToBank(component.id);
+    }
+    slots.forEach((slot) => updateSlotHasCard(slot));
+  }
+
+  slots.forEach((slot) => {
+    slot.addEventListener("dragover", (event) => {
+      event.preventDefault();
+      slot.classList.add("is-over");
+    });
+
+    slot.addEventListener("dragleave", () => {
+      slot.classList.remove("is-over");
+    });
+
+    slot.addEventListener("drop", (event) => {
+      event.preventDefault();
+      slot.classList.remove("is-over");
+      const cardId = event.dataTransfer.getData("text/plain") || selectedCardId;
+      if (!cardId) return;
+      placeCardInSlot(cardId, slot);
+    });
+
+    slot.addEventListener("click", () => {
+      if (!selectedCardId) return;
+      placeCardInSlot(selectedCardId, slot);
+    });
+
+    slot.addEventListener("keydown", (event) => {
+      if ((event.key === "Enter" || event.key === " ") && selectedCardId) {
+        event.preventDefault();
+        placeCardInSlot(selectedCardId, slot);
+      }
+    });
+  });
+
+  bank.addEventListener("click", (event) => {
+    const maybeCard = event.target.closest(".arch-card");
+    if (!maybeCard && selectedCardId) {
+      setSelectedCard(null);
+    }
+  });
+
+  checkButton.addEventListener("click", evaluateDiagram);
+  resetButton.addEventListener("click", resetDiagram);
+
+  ARCH_COMPONENTS.forEach((component) => {
+    bank.appendChild(createCard(component));
+  });
+  resetDiagram();
 }
 
 function setupControls(state) {
@@ -997,6 +1210,9 @@ function setupControls(state) {
 }
 
 function init() {
+  setupTabs();
+  setupArchitectureChallenge();
+
   const gridData = validateAndBuildGrid(WORDS);
   const startNumbers = getStartNumbers(WORDS);
   const { entries, cellToWords } = buildGameModel(WORDS);
