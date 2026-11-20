@@ -8,7 +8,24 @@
 </head>
 <body>
   <main class="container">
-    <h1>Cruzadinha de Arquitetura Computacional</h1>
+    <header class="title-banner">
+      <h1>Cruzadinha de Arquitetura Computacional</h1>
+      <svg class="circuit-ornament" viewBox="0 0 1200 120" aria-hidden="true">
+        <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M10 30H180V62H310" />
+          <path d="M310 62H420V24H560V62H750" />
+          <path d="M750 62H880V92H1010V62H1188" />
+          <path d="M120 92H240V62" />
+          <path d="M420 62V96H540" />
+          <path d="M920 30H1040V62" />
+          <circle cx="180" cy="30" r="4" />
+          <circle cx="310" cy="62" r="4" />
+          <circle cx="560" cy="62" r="4" />
+          <circle cx="750" cy="62" r="4" />
+          <circle cx="1010" cy="62" r="4" />
+        </g>
+      </svg>
+    </header>
 
     <section class="top-controls" aria-label="Controles do jogo">
       <p id="progress-counter" class="progress-counter" aria-live="polite">0 de 16 palavras</p>
@@ -26,17 +43,40 @@
 
     <section class="clues-section">
       <div>
-        <h2>Horizontais</h2>
+        <h2 class="panel-title">
+          <svg class="panel-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 7h18M3 12h18M3 17h18" />
+            <circle cx="6" cy="7" r="1.5" />
+            <circle cx="18" cy="12" r="1.5" />
+            <circle cx="10" cy="17" r="1.5" />
+          </svg>
+          Horizontais
+        </h2>
         <ol id="across-clues"></ol>
       </div>
       <div>
-        <h2>Verticais</h2>
+        <h2 class="panel-title">
+          <svg class="panel-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M7 3v18M12 3v18M17 3v18" />
+            <circle cx="7" cy="6" r="1.5" />
+            <circle cx="12" cy="18" r="1.5" />
+            <circle cx="17" cy="11" r="1.5" />
+          </svg>
+          Verticais
+        </h2>
         <ol id="down-clues"></ol>
       </div>
     </section>
 
     <section id="review-panel" class="review-panel" hidden>
-      <h2>Modo de aprendizagem ativa</h2>
+      <h2 class="panel-title">
+        <svg class="panel-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 6h16v12H4z" />
+          <path d="M8 10h8M8 14h5" />
+          <circle cx="17" cy="14" r="2" />
+        </svg>
+        Modo de aprendizagem ativa
+      </h2>
       <p>Revise os conceitos após a conferência das respostas.</p>
       <div id="review-content" class="review-content"></div>
     </section>

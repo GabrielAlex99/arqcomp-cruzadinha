@@ -448,12 +448,14 @@ function setupInteractions(state) {
   } = state;
 
   const wordByKey = new Map(entries.map((entry) => [entry.key, entry]));
+  const boardElement = document.getElementById("board");
   let activeCellKey = entries[0].cells[0];
   let activeDirection = entries[0].dir;
   let activeWordKey = entries[0].key;
   let highlightedCells = [];
   let highlightedClue = null;
   let lastClickedCellKey = null;
+  let directionFeedbackTimeout = null;
 
   function getCellCoords(cellKey) {
     const [row, col] = cellKey.split(",").map(Number);
@@ -522,6 +524,7 @@ function setupInteractions(state) {
     if (!inputsByKey.has(cellKey)) return;
 
     const { preferredDirection = null, toggleDirection = false, focus = true } = options;
+    const previousDirection = activeDirection;
     let nextDirection = chooseDirectionForCell(cellKey, preferredDirection);
 
     if (toggleDirection) {
@@ -540,6 +543,18 @@ function setupInteractions(state) {
     activeDirection = nextDirection;
     activeWordKey = nextWord.key;
     applyHighlights();
+
+    if (previousDirection && previousDirection !== nextDirection) {
+      const classToAdd = nextDirection === "H" ? "dir-switch-h" : "dir-switch-v";
+      boardElement.classList.remove("dir-switch-h", "dir-switch-v");
+      boardElement.classList.add(classToAdd);
+      if (directionFeedbackTimeout) {
+        window.clearTimeout(directionFeedbackTimeout);
+      }
+      directionFeedbackTimeout = window.setTimeout(() => {
+        boardElement.classList.remove("dir-switch-h", "dir-switch-v");
+      }, 220);
+    }
 
     if (focus) {
       const input = inputsByKey.get(cellKey);
@@ -653,7 +668,7 @@ function setupInteractions(state) {
 
 function clearValidationStyles(cellsByKey, clueItemByWordKey) {
   for (const cell of cellsByKey.values()) {
-    cell.classList.remove("cell-check-correct", "cell-check-incorrect");
+    cell.classList.remove("cell-check-correct", "cell-check-incorrect", "cell-correct-flash");
   }
 
   for (const clueItem of clueItemByWordKey.values()) {
@@ -676,10 +691,11 @@ function evaluateWords(entries, inputsByKey) {
   return { results, correctCount };
 }
 
-function applyValidationStyles(entries, results, cellsByKey, clueItemByWordKey) {
+function applyValidationStyles(entries, results, cellsByKey, clueItemByWordKey, previousResults = null) {
   clearValidationStyles(cellsByKey, clueItemByWordKey);
 
   const cellState = new Map();
+  const flashCandidates = new Set();
   for (const entry of entries) {
     const status = results.get(entry.key);
     for (const cellKey of entry.cells) {
@@ -698,6 +714,13 @@ function applyValidationStyles(entries, results, cellsByKey, clueItemByWordKey) 
     if (clueItem) {
       clueItem.classList.add(status.isCorrect ? "clue-correct" : "clue-incorrect");
     }
+
+    const wasCorrectBefore = previousResults?.get(entry.key)?.isCorrect === true;
+    if (status.isCorrect && !wasCorrectBefore) {
+      for (const cellKey of entry.cells) {
+        flashCandidates.add(cellKey);
+      }
+    }
   }
 
   for (const [cellKey, state] of cellState.entries()) {
@@ -708,6 +731,14 @@ function applyValidationStyles(entries, results, cellsByKey, clueItemByWordKey) 
     } else if (state.hasCorrect) {
       cell.classList.add("cell-check-correct");
     }
+  }
+
+  for (const cellKey of flashCandidates) {
+    const cell = cellsByKey.get(cellKey);
+    if (!cell || cell.classList.contains("cell-check-incorrect")) continue;
+    cell.classList.remove("cell-correct-flash");
+    void cell.offsetWidth;
+    cell.classList.add("cell-correct-flash");
   }
 }
 
@@ -760,10 +791,11 @@ function renderLearningPanel(entries) {
   const content = document.getElementById("review-content");
 
   if (content.children.length === 0) {
-    for (const entry of entries) {
+    entries.forEach((entry, index) => {
       const data = LEARNING_DATA[entry.word];
       const item = document.createElement("article");
       item.className = "review-item";
+      item.style.setProperty("--delay", `${index * 35}ms`);
 
       const title = document.createElement("h3");
       title.textContent = entry.word;
@@ -774,10 +806,19 @@ function renderLearningPanel(entries) {
       item.appendChild(title);
       item.appendChild(text);
       content.appendChild(item);
-    }
+    });
   }
 
   panel.hidden = false;
+  panel.classList.remove("review-panel-open");
+  requestAnimationFrame(() => {
+    panel.classList.add("review-panel-open");
+    const items = content.querySelectorAll(".review-item");
+    items.forEach((item) => item.classList.remove("review-item-open"));
+    requestAnimationFrame(() => {
+      items.forEach((item) => item.classList.add("review-item-open"));
+    });
+  });
 }
 
 function fillStudyGuide(incorrectEntries) {
@@ -839,18 +880,20 @@ function setupControls(state) {
   const reviewPanel = document.getElementById("review-panel");
   let lastIncorrectEntries = [];
   let hasCheckedAtLeastOnce = false;
+  let previousResults = null;
 
   updateCounter(0, totalWords);
   updateReinforceIndicator();
 
   checkButton.addEventListener("click", () => {
     const { results, correctCount } = evaluateWords(entries, inputsByKey);
-    applyValidationStyles(entries, results, cellsByKey, clueItemByWordKey);
+    applyValidationStyles(entries, results, cellsByKey, clueItemByWordKey, previousResults);
     updateCounter(correctCount, totalWords);
     lastIncorrectEntries = entries.filter((entry) => !results.get(entry.key).isCorrect);
     registerDifficulties(lastIncorrectEntries.map((entry) => entry.word));
     updateReinforceIndicator();
     hasCheckedAtLeastOnce = true;
+    previousResults = results;
     renderLearningPanel(entries);
   });
 
@@ -861,7 +904,9 @@ function setupControls(state) {
     clearValidationStyles(cellsByKey, clueItemByWordKey);
     updateCounter(0, totalWords);
     reviewPanel.hidden = true;
+    reviewPanel.classList.remove("review-panel-open");
     lastIncorrectEntries = [];
+    previousResults = null;
     const firstInput = inputsByKey.get(entries[0].cells[0]);
     if (firstInput) {
       firstInput.focus();
