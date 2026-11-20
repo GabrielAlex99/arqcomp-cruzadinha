@@ -42,4 +42,4 @@ Jogo educacional em **HTML, CSS e JavaScript puros** para praticar conceitos de 
 
 ## Publicação (GitHub Pages)
 
-https://SEUUSUARIO.github.io/arqcomp-cruzadinha
+https://gabrielalex99.github.io/arqcomp-cruzadinha/
