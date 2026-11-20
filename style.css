@@ -1,0 +1,87 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  color: #1f1f1f;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 24px auto;
+  padding: 0 16px 24px;
+}
+
+h1 {
+  margin: 0 0 20px;
+}
+
+.board-section {
+  overflow-x: auto;
+  margin-bottom: 24px;
+}
+
+.board {
+  display: grid;
+  gap: 1px;
+  background: #444;
+  width: max-content;
+}
+
+.cell {
+  width: 34px;
+  height: 34px;
+  position: relative;
+}
+
+.cell.inactive {
+  background: #444;
+}
+
+.cell.active {
+  background: #fff;
+}
+
+.cell.active input {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  outline: none;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  text-transform: uppercase;
+  background: transparent;
+}
+
+.number {
+  position: absolute;
+  top: 1px;
+  left: 2px;
+  font-size: 10px;
+  line-height: 1;
+  color: #111;
+  pointer-events: none;
+}
+
+.clues-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.clues-section h2 {
+  margin: 0 0 10px;
+}
+
+.clues-section ol {
+  margin: 0;
+  padding-left: 22px;
+}
+
+.clues-section li {
+  margin-bottom: 8px;
+}
