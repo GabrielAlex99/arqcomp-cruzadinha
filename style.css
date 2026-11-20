@@ -697,46 +697,56 @@ body {
   color: #173255;
 }
 
-.architecture-content {
-  display: grid;
-  grid-template-columns: minmax(250px, 0.72fr) minmax(440px, 1.28fr);
-  gap: 14px;
-}
-
 .architecture-bank-panel,
 .architecture-diagram-panel {
   background: var(--panel);
   border: 1px solid var(--panel-border);
   border-radius: var(--radius);
   box-shadow: 0 10px 26px rgba(9, 26, 46, 0.2);
-  padding: 12px;
+  padding: 10px 12px;
+}
+
+.architecture-diagram-panel {
+  overflow-x: auto;
 }
 
 .architecture-bank-panel h3,
 .architecture-diagram-panel h3 {
-  margin: 0 0 10px;
+  margin: 0 0 8px;
   color: #173255;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
 .arch-cards-bank {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 8px;
+  min-height: 44px;
 }
 
 .arch-card {
-  border: 1px solid #9fc1e8;
-  background: #eef6ff;
-  color: #14385f;
+  border: 1px solid #98b5da;
+  background: #ffffff;
+  color: #173255;
   border-radius: 8px;
-  padding: 7px 9px;
+  padding: 7px 10px;
   font: inherit;
-  font-size: 0.86rem;
+  font-size: 0.82rem;
   font-weight: 700;
   letter-spacing: 0.02em;
+  white-space: nowrap;
   cursor: grab;
   user-select: none;
   touch-action: manipulation;
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.arch-card:hover {
+  background: #eff6ff;
+  border-color: #7ea7d8;
 }
 
 .arch-card[draggable="true"]:active {
@@ -750,20 +760,23 @@ body {
 
 .arch-diagram {
   display: grid;
-  gap: 12px;
+  gap: 10px;
+  min-width: 840px;
 }
 
 .arch-block {
-  border: 1px solid #c8d9ef;
-  background: #f8fbff;
+  border: 1px solid #c9dcf2;
+  background: linear-gradient(180deg, #fafdff 0%, #f2f8ff 100%);
   border-radius: 10px;
-  padding: 8px;
+  padding: 10px;
 }
 
 .arch-block h4 {
-  margin: 0 0 6px;
-  font-size: 0.95rem;
+  margin: 0 0 8px;
+  font-size: 0.92rem;
   color: #23486f;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .arch-grid-3,
@@ -771,48 +784,52 @@ body {
 .arch-grid-4 {
   margin-top: 8px;
   display: grid;
-  gap: 8px;
+  gap: 10px;
 }
 
 .arch-grid-3 {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(180px, 1fr));
 }
 
 .arch-grid-2 {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(180px, 1fr));
 }
 
 .arch-grid-4 {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(180px, 1fr));
 }
 
 .arch-slot-card {
-  border: 1px solid #dbe8f8;
+  border: 1px solid #d6e4f6;
   border-radius: 8px;
   background: #fff;
-  padding: 7px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
 }
 
 .arch-slot-card p {
-  margin: 0 0 7px;
-  font-size: 0.78rem;
-  line-height: 1.35;
+  margin: 0;
+  font-size: 0.76rem;
+  line-height: 1.3;
   color: #325b85;
 }
 
-.arch-arrow {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 30px;
-  height: 22px;
-  padding: 0 6px;
-  border-radius: 999px;
-  border: 1px solid #b9d2f0;
-  background: #ecf4ff;
-  color: #2b5a8a;
-  font-weight: 700;
-  margin-bottom: 5px;
+.arch-mini-arrow {
+  width: 42px;
+  height: 16px;
+  color: #7695b7;
+}
+
+.arch-mini-arrow path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .arch-connector-wrap {
@@ -821,32 +838,22 @@ body {
 }
 
 .arch-connector {
-  width: 140px;
-  height: 26px;
+  width: 24px;
+  height: 24px;
 }
 
 .arch-connector path {
   fill: none;
-  stroke: #7fa9d6;
+  stroke: #7f9fbe;
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
-.arch-subnode span {
-  display: block;
-  margin: 0 0 4px;
-  font-size: 0.79rem;
-  color: #2d557e;
-}
-
-.arch-bus-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-}
-
 .arch-slot {
+  width: min(100%, 180px);
+  max-width: 180px;
+  height: 42px;
   min-height: 42px;
   border: 2px dashed #abc4e5;
   border-radius: 8px;
@@ -902,18 +909,6 @@ body {
   .clues-section {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 14px 16px;
-  }
-
-  .architecture-content {
-    grid-template-columns: 1fr;
-  }
-
-  .arch-grid-4 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .arch-grid-3 {
-    grid-template-columns: 1fr;
   }
 
   .top-controls .controls-actions {
@@ -974,6 +969,15 @@ body {
   .arch-grid-3,
   .arch-grid-4 {
     grid-template-columns: 1fr;
+  }
+
+  .arch-diagram {
+    min-width: 0;
+  }
+
+  .arch-slot {
+    max-width: none;
+    width: 100%;
   }
 
   .board-section,
