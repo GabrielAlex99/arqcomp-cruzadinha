@@ -3,32 +3,61 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Cruzadinha interativa de Arquitetura Computacional. Pratique conceitos de CPU, memoria, barramentos e mais.">
+  <meta name="theme-color" content="#0f1724">
   <title>Cruzadinha de Arquitetura Computacional</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div id="celebration-overlay" class="celebration-overlay" hidden>
+    <div class="celebration-content">
+      <div class="celebration-emoji">&#127881;</div>
+      <h2>Parabens!</h2>
+      <p>Voce completou toda a cruzadinha!</p>
+      <p id="celebration-stats" class="celebration-stats"></p>
+      <button id="celebration-close" type="button">Continuar estudando</button>
+    </div>
+  </div>
+
   <main class="container">
-    <nav class="top-tabs" aria-label="Abas principais">
-      <button class="top-tab is-active" id="tab-button-crossword" data-tab-target="crossword" aria-selected="true" type="button">Cruzadinha</button>
-      <button class="top-tab" id="tab-button-architecture" data-tab-target="architecture" aria-selected="false" type="button">Desafio de Arquitetura</button>
+    <nav class="top-bar">
+      <div class="top-tabs" role="tablist" aria-label="Abas principais">
+        <button class="top-tab is-active" data-tab-target="crossword" role="tab" aria-selected="true" type="button">
+          <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3z"/><path d="M14 14h7v7h-7z" opacity=".5"/></svg>
+          Cruzadinha
+        </button>
+        <button class="top-tab" data-tab-target="architecture" role="tab" aria-selected="false" type="button">
+          <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M9 6V4h6v2M8 12h8M12 9v6"/></svg>
+          Desafio
+        </button>
+        <button class="top-tab" data-tab-target="glossary" role="tab" aria-selected="false" type="button">
+          <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 7h8M8 11h5"/></svg>
+          Glossario
+        </button>
+      </div>
+      <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Alternar tema claro e escuro">
+        <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      </button>
     </nav>
 
-    <section id="tab-crossword" class="tab-panel is-active">
+    <section id="tab-crossword" class="tab-panel is-active" role="tabpanel">
       <div class="crossword-layout">
         <header class="title-banner">
           <h1>Cruzadinha de Arquitetura Computacional</h1>
+          <p class="subtitle">Teste seus conhecimentos sobre a arquitetura interna dos computadores</p>
           <div class="binary-easteregg">
-            <button id="binary-trigger" class="binary-trigger" type="button" aria-label="Ativar modo oculto binário">
+            <button id="binary-trigger" class="binary-trigger" type="button" aria-label="Ativar modo oculto binario">
               <svg viewBox="0 0 32 32" aria-hidden="true">
                 <path d="M16 4a8 8 0 0 0-5.5 13.8c1.2 1.1 1.9 2.2 2.1 3.3h6.8c.2-1.1.9-2.2 2.1-3.3A8 8 0 0 0 16 4z" />
                 <path d="M12.5 23h7M13.5 26h5" />
                 <path d="M6 10h2M24 10h2M16 2v2M8.7 5.4l1.4 1.4M23.3 5.4l-1.4 1.4" />
               </svg>
-              <span>💡</span>
+              <span>&#128161;</span>
             </button>
             <span class="binary-hint">clique aqui e descubra</span>
             <aside id="binary-toast" class="binary-toast" hidden>
-              <p>O binário é o caminho da luz</p>
+              <p>O binario e o caminho da luz</p>
               <button id="binary-toast-close" type="button">Fechar</button>
             </aside>
           </div>
@@ -50,17 +79,49 @@
         </header>
 
         <section class="top-controls" aria-label="Controles do jogo">
-          <p id="progress-counter" class="progress-counter" aria-live="polite">0 de 16 palavras</p>
-          <p id="reinforce-indicator" class="reinforce-indicator" aria-live="polite">0 conceitos para reforço</p>
-          <div class="controls-actions">
-            <button id="check-button" type="button">Conferir</button>
-            <button id="reset-button" type="button">Reiniciar</button>
-            <button id="pdf-button" type="button">Baixar Material de Estudo (PDF)</button>
+          <div class="progress-area">
+            <div class="progress-bar-wrap">
+              <div id="progress-bar" class="progress-bar"></div>
+            </div>
+            <div class="progress-texts">
+              <p id="progress-counter" class="progress-counter" aria-live="polite">0 de 16 palavras</p>
+              <p id="progress-message" class="progress-message"></p>
+            </div>
+          </div>
+          <div class="controls-row">
+            <div class="timer-display">
+              <svg class="timer-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8" fill="none"/><path d="M12 9v4l2 2"/><path d="M12 5V3M9 3h6"/></svg>
+              <span id="timer-text" class="timer-text">00:00</span>
+            </div>
+            <p id="reinforce-indicator" class="reinforce-indicator" aria-live="polite">0 conceitos para reforco</p>
+            <div class="controls-actions">
+              <button id="hint-button" type="button" class="btn-hint" title="Revelar uma letra da palavra ativa">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5"/></svg>
+                Dica
+              </button>
+              <button id="check-button" type="button">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+                Conferir
+              </button>
+              <button id="reset-button" type="button">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+                Reiniciar
+              </button>
+              <button id="pdf-button" type="button">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M12 18v-6M9 15h6"/></svg>
+                PDF
+              </button>
+            </div>
           </div>
         </section>
 
         <section class="board-section">
-          <div id="board" class="board" aria-label="Tabuleiro da cruzadinha"></div>
+          <div id="clue-bar" class="clue-bar" hidden aria-live="polite">
+            <span id="clue-bar-dir" class="clue-bar-dir"></span>
+            <span id="clue-bar-number" class="clue-bar-number"></span>
+            <span id="clue-bar-text" class="clue-bar-text"></span>
+          </div>
+          <div id="board" class="board" role="grid" aria-label="Tabuleiro da cruzadinha"></div>
         </section>
 
         <section class="clues-section">
@@ -99,13 +160,13 @@
             </svg>
             Modo de aprendizagem ativa
           </h2>
-          <p>Revise os conceitos após a conferência das respostas.</p>
+          <p>Revise os conceitos apos a conferencia das respostas.</p>
           <div id="review-content" class="review-content"></div>
         </section>
 
         <section id="study-print" class="study-print" aria-hidden="true">
           <header class="study-print-header">
-            <h2>Guia Personalizado de Revisão</h2>
+            <h2>Guia Personalizado de Revisao</h2>
             <p>Arquitetura Computacional</p>
           </header>
           <div id="study-guide-content"></div>
@@ -113,7 +174,7 @@
       </div>
     </section>
 
-    <section id="tab-architecture" class="tab-panel" hidden>
+    <section id="tab-architecture" class="tab-panel" hidden role="tabpanel">
       <div class="architecture-layout">
         <header class="architecture-header">
           <h2>Desafio de Arquitetura</h2>
@@ -123,13 +184,23 @@
         <section class="architecture-controls">
           <p id="arch-status" aria-live="polite">0 de 9 componentes corretos</p>
           <div class="controls-actions">
-            <button id="arch-check" type="button">Conferir Diagrama</button>
-            <button id="arch-reset" type="button">Reiniciar diagrama</button>
+            <button id="arch-check" type="button">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+              Conferir
+            </button>
+            <button id="arch-reset" type="button">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+              Reiniciar
+            </button>
+            <button id="arch-solve" type="button" class="btn-reveal">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" fill="none"/><circle cx="12" cy="12" r="3" fill="none"/></svg>
+              Resolver
+            </button>
           </div>
         </section>
 
         <section class="architecture-bank-panel">
-          <h3>Banco de peças</h3>
+          <h3>Banco de pecas</h3>
           <div id="arch-cards-bank" class="arch-cards-bank"></div>
         </section>
 
@@ -140,15 +211,15 @@
               <h4>Processador (CPU)</h4>
               <div class="arch-grid-3">
                 <div class="arch-slot-card">
-                  <p>Executa cálculos matemáticos e comparações lógicas</p>
+                  <p>Executa calculos matematicos e comparacoes logicas</p>
                   <div class="arch-slot" data-slot="S1" data-expected="ULA" tabindex="0"></div>
                 </div>
                 <div class="arch-slot-card">
-                  <p>Coordena o fluxo de dados e decodifica instruções</p>
+                  <p>Coordena o fluxo de dados e decodifica instrucoes</p>
                   <div class="arch-slot" data-slot="S2" data-expected="UC" tabindex="0"></div>
                 </div>
                 <div class="arch-slot-card">
-                  <p>Memória interna ultrarrápida para dados em uso imediato</p>
+                  <p>Memoria interna ultrarrapida para dados em uso imediato</p>
                   <div class="arch-slot" data-slot="S3" data-expected="REGISTRADORES" tabindex="0"></div>
                 </div>
               </div>
@@ -167,14 +238,14 @@
                   <svg class="arch-mini-arrow" viewBox="0 0 36 16" aria-hidden="true">
                     <path d="M2 8H34M26 2L34 8L26 14" />
                   </svg>
-                  <p>Transporta exclusivamente o endereço de memória a ser acessado</p>
+                  <p>Transporta exclusivamente o endereco de memoria a ser acessado</p>
                   <div class="arch-slot" data-slot="S4" data-expected="ADDRESSBUS" tabindex="0"></div>
                 </div>
                 <div class="arch-slot-card">
                   <svg class="arch-mini-arrow" viewBox="0 0 36 16" aria-hidden="true">
                     <path d="M2 8H34M10 2L2 8L10 14M26 2L34 8L26 14" />
                   </svg>
-                  <p>Transporta os dados efetivos entre processador e memória</p>
+                  <p>Transporta os dados efetivos entre processador e memoria</p>
                   <div class="arch-slot" data-slot="S5" data-expected="DATABUS" tabindex="0"></div>
                 </div>
               </div>
@@ -187,28 +258,51 @@
             </div>
 
             <div class="arch-block arch-memory">
-              <h4>Hierarquia de Memória</h4>
+              <h4>Hierarquia de Memoria</h4>
               <div class="arch-grid-4">
                 <div class="arch-slot-card">
-                  <p>Memória intermediária ultrarrápida próxima aos núcleos</p>
+                  <p>Memoria intermediaria ultrarrapida proxima aos nucleos</p>
                   <div class="arch-slot" data-slot="S6" data-expected="CACHE" tabindex="0"></div>
                 </div>
                 <div class="arch-slot-card">
-                  <p>Memória principal volátil para programas em execução</p>
+                  <p>Memoria principal volatil para programas em execucao</p>
                   <div class="arch-slot" data-slot="S7" data-expected="RAM" tabindex="0"></div>
                 </div>
                 <div class="arch-slot-card">
-                  <p>Memória não volátil gravada de fábrica para inicialização</p>
+                  <p>Memoria nao volatil gravada de fabrica para inicializacao</p>
                   <div class="arch-slot" data-slot="S8" data-expected="ROM" tabindex="0"></div>
                 </div>
                 <div class="arch-slot-card">
-                  <p>Armazenamento secundário permanente de alta capacidade</p>
+                  <p>Armazenamento secundario permanente de alta capacidade</p>
                   <div class="arch-slot" data-slot="S9" data-expected="MEMORIADEMASSA" tabindex="0"></div>
                 </div>
               </div>
             </div>
           </div>
         </section>
+      </div>
+    </section>
+
+    <section id="tab-glossary" class="tab-panel" hidden role="tabpanel">
+      <div class="glossary-layout">
+        <header class="glossary-header">
+          <h2>Glossario de Arquitetura Computacional</h2>
+          <p>Consulte todos os 16 conceitos estudados na cruzadinha</p>
+          <div class="glossary-toolbar">
+            <div class="glossary-search-wrap">
+              <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8" fill="none"/><path d="M21 21l-4.35-4.35"/></svg>
+              <input id="glossary-search" type="text" placeholder="Buscar conceito..." aria-label="Buscar conceito">
+            </div>
+            <div class="glossary-filters" role="group" aria-label="Filtrar por categoria">
+              <button class="filter-btn is-active" data-filter="all" type="button">Todos</button>
+              <button class="filter-btn" data-filter="processador" type="button">Processador</button>
+              <button class="filter-btn" data-filter="memoria" type="button">Memoria</button>
+              <button class="filter-btn" data-filter="barramento" type="button">Barramentos</button>
+              <button class="filter-btn" data-filter="arquitetura" type="button">Arquitetura</button>
+            </div>
+          </div>
+        </header>
+        <div id="glossary-cards" class="glossary-cards"></div>
       </div>
     </section>
   </main>

@@ -113,6 +113,32 @@ const WORDS = [
   }
 ];
 
+const CATEGORIES = {
+  CPU: "processador",
+  ULA: "processador",
+  UC: "processador",
+  REGISTRADORES: "processador",
+  DUALCORE: "processador",
+  QUADCORE: "processador",
+  MICROCONTROLADOR: "arquitetura",
+  DMA: "arquitetura",
+  ADDRESSBUS: "barramento",
+  DATABUS: "barramento",
+  CACHE: "memoria",
+  RAM: "memoria",
+  ROM: "memoria",
+  EEPROM: "memoria",
+  FLASH: "memoria",
+  MEMORIADEMASSA: "memoria"
+};
+
+const CATEGORY_LABELS = {
+  processador: "Processador",
+  memoria: "Memória",
+  barramento: "Barramentos",
+  arquitetura: "Arquitetura"
+};
+
 const LEARNING_DATA = {
   CPU: {
     explanation:
@@ -233,6 +259,8 @@ const MEMORY_TIPS = {
 
 const DIAGNOSTIC_STORAGE_KEY = "cruzadinha_arqcomp_dificuldades_v1";
 const ARCH_DIAGNOSTIC_STORAGE_KEY = "desafio_arqcomp_dificuldades_v1";
+const THEME_STORAGE_KEY = "cruzadinha_arqcomp_theme_v1";
+
 const ARCH_COMPONENTS = [
   { id: "ULA", label: "ULA" },
   { id: "UC", label: "UC" },
@@ -278,6 +306,70 @@ function showAppNotice(message, type = "warning", dedupeKey = message) {
   notice.appendChild(text);
   notice.appendChild(close);
   stack.appendChild(notice);
+}
+
+function setupTheme() {
+  const themeToggle = document.getElementById("theme-toggle");
+  if (!themeToggle) return;
+
+  const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+  if (savedTheme === "light") {
+    document.body.classList.add("light-theme");
+  } else if (!savedTheme && window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) {
+    document.body.classList.add("light-theme");
+  }
+
+  themeToggle.addEventListener("click", () => {
+    document.body.classList.toggle("light-theme");
+    const isLight = document.body.classList.contains("light-theme");
+    localStorage.setItem(THEME_STORAGE_KEY, isLight ? "light" : "dark");
+  });
+}
+
+function setupTimer() {
+  const timerText = document.getElementById("timer-text");
+  let seconds = 0;
+  let timerId = null;
+  let isRunning = false;
+
+  function formatTime(s) {
+    const mins = Math.floor(s / 60).toString().padStart(2, "0");
+    const secs = (s % 60).toString().padStart(2, "0");
+    return `${mins}:${secs}`;
+  }
+
+  function start() {
+    if (isRunning) return;
+    isRunning = true;
+    timerId = setInterval(() => {
+      seconds += 1;
+      if (timerText) {
+        timerText.textContent = formatTime(seconds);
+      }
+    }, 1000);
+  }
+
+  function stop() {
+    if (timerId) {
+      clearInterval(timerId);
+      timerId = null;
+    }
+    isRunning = false;
+  }
+
+  function reset() {
+    stop();
+    seconds = 0;
+    if (timerText) {
+      timerText.textContent = "00:00";
+    }
+  }
+
+  function getTimeFormatted() {
+    return formatTime(seconds);
+  }
+
+  return { start, stop, reset, getTimeFormatted };
 }
 
 function validateAndBuildGrid(words) {
@@ -418,7 +510,7 @@ function renderBoard(gridData, startNumbers) {
   if (!board) {
     return { cellsByKey: new Map(), inputsByKey: new Map() };
   }
-  board.style.gridTemplateColumns = `repeat(${gridData.cols}, 34px)`;
+  board.style.gridTemplateColumns = `repeat(${gridData.cols}, var(--cell-size))`;
   const cellsByKey = new Map();
   const inputsByKey = new Map();
 
@@ -456,7 +548,7 @@ function renderBoard(gridData, startNumbers) {
   return { cellsByKey, inputsByKey };
 }
 
-function renderClues(words, startNumbers) {
+function renderClues(words, startNumbers, onClueClick) {
   const acrossList = document.getElementById("across-clues");
   const downList = document.getElementById("down-clues");
   const clueItemByWordKey = new Map();
@@ -475,6 +567,21 @@ function renderClues(words, startNumbers) {
     li.value = number;
     li.textContent = item.clue;
     li.dataset.wordKey = item.key;
+    li.setAttribute("role", "button");
+    li.setAttribute("tabindex", "0");
+    li.setAttribute("title", "Clique para focar esta palavra no tabuleiro");
+
+    li.addEventListener("click", () => {
+      if (onClueClick) onClueClick(item);
+    });
+
+    li.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        if (onClueClick) onClueClick(item);
+      }
+    });
+
     clueItemByWordKey.set(item.key, li);
 
     if (item.dir === "H") {
@@ -487,6 +594,99 @@ function renderClues(words, startNumbers) {
   return clueItemByWordKey;
 }
 
+function updateClueBar(entry, startNumbers) {
+  const clueBar = document.getElementById("clue-bar");
+  const dirSpan = document.getElementById("clue-bar-dir");
+  const numSpan = document.getElementById("clue-bar-number");
+  const textSpan = document.getElementById("clue-bar-text");
+
+  if (!clueBar || !dirSpan || !numSpan || !textSpan || !entry) return;
+
+  const number = startNumbers.get(`${entry.row},${entry.col}`) || "";
+  dirSpan.textContent = entry.dir === "H" ? "H" : "V";
+  numSpan.textContent = `${number}.`;
+  textSpan.textContent = entry.clue;
+  clueBar.hidden = false;
+}
+
+function updateProgress(correctCount, total) {
+  const counter = document.getElementById("progress-counter");
+  const bar = document.getElementById("progress-bar");
+  const message = document.getElementById("progress-message");
+
+  if (counter) {
+    counter.textContent = `${correctCount} de ${total} palavras`;
+  }
+
+  const percent = total > 0 ? (correctCount / total) * 100 : 0;
+  if (bar) {
+    bar.style.width = `${percent}%`;
+    bar.classList.remove("bar-low", "bar-mid", "bar-high", "bar-complete");
+    if (correctCount === 0) {
+      // initial
+    } else if (percent < 30) {
+      bar.classList.add("bar-low");
+    } else if (percent < 75) {
+      bar.classList.add("bar-mid");
+    } else if (percent < 100) {
+      bar.classList.add("bar-high");
+    } else {
+      bar.classList.add("bar-complete");
+    }
+  }
+
+  if (message) {
+    if (correctCount === 0) {
+      message.textContent = "Preencha as palavras e clique em Conferir!";
+    } else if (correctCount <= 4) {
+      message.textContent = "Bom começo! Continue explorando os conceitos.";
+    } else if (correctCount <= 10) {
+      message.textContent = "Ótimo progresso! Mais da metade concluída.";
+    } else if (correctCount < total) {
+      message.textContent = "Quase lá! Faltam apenas alguns ajustes.";
+    } else {
+      message.textContent = "Perfeito! Domínio total da arquitetura!";
+    }
+  }
+}
+
+function createConfetti() {
+  const colors = ["#2f80ed", "#2a9f63", "#f2994a", "#9b51e0", "#eb5757", "#f2c94c"];
+  const count = 40;
+  for (let i = 0; i < count; i += 1) {
+    const confetti = document.createElement("div");
+    confetti.className = "confetti-particle";
+    confetti.style.left = `${Math.random() * 100}vw`;
+    confetti.style.top = "-10px";
+    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+    confetti.style.setProperty("--duration", `${1.5 + Math.random() * 2}s`);
+    confetti.style.setProperty("--rot", `${360 + Math.random() * 720}deg`);
+    document.body.appendChild(confetti);
+    setTimeout(() => confetti.remove(), 3500);
+  }
+}
+
+function showCelebration(timerFormatted) {
+  const overlay = document.getElementById("celebration-overlay");
+  const stats = document.getElementById("celebration-stats");
+  const closeBtn = document.getElementById("celebration-close");
+
+  if (!overlay) return;
+
+  if (stats) {
+    stats.textContent = `Tempo total: ${timerFormatted} | Todos os 16 conceitos acertados!`;
+  }
+
+  overlay.hidden = false;
+  createConfetti();
+
+  if (closeBtn) {
+    closeBtn.onclick = () => {
+      overlay.hidden = true;
+    };
+  }
+}
+
 function setupInteractions(state) {
   const {
     entries,
@@ -494,8 +694,10 @@ function setupInteractions(state) {
     cellsByKey,
     inputsByKey,
     clueItemByWordKey,
+    startNumbers,
     gridRows,
-    gridCols
+    gridCols,
+    timer
   } = state;
 
   const wordByKey = new Map(entries.map((entry) => [entry.key, entry]));
@@ -569,6 +771,8 @@ function setupInteractions(state) {
     if (highlightedClue) {
       highlightedClue.classList.add("clue-active");
     }
+
+    updateClueBar(activeWord, startNumbers);
   }
 
   function setActiveCell(cellKey, options = {}) {
@@ -618,6 +822,17 @@ function setupInteractions(state) {
     }
   }
 
+  function selectWord(entry) {
+    if (!entry) return;
+    activeDirection = entry.dir;
+    activeWordKey = entry.key;
+    setActiveCell(entry.cells[0], { preferredDirection: entry.dir, focus: true });
+    const cellEl = cellsByKey.get(entry.cells[0]);
+    if (cellEl && cellEl.scrollIntoView) {
+      cellEl.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
+    }
+  }
+
   function moveInsideActiveWord(step) {
     const activeWord = wordByKey.get(activeWordKey);
     if (!activeWord) return null;
@@ -659,15 +874,18 @@ function setupInteractions(state) {
 
   for (const [cellKey, input] of inputsByKey.entries()) {
     input.addEventListener("focus", () => {
+      timer.start();
       setActiveCell(cellKey, { focus: false });
       lastClickedCellKey = null;
     });
 
     input.addEventListener("click", () => {
+      timer.start();
       handleCellClick(cellKey);
     });
 
     input.addEventListener("input", (event) => {
+      timer.start();
       const sanitized = event.target.value.toUpperCase().replace(/[^A-Z]/g, "").slice(0, 1);
       event.target.value = sanitized;
       if (sanitized) {
@@ -679,6 +897,7 @@ function setupInteractions(state) {
     });
 
     input.addEventListener("keydown", (event) => {
+      timer.start();
       const key = event.key;
 
       if (/^[a-zA-Z]$/.test(key)) {
@@ -719,15 +938,33 @@ function setupInteractions(state) {
   }
 
   setActiveCell(activeCellKey, { focus: false });
+
+  function getActiveWord() {
+    return wordByKey.get(activeWordKey);
+  }
+
+  return {
+    selectWord,
+    getActiveWord,
+    setActiveCell
+  };
 }
 
 function clearValidationStyles(cellsByKey, clueItemByWordKey) {
   for (const cell of cellsByKey.values()) {
-    cell.classList.remove("cell-check-correct", "cell-check-incorrect", "cell-correct-flash");
+    cell.classList.remove(
+      "cell-check-correct",
+      "cell-check-incorrect",
+      "cell-correct-flash",
+      "cell-hint-revealed",
+      "cell-revealed"
+    );
   }
 
   for (const clueItem of clueItemByWordKey.values()) {
     clueItem.classList.remove("clue-correct", "clue-incorrect");
+    const oldBtn = clueItem.querySelector(".clue-reveal-btn");
+    if (oldBtn) oldBtn.remove();
   }
 }
 
@@ -746,7 +983,7 @@ function evaluateWords(entries, inputsByKey) {
   return { results, correctCount };
 }
 
-function applyValidationStyles(entries, results, cellsByKey, clueItemByWordKey, previousResults = null) {
+function applyValidationStyles(entries, results, cellsByKey, clueItemByWordKey, onRevealWord, previousResults = null) {
   clearValidationStyles(cellsByKey, clueItemByWordKey);
 
   const cellState = new Map();
@@ -768,6 +1005,21 @@ function applyValidationStyles(entries, results, cellsByKey, clueItemByWordKey, 
     const clueItem = clueItemByWordKey.get(entry.key);
     if (clueItem) {
       clueItem.classList.add(status.isCorrect ? "clue-correct" : "clue-incorrect");
+      if (!status.isCorrect && onRevealWord) {
+        const revealBtn = document.createElement("button");
+        revealBtn.type = "button";
+        revealBtn.className = "clue-reveal-btn";
+        revealBtn.innerHTML = `
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          Revelar
+        `;
+        revealBtn.title = "Revelar letras desta palavra";
+        revealBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          onRevealWord(entry);
+        });
+        clueItem.appendChild(revealBtn);
+      }
     }
 
     const wasCorrectBefore = previousResults?.get(entry.key)?.isCorrect === true;
@@ -795,15 +1047,6 @@ function applyValidationStyles(entries, results, cellsByKey, clueItemByWordKey, 
     void cell.offsetWidth;
     cell.classList.add("cell-correct-flash");
   }
-}
-
-function updateCounter(correctCount, total) {
-  const counter = document.getElementById("progress-counter");
-  if (!counter) {
-    showAppNotice("Contador da cruzadinha não foi carregado corretamente.");
-    return;
-  }
-  counter.textContent = `${correctCount} de ${total} palavras`;
 }
 
 function loadDiagnostics() {
@@ -848,20 +1091,14 @@ function updateReinforceIndicator() {
   const diagnostics = loadDiagnostics();
   const reinforceCount = Object.values(diagnostics).filter((count) => count > 0).length;
   const indicator = document.getElementById("reinforce-indicator");
-  if (!indicator) {
-    showAppNotice("Indicador de reforço não foi carregado corretamente.");
-    return;
-  }
+  if (!indicator) return;
   indicator.textContent = `${reinforceCount} conceitos para reforço`;
 }
 
 function renderLearningPanel(entries) {
   const panel = document.getElementById("review-panel");
   const content = document.getElementById("review-content");
-  if (!panel || !content) {
-    showAppNotice("Painel de revisão não está disponível nesta página.");
-    return;
-  }
+  if (!panel || !content) return;
 
   if (content.children.length === 0) {
     entries.forEach((entry, index) => {
@@ -905,7 +1142,7 @@ function fillStudyGuide(incorrectEntries) {
 
   if (incorrectEntries.length === 0) {
     const message = document.createElement("p");
-    message.textContent = "Nenhum conceito com erro na última conferência. Continue praticando para consolidar o conhecimento.";
+    message.textContent = "Nenhum conceito com erro na última conferência. Parabéns pelo domínio do conteúdo!";
     container.appendChild(message);
     return;
   }
@@ -952,13 +1189,9 @@ function setupTabs() {
   const tabs = Array.from(document.querySelectorAll(".top-tab"));
   const panels = {
     crossword: document.getElementById("tab-crossword"),
-    architecture: document.getElementById("tab-architecture")
+    architecture: document.getElementById("tab-architecture"),
+    glossary: document.getElementById("tab-glossary")
   };
-  const hasAllPanels = Object.values(panels).every(Boolean);
-  if (tabs.length === 0 || !hasAllPanels) {
-    showAppNotice("Abas principais não carregadas. Exibindo somente a visualização padrão.");
-    return;
-  }
 
   function activate(target) {
     for (const tab of tabs) {
@@ -968,8 +1201,10 @@ function setupTabs() {
     }
 
     for (const [name, panel] of Object.entries(panels)) {
-      panel.hidden = name !== target;
-      panel.classList.toggle("is-active", name === target);
+      if (panel) {
+        panel.hidden = name !== target;
+        panel.classList.toggle("is-active", name === target);
+      }
     }
 
     document.dispatchEvent(
@@ -991,7 +1226,6 @@ function setupBinaryEasterEgg() {
   const toast = document.getElementById("binary-toast");
   const closeButton = document.getElementById("binary-toast-close");
   if (!trigger || !toast || !closeButton) {
-    showAppNotice("Modo Luz Binária indisponível: elementos do easter egg não encontrados.");
     return {
       activateMode() {},
       deactivateMode() {},
@@ -1083,17 +1317,15 @@ function setupArchitectureChallenge() {
   const diagram = document.getElementById("arch-diagram");
   const checkButton = document.getElementById("arch-check");
   const resetButton = document.getElementById("arch-reset");
+  const solveButton = document.getElementById("arch-solve");
   const status = document.getElementById("arch-status");
+
   if (!bank || !diagram || !checkButton || !resetButton || !status) {
-    showAppNotice("Desafio de Arquitetura indisponível: estrutura da aba não foi carregada.");
     return;
   }
 
   const slots = Array.from(diagram.querySelectorAll(".arch-slot"));
-  if (slots.length === 0) {
-    showAppNotice("Desafio de Arquitetura sem áreas de encaixe.");
-    return;
-  }
+  if (slots.length === 0) return;
 
   const slotById = new Map(slots.map((slot) => [slot.dataset.slot, slot]));
   const cardsById = new Map();
@@ -1123,7 +1355,6 @@ function setupArchitectureChallenge() {
       localStorage.setItem(ARCH_DIAGNOSTIC_STORAGE_KEY, JSON.stringify(data));
       return true;
     } catch {
-      showAppNotice("Não foi possível salvar o diagnóstico do desafio de arquitetura.");
       return false;
     }
   }
@@ -1131,6 +1362,7 @@ function setupArchitectureChallenge() {
   function clearSlotState() {
     slots.forEach((slot) => {
       slot.classList.remove("arch-correct", "arch-incorrect", "is-over");
+      slot.removeAttribute("title");
     });
   }
 
@@ -1225,8 +1457,10 @@ function setupArchitectureChallenge() {
       const expected = slot.dataset.expected;
       const isCorrect = !!card && card.dataset.cardId === expected;
       slot.classList.add(isCorrect ? "arch-correct" : "arch-incorrect");
-      if (isCorrect) correct += 1;
-      if (!isCorrect) {
+      if (isCorrect) {
+        correct += 1;
+      } else {
+        slot.title = `Incorreto! Esperado: ${expected}`;
         diagnostics[expected] = (diagnostics[expected] || 0) + 1;
       }
     });
@@ -1245,6 +1479,17 @@ function setupArchitectureChallenge() {
       moveCardToBank(component.id);
     }
     slots.forEach((slot) => updateSlotHasCard(slot));
+  }
+
+  function solveDiagram() {
+    clearSlotState();
+    setSelectedCard(null);
+    slots.forEach((slot) => {
+      const expected = slot.dataset.expected;
+      placeCardInSlot(expected, slot);
+      slot.classList.add("arch-correct");
+    });
+    status.textContent = `${slots.length} de ${slots.length} componentes corretos`;
   }
 
   slots.forEach((slot) => {
@@ -1287,6 +1532,9 @@ function setupArchitectureChallenge() {
 
   checkButton.addEventListener("click", evaluateDiagram);
   resetButton.addEventListener("click", resetDiagram);
+  if (solveButton) {
+    solveButton.addEventListener("click", solveDiagram);
+  }
 
   document.addEventListener("app:tabchange", (event) => {
     if (event.detail?.target !== "architecture") {
@@ -1300,29 +1548,153 @@ function setupArchitectureChallenge() {
   resetDiagram();
 }
 
+function setupGlossary() {
+  const cardsContainer = document.getElementById("glossary-cards");
+  const searchInput = document.getElementById("glossary-search");
+  const filterButtons = document.querySelectorAll(".filter-btn");
+
+  if (!cardsContainer) return;
+
+  const cards = [];
+
+  WORDS.forEach((item) => {
+    const word = item.word;
+    const cat = CATEGORIES[word] || "arquitetura";
+    const learning = LEARNING_DATA[word] || {};
+    const tip = MEMORY_TIPS[word] || "";
+
+    const card = document.createElement("article");
+    card.className = "glossary-card";
+    card.dataset.category = cat;
+    card.dataset.word = word.toLowerCase();
+    card.dataset.search = `${word} ${item.clue} ${learning.explanation || ""} ${learning.example || ""} ${tip}`.toLowerCase();
+
+    card.innerHTML = `
+      <div class="glossary-card-header">
+        <h3 class="glossary-card-title">${word}</h3>
+        <span class="glossary-badge">${CATEGORY_LABELS[cat] || cat}</span>
+      </div>
+      <div class="glossary-card-body">
+        <p><strong>Definição:</strong> ${item.clue}</p>
+        <p><strong>Funcionamento:</strong> ${learning.explanation || ""} ${learning.example || ""}</p>
+        <div class="glossary-tip">
+          <span class="glossary-tip-icon">&#128161;</span>
+          <span><strong>Dica:</strong> ${tip}</span>
+        </div>
+      </div>
+    `;
+
+    cardsContainer.appendChild(card);
+    cards.push(card);
+  });
+
+  let currentCategory = "all";
+  let currentSearch = "";
+
+  function filterCards() {
+    cards.forEach((card) => {
+      const matchCat = currentCategory === "all" || card.dataset.category === currentCategory;
+      const matchSearch = !currentSearch || card.dataset.search.includes(currentSearch);
+      card.classList.toggle("is-hidden", !(matchCat && matchSearch));
+    });
+  }
+
+  if (searchInput) {
+    searchInput.addEventListener("input", (e) => {
+      currentSearch = e.target.value.trim().toLowerCase();
+      filterCards();
+    });
+  }
+
+  filterButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      filterButtons.forEach((b) => b.classList.remove("is-active"));
+      btn.classList.add("is-active");
+      currentCategory = btn.dataset.filter || "all";
+      filterCards();
+    });
+  });
+}
+
 function setupControls(state) {
-  const { entries, cellsByKey, inputsByKey, clueItemByWordKey } = state;
+  const { entries, cellsByKey, inputsByKey, clueItemByWordKey, interactions, timer } = state;
   const totalWords = entries.length;
   const checkButton = document.getElementById("check-button");
   const resetButton = document.getElementById("reset-button");
   const pdfButton = document.getElementById("pdf-button");
+  const hintButton = document.getElementById("hint-button");
   const reviewPanel = document.getElementById("review-panel");
-  if (!checkButton || !resetButton || !pdfButton || !reviewPanel) {
-    showAppNotice("Controles da cruzadinha não carregados corretamente.");
-    return;
-  }
+
+  if (!checkButton || !resetButton || !pdfButton) return;
+
   const binaryMode = setupBinaryEasterEgg();
   let lastIncorrectEntries = [];
   let hasCheckedAtLeastOnce = false;
   let previousResults = null;
 
-  updateCounter(0, totalWords);
+  updateProgress(0, totalWords);
   updateReinforceIndicator();
 
-  checkButton.addEventListener("click", () => {
+  function onRevealWord(entry) {
+    timer.start();
+    for (let i = 0; i < entry.cells.length; i += 1) {
+      const cellKey = entry.cells[i];
+      const input = inputsByKey.get(cellKey);
+      const cell = cellsByKey.get(cellKey);
+      if (input && cell) {
+        input.value = entry.word[i];
+        cell.classList.add("cell-revealed");
+      }
+    }
     const { results, correctCount } = evaluateWords(entries, inputsByKey);
-    applyValidationStyles(entries, results, cellsByKey, clueItemByWordKey, previousResults);
-    updateCounter(correctCount, totalWords);
+    applyValidationStyles(entries, results, cellsByKey, clueItemByWordKey, onRevealWord, previousResults);
+    updateProgress(correctCount, totalWords);
+    lastIncorrectEntries = entries.filter((e) => !results.get(e.key).isCorrect);
+    if (correctCount === totalWords) {
+      timer.stop();
+      showCelebration(timer.getTimeFormatted());
+      binaryMode.activateMode();
+    }
+  }
+
+  if (hintButton) {
+    hintButton.addEventListener("click", () => {
+      timer.start();
+      const activeWord = interactions.getActiveWord();
+      if (!activeWord) {
+        showAppNotice("Selecione uma palavra no tabuleiro para receber uma dica.");
+        return;
+      }
+
+      let revealed = false;
+      for (let i = 0; i < activeWord.cells.length; i += 1) {
+        const cellKey = activeWord.cells[i];
+        const input = inputsByKey.get(cellKey);
+        const cell = cellsByKey.get(cellKey);
+        const expectedLetter = activeWord.word[i];
+
+        if (input && input.value !== expectedLetter) {
+          input.value = expectedLetter;
+          if (cell) {
+            cell.classList.add("cell-hint-revealed");
+          }
+          interactions.setActiveCell(cellKey);
+          revealed = true;
+          break;
+        }
+      }
+
+      if (!revealed) {
+        showAppNotice(`Dica para ${activeWord.word}: ${MEMORY_TIPS[activeWord.word]}`, "info");
+      }
+    });
+  }
+
+  checkButton.addEventListener("click", () => {
+    timer.start();
+    const { results, correctCount } = evaluateWords(entries, inputsByKey);
+    applyValidationStyles(entries, results, cellsByKey, clueItemByWordKey, onRevealWord, previousResults);
+    updateProgress(correctCount, totalWords);
     lastIncorrectEntries = entries.filter((entry) => !results.get(entry.key).isCorrect);
     registerDifficulties(lastIncorrectEntries.map((entry) => entry.word));
     updateReinforceIndicator();
@@ -1331,6 +1703,8 @@ function setupControls(state) {
     renderLearningPanel(entries);
 
     if (correctCount === totalWords) {
+      timer.stop();
+      showCelebration(timer.getTimeFormatted());
       binaryMode.activateMode();
     }
   });
@@ -1340,9 +1714,12 @@ function setupControls(state) {
       input.value = "";
     }
     clearValidationStyles(cellsByKey, clueItemByWordKey);
-    updateCounter(0, totalWords);
-    reviewPanel.hidden = true;
-    reviewPanel.classList.remove("review-panel-open");
+    updateProgress(0, totalWords);
+    timer.reset();
+    if (reviewPanel) {
+      reviewPanel.hidden = true;
+      reviewPanel.classList.remove("review-panel-open");
+    }
     lastIncorrectEntries = [];
     previousResults = null;
     binaryMode.deactivateMode();
@@ -1356,7 +1733,7 @@ function setupControls(state) {
 
   pdfButton.addEventListener("click", () => {
     if (!hasCheckedAtLeastOnce) {
-      window.alert("Primeiro clique em Conferir para gerar o material personalizado.");
+      showAppNotice("Primeiro clique em Conferir para gerar o material personalizado.", "warning");
       return;
     }
 
@@ -1371,28 +1748,44 @@ function setupControls(state) {
 
 function init() {
   try {
+    setupTheme();
     setupTabs();
     setupArchitectureChallenge();
+    setupGlossary();
 
+    const timer = setupTimer();
     const gridData = validateAndBuildGrid(WORDS);
     const startNumbers = getStartNumbers(WORDS);
     const { entries, cellToWords } = buildGameModel(WORDS);
     const { cellsByKey, inputsByKey } = renderBoard(gridData, startNumbers);
-    const clueItemByWordKey = renderClues(entries, startNumbers);
-    setupInteractions({
+
+    let interactions = null;
+
+    const clueItemByWordKey = renderClues(entries, startNumbers, (clickedWord) => {
+      if (interactions) {
+        interactions.selectWord(clickedWord);
+      }
+    });
+
+    interactions = setupInteractions({
       entries,
       cellToWords,
       cellsByKey,
       inputsByKey,
       clueItemByWordKey,
+      startNumbers,
       gridRows: gridData.rows,
-      gridCols: gridData.cols
+      gridCols: gridData.cols,
+      timer
     });
+
     setupControls({
       entries,
       cellsByKey,
       inputsByKey,
-      clueItemByWordKey
+      clueItemByWordKey,
+      interactions,
+      timer
     });
   } catch (error) {
     showAppNotice("Ocorreu uma falha ao inicializar o jogo. Recarregue a página.");
