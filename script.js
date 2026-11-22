@@ -1803,33 +1803,26 @@ function setupBinaryEasterEgg() {
     }
   }
 
-  function activateMode() {
+  function activateMode(triggerHopscotch = false) {
     document.body.classList.add("binary-light-mode");
     trigger.classList.add("lamp-on");
-    showToast();
+    if (triggerHopscotch) {
+      document.dispatchEvent(new CustomEvent("app:binarylight"));
+    } else {
+      showToast();
+    }
     if (modeTimeout) {
       window.clearTimeout(modeTimeout);
     }
     modeTimeout = window.setTimeout(() => {
       deactivateMode();
       hideToast();
-    }, 8000);
+    }, 10000);
   }
 
   trigger.addEventListener("click", () => {
     playLampAnimation();
-    clickStreak += 1;
-    if (streakTimeout) {
-      window.clearTimeout(streakTimeout);
-    }
-    streakTimeout = window.setTimeout(() => {
-      clickStreak = 0;
-    }, 1400);
-
-    if (clickStreak >= 3) {
-      clickStreak = 0;
-      activateMode();
-    }
+    activateMode(true);
   });
 
   closeButton.addEventListener("click", hideToast);
@@ -2549,6 +2542,9 @@ function init() {
     setupGlossary();
     if (typeof setupGlossaryModes === "function") {
       setupGlossaryModes();
+    }
+    if (typeof setupTutorBit === "function") {
+      setupTutorBit();
     }
 
     const timer = setupTimer();

@@ -2758,8 +2758,808 @@ body.light-theme .arch-block {
   }
 }
 
+/* ===== Tutor Bit Floating Assistant ===== */
+.bit-widget {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 9900;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.bit-teaser {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  color: #1b2a41;
+  border: 2px solid #1b2a41;
+  border-radius: 14px 14px 4px 14px;
+  padding: 7px 11px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  box-shadow: 3px 3px 0 rgba(27, 42, 65, 0.28);
+  cursor: pointer;
+  animation: bitTeaserBob 3s ease-in-out infinite;
+}
+
+.bit-teaser[hidden] {
+  display: none;
+}
+
+.bit-teaser button {
+  border: 0;
+  background: transparent;
+  color: #5b7190;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0 2px;
+  cursor: pointer;
+}
+
+.bit-fab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 2px solid #1b2a41;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ffd54f 0%, #ffca28 100%);
+  color: #1b2a41;
+  padding: 5px 14px 5px 6px;
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 800;
+  box-shadow: 0 8px 22px rgba(10, 24, 48, 0.32), 3px 3px 0 #1b2a41;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.bit-fab:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 12px 26px rgba(10, 24, 48, 0.36), 4px 4px 0 #1b2a41;
+}
+
+.bit-fab:hover .bit-arm-right {
+  transform-origin: 22px 4px;
+  animation: bitWave 0.45s ease-in-out infinite alternate;
+}
+
+.bit-fab:focus-visible {
+  outline: 3px solid #2f80ed;
+  outline-offset: 2px;
+}
+
+.bit-fab-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid #1b2a41;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+}
+
+.bit-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+
+.bit-svg.bit-idle .bit-body-group {
+  animation: bitFloat 2.8s ease-in-out infinite;
+}
+
+.bit-svg.bit-idle .bit-eyes {
+  transform-origin: 0 -5px;
+  animation: bitBlink 4.6s ease-in-out infinite;
+}
+
+.bit-svg.bit-idle .bit-antenna {
+  transform-origin: 0 -24px;
+  animation: bitAntennaWiggle 3.2s ease-in-out infinite;
+}
+
+.bit-svg.bit-idle .bit-antenna-tip {
+  animation: bitTipGlow 2.4s ease-in-out infinite;
+}
+
+/* Chat Panel */
+.bit-chat {
+  position: fixed;
+  right: 18px;
+  bottom: 80px;
+  width: min(370px, calc(100vw - 24px));
+  max-height: min(530px, calc(100vh - 104px));
+  background: #ffffff;
+  color: #1b2a41;
+  border: 2px solid #1b2a41;
+  border-radius: 16px;
+  box-shadow: 0 18px 44px rgba(8, 20, 42, 0.38), 5px 5px 0 rgba(27, 42, 65, 0.25);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: bitChatIn 0.22s ease-out;
+}
+
+.bit-chat[hidden] {
+  display: none;
+}
+
+.bit-chat-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: linear-gradient(135deg, #162b4d 0%, #24477d 100%);
+  color: #ffffff;
+  border-bottom: 2px solid #1b2a41;
+}
+
+.bit-header-avatar {
+  width: 46px;
+  height: 46px;
+  flex: 0 0 46px;
+  border-radius: 50%;
+  background: #eef5ff;
+  border: 2px solid #ffd54f;
+  padding: 2px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bit-header-avatar.bit-pop {
+  animation: bitPop 0.38s cubic-bezier(0.25, 1.4, 0.5, 1);
+}
+
+.bit-header-info {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.bit-header-info h3 {
+  margin: 0;
+  font-size: 0.96rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.bit-header-info p {
+  margin: 1px 0 0;
+  font-size: 0.72rem;
+  color: #cfe2ff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bit-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+}
+
+.bit-spoiler-btn {
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  border-radius: 999px;
+  padding: 4px 8px;
+  font: inherit;
+  font-size: 0.68rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.15s ease;
+}
+
+.bit-spoiler-btn.is-on {
+  background: #ffd54f;
+  border-color: #ffd54f;
+  color: #1b2a41;
+}
+
+.bit-close-btn {
+  border: 0;
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bit-close-btn:hover {
+  background: rgba(255, 255, 255, 0.26);
+}
+
+.bit-messages {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 12px;
+  background: #f5f9ff;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 180px;
+}
+
+.bit-msg {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  max-width: 92%;
+}
+
+.bit-msg-bot {
+  align-self: flex-start;
+}
+
+.bit-msg-user {
+  align-self: flex-end;
+}
+
+.bit-msg-mini-avatar {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1.5px solid #1b2a41;
+  padding: 1px;
+}
+
+.bit-msg-bubble {
+  padding: 8px 11px;
+  border-radius: 12px;
+  font-size: 0.83rem;
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+.bit-msg-bot .bit-msg-bubble {
+  background: #ffffff;
+  color: #1b2a41;
+  border: 1.5px solid #c6daf5;
+  border-bottom-left-radius: 4px;
+}
+
+.bit-msg-user .bit-msg-bubble {
+  background: #2f80ed;
+  color: #ffffff;
+  border-bottom-right-radius: 4px;
+}
+
+.bit-dots {
+  display: inline-flex;
+  gap: 4px;
+  padding: 3px 2px;
+}
+
+.bit-dots i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #2f80ed;
+  display: block;
+  animation: bitDotBounce 1s ease-in-out infinite;
+}
+
+.bit-dots i:nth-child(2) {
+  animation-delay: 0.16s;
+}
+
+.bit-dots i:nth-child(3) {
+  animation-delay: 0.32s;
+}
+
+.bit-quick-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px 10px;
+  background: #eaf2ff;
+  border-top: 1px solid #d0e1f7;
+}
+
+.bit-chip {
+  border: 1px solid #9cc2ee;
+  background: #ffffff;
+  color: #15457d;
+  border-radius: 999px;
+  padding: 4px 9px;
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+
+.bit-chip:hover {
+  background: #2f80ed;
+  border-color: #2f80ed;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.bit-chip-fun {
+  background: #fff4cc;
+  border-color: #e6b830;
+  color: #6b4600;
+}
+
+.bit-chip-fun:hover {
+  background: #ffd54f;
+  border-color: #1b2a41;
+  color: #1b2a41;
+}
+
+.bit-form {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  background: #ffffff;
+  border-top: 1px solid #d0e1f7;
+}
+
+.bit-form input {
+  flex: 1 1 auto;
+  min-width: 0;
+  border: 1.5px solid #c5daf4;
+  border-radius: 10px;
+  padding: 8px 10px;
+  font: inherit;
+  font-size: 0.84rem;
+  color: #1b2a41;
+  background: #f9fbff;
+}
+
+.bit-form input:focus {
+  outline: 2px solid #2f80ed;
+  outline-offset: 1px;
+  border-color: #2f80ed;
+  background: #ffffff;
+}
+
+.bit-send-btn {
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  border: 0;
+  border-radius: 10px;
+  background: #2f80ed;
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.bit-send-btn:hover {
+  background: #1d6cd4;
+}
+
+.bit-send-btn svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ===== Binary Hopscotch Modal ("Caminho da Luz") ===== */
+.hopscotch-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10050;
+  background: rgba(7, 15, 31, 0.8);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.hopscotch-modal.is-visible {
+  opacity: 1;
+}
+
+.hopscotch-modal[hidden] {
+  display: none;
+}
+
+.hopscotch-card {
+  width: min(440px, 100%);
+  max-height: calc(100vh - 28px);
+  overflow-y: auto;
+  background: linear-gradient(180deg, #10203b 0%, #193259 100%);
+  color: #ffffff;
+  border: 2px solid #ffd54f;
+  border-radius: 18px;
+  padding: 14px 16px 16px;
+  box-shadow: 0 24px 56px rgba(0, 0, 0, 0.5), 0 0 32px rgba(255, 213, 79, 0.22);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hopscotch-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.hopscotch-header h3 {
+  margin: 0;
+  font-size: 1.12rem;
+  font-weight: 800;
+  color: #ffd54f;
+}
+
+.hopscotch-header p {
+  margin: 2px 0 0;
+  font-size: 0.8rem;
+  color: #cfe2ff;
+}
+
+.hop-close-btn {
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.hop-close-btn:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.hopscotch-stage {
+  position: relative;
+  width: 100%;
+  max-width: 330px;
+  aspect-ratio: 360 / 470;
+  margin: 0 auto;
+  border-radius: 14px;
+  background:
+    radial-gradient(circle at 50% 12%, rgba(255, 213, 79, 0.16), transparent 52%),
+    linear-gradient(180deg, #0b162a 0%, #16294a 100%);
+  border: 1.5px solid rgba(190, 220, 255, 0.28);
+  overflow: hidden;
+  transition: box-shadow 0.4s ease, border-color 0.4s ease;
+}
+
+.hopscotch-stage.is-celebrating {
+  border-color: #ffd54f;
+  box-shadow: 0 0 28px rgba(255, 213, 79, 0.5), inset 0 0 30px rgba(255, 213, 79, 0.25);
+}
+
+.hopscotch-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.hop-rays {
+  opacity: 0;
+  transform-origin: 180px 58px;
+  transition: opacity 0.35s ease;
+}
+
+.hopscotch-stage.is-celebrating .hop-rays {
+  opacity: 1;
+  animation: hopRaysPulse 1.4s ease-in-out infinite;
+}
+
+.hop-cell rect,
+.hop-cell path {
+  transition: fill 0.22s ease, stroke 0.22s ease, filter 0.22s ease;
+}
+
+.hop-cell.is-lit rect {
+  fill: rgba(255, 213, 79, 0.35);
+  stroke: #ffd54f;
+  filter: drop-shadow(0 0 6px rgba(255, 213, 79, 0.75));
+}
+
+.hop-cell.is-active rect {
+  fill: rgba(255, 213, 79, 0.6);
+  stroke: #ffffff;
+}
+
+.hop-cell.hop-sky.is-lit path {
+  filter: drop-shadow(0 0 14px rgba(255, 224, 130, 0.95));
+}
+
+.hop-bit-runner {
+  position: absolute;
+  left: 50%;
+  top: 92%;
+  width: 58px;
+  height: 58px;
+  transform: translate(-50%, -62%);
+  transition: left 0.38s cubic-bezier(0.3, 0.7, 0.4, 1), top 0.38s cubic-bezier(0.3, 0.7, 0.4, 1);
+  pointer-events: none;
+  z-index: 4;
+}
+
+.hop-bit-shadow {
+  position: absolute;
+  left: 50%;
+  bottom: 2px;
+  width: 34px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.42);
+  transform: translateX(-50%);
+}
+
+.hop-bit-sprite {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  z-index: 2;
+}
+
+.hop-bit-runner.is-hopping .hop-bit-sprite {
+  animation: bitHopArc 0.4s cubic-bezier(0.35, 0.05, 0.35, 1);
+}
+
+.hop-bit-runner.is-hopping .hop-bit-shadow {
+  animation: bitShadowHop 0.4s ease;
+}
+
+.hop-bit-runner.is-party .hop-bit-sprite {
+  animation: bitPartyDance 0.7s ease-in-out infinite;
+}
+
+.hop-bit-cheer {
+  position: absolute;
+  top: 23%;
+  left: 12px;
+  right: 12px;
+  width: fit-content;
+  max-width: calc(100% - 24px);
+  margin: 0 auto;
+  text-align: center;
+  background: #ffffff;
+  color: #1b2a41;
+  border: 2px solid #1b2a41;
+  border-radius: 12px;
+  padding: 6px 12px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  z-index: 6;
+  pointer-events: none;
+  animation: bitPop 0.38s cubic-bezier(0.25, 1.4, 0.5, 1);
+}
+
+.hop-bit-cheer[hidden] {
+  display: none;
+}
+
+.hop-confetti {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 5;
+}
+
+.hop-confetti-bit {
+  position: absolute;
+  top: -22px;
+  font-weight: 900;
+  font-family: "Consolas", "Segoe UI", monospace;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+  animation: hopConfettiFall 2.2s linear infinite;
+}
+
+.hop-narration {
+  margin: 0;
+  text-align: center;
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #fff6cc;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 213, 79, 0.25);
+  border-radius: 10px;
+  padding: 8px 10px;
+}
+
+.hop-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.hop-btn {
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  padding: 7px 12px;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.12s ease, background-color 0.15s ease;
+}
+
+.hop-btn:hover {
+  background: rgba(255, 255, 255, 0.22);
+  transform: translateY(-1px);
+}
+
+.hop-btn-primary {
+  background: #ffd54f;
+  border-color: #1b2a41;
+  color: #1b2a41;
+}
+
+.hop-btn-primary:hover {
+  background: #ffca28;
+}
+
+.hop-btn-secondary {
+  background: #2f80ed;
+  border-color: #6ea6ff;
+  color: #ffffff;
+}
+
+.hop-btn-secondary:hover {
+  background: #1f6ed4;
+}
+
+/* Tutor Bit & Hopscotch Keyframes */
+@keyframes bitFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+@keyframes bitBlink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  96% { transform: scaleY(0.1); }
+}
+
+@keyframes bitAntennaWiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-8deg); }
+  75% { transform: rotate(8deg); }
+}
+
+@keyframes bitTipGlow {
+  0%, 100% { fill: #eb5757; }
+  50% { fill: #ffd54f; }
+}
+
+@keyframes bitWave {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-28deg); }
+}
+
+@keyframes bitPop {
+  0% { transform: scale(0.8); }
+  60% { transform: scale(1.14); }
+  100% { transform: scale(1); }
+}
+
+@keyframes bitTeaserBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes bitChatIn {
+  from { opacity: 0; transform: translateY(14px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes bitDotBounce {
+  0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+  40% { transform: translateY(-4px); opacity: 1; }
+}
+
+@keyframes bitHopArc {
+  0% { transform: translateY(0) scale(1.1, 0.88); }
+  45% { transform: translateY(-34px) scale(0.94, 1.08) rotate(-7deg); }
+  82% { transform: translateY(4px) scale(1.12, 0.86); }
+  100% { transform: translateY(0) scale(1, 1); }
+}
+
+@keyframes bitShadowHop {
+  0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.45; }
+  45% { transform: translateX(-50%) scale(0.45); opacity: 0.16; }
+}
+
+@keyframes bitPartyDance {
+  0%, 100% { transform: translateY(0) rotate(-6deg) scale(1.04); }
+  50% { transform: translateY(-10px) rotate(6deg) scale(1.1); }
+}
+
+@keyframes hopRaysPulse {
+  0%, 100% { transform: scale(0.95); opacity: 0.65; }
+  50% { transform: scale(1.08); opacity: 1; }
+}
+
+@keyframes hopConfettiFall {
+  0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+  85% { opacity: 1; }
+  100% { transform: translateY(450px) rotate(320deg); opacity: 0; }
+}
+
+@media (max-width: 520px) {
+  .bit-widget {
+    right: 12px;
+    bottom: 12px;
+  }
+
+  .bit-fab-label {
+    display: none;
+  }
+
+  .bit-fab {
+    padding: 4px;
+  }
+
+  .bit-chat {
+    left: 10px;
+    right: 10px;
+    bottom: 68px;
+    width: auto;
+    max-height: calc(100vh - 86px);
+  }
+
+  .hopscotch-stage {
+    max-width: 280px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bit-svg.bit-idle .bit-body-group,
+  .bit-svg.bit-idle .bit-eyes,
+  .bit-svg.bit-idle .bit-antenna,
+  .bit-svg.bit-idle .bit-antenna-tip,
+  .bit-teaser,
+  .hop-bit-runner.is-party .hop-bit-sprite,
+  .hop-confetti-bit {
+    animation: none !important;
+  }
+}
+
 /* ===== Print ===== */
 @media print {
+  .bit-widget,
+  .hopscotch-modal {
+    display: none !important;
+  }
+
   @page {
     margin: 10mm 12mm;
     size: A4 portrait;
