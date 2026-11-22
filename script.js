@@ -2089,8 +2089,10 @@ function setupGlossary() {
 
   WORDS.forEach((item) => {
     const word = item.word;
+    const displayName = (typeof CONCEPT_NAMES !== "undefined" && CONCEPT_NAMES[word]) || word;
     const cat = CATEGORIES[word] || "arquitetura";
     const learning = LEARNING_DATA[word] || {};
+    const steps = CONCEPT_STEPS[word] || [];
     const diagram = CONCEPT_DIAGRAMS[word] || "";
     const tip = MEMORY_TIPS[word] || "";
 
@@ -2098,19 +2100,28 @@ function setupGlossary() {
     card.className = "glossary-card";
     card.dataset.category = cat;
     card.dataset.word = word.toLowerCase();
-    card.dataset.search = `${word} ${item.clue} ${learning.explanation || ""} ${learning.example || ""} ${tip}`.toLowerCase();
+    card.dataset.search = `${word} ${displayName} ${item.clue} ${learning.explanation || ""} ${learning.example || ""} ${steps.join(" ")} ${tip}`.toLowerCase();
+
+    const stepsHtml = steps.length
+      ? `<div class="glossary-steps">
+          <span class="glossary-steps-title">Passo a passo:</span>
+          <ol>${steps.map((step) => `<li>${step}</li>`).join("")}</ol>
+        </div>`
+      : "";
 
     card.innerHTML = `
       <div class="review-card-diagram" aria-hidden="true">
         ${diagram}
       </div>
       <div class="glossary-card-header">
-        <h3 class="glossary-card-title">${word}</h3>
+        <h3 class="glossary-card-title">${displayName}</h3>
         <span class="glossary-badge">${CATEGORY_LABELS[cat] || cat}</span>
       </div>
       <div class="glossary-card-body">
         <p><strong>Definição:</strong> ${item.clue}</p>
-        <p><strong>Funcionamento:</strong> ${learning.explanation || ""} ${learning.example || ""}</p>
+        <p><strong>Funcionamento:</strong> ${learning.explanation || ""}</p>
+        ${stepsHtml}
+        <p><strong>Exemplo prático:</strong> ${learning.example || ""}</p>
         <div class="glossary-tip">
           <span class="glossary-tip-icon">&#128161;</span>
           <span><strong>Dica:</strong> ${tip}</span>
@@ -2135,7 +2146,7 @@ function setupGlossary() {
       if (isVisible) visibleCount += 1;
     });
     if (emptyMessage) {
-      emptyMessage.hidden = visibleCount > 0;
+      emptyMessage.hidden = cardsContainer.hidden || visibleCount > 0;
     }
   }
 
@@ -2339,7 +2350,13 @@ function init() {
     setupTheme();
     setupTabs();
     setupArchitectureChallenge();
+    if (typeof setupArchitectureIllustrations === "function") {
+      setupArchitectureIllustrations();
+    }
     setupGlossary();
+    if (typeof setupGlossaryModes === "function") {
+      setupGlossaryModes();
+    }
 
     const timer = setupTimer();
     const gridData = validateAndBuildGrid(WORDS);

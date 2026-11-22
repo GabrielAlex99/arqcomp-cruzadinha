@@ -1527,8 +1527,8 @@ body.light-theme .arch-block {
 }
 
 .arch-slot {
-  width: min(100%, 180px);
-  max-width: 180px;
+  width: 100%;
+  max-width: none;
   height: 42px;
   min-height: 42px;
   border: 2px dashed #abc4e5;
@@ -1539,6 +1539,84 @@ body.light-theme .arch-block {
   justify-content: center;
   padding: 4px;
   transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+/* ===== Architecture Illustrations ===== */
+.arch-intro {
+  margin: 0;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 22px rgba(9, 26, 46, 0.14);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.arch-illus-svg {
+  display: block;
+  height: auto;
+}
+
+.arch-illus-intro {
+  width: 100%;
+  max-width: 760px;
+}
+
+.arch-intro figcaption {
+  margin: 0;
+  max-width: 740px;
+  text-align: center;
+  font-size: 0.88rem;
+  font-weight: 600;
+  line-height: 1.45;
+  color: #294669;
+}
+
+.arch-block-illus {
+  margin: 0 0 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #ffffff;
+  border: 1px solid #d6e4f6;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.arch-illus-block {
+  width: 100%;
+  max-width: 310px;
+  flex: 0 0 auto;
+}
+
+.arch-block-illus figcaption {
+  margin: 0;
+  font-size: 0.84rem;
+  line-height: 1.45;
+  color: #294669;
+  font-weight: 600;
+}
+
+.arch-slot-icon {
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 10px;
+  background: #eef5ff;
+  border: 1px solid #d0e2f7;
+  flex: 0 0 auto;
+}
+
+.arch-slot-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 .arch-slot::before {
@@ -1603,20 +1681,89 @@ body.light-theme .arch-block {
   padding: 14px 16px;
 }
 
+.glossary-header-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
 .glossary-header h2 {
   margin: 0 0 4px;
   color: var(--progress-text);
 }
 
+.glossary-header-top p,
 .glossary-header > p {
-  margin: 0 0 12px;
+  margin: 0;
   color: var(--muted);
+}
+
+.glossary-mode-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 12px;
+  background: rgba(47, 128, 237, 0.08);
+  border: 1px solid var(--panel-border);
+  flex-wrap: wrap;
+}
+
+.glossary-mode-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ctrl-btn-text);
+  padding: 8px 13px;
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.glossary-mode-btn svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.glossary-mode-btn:hover:not(.is-active) {
+  background: rgba(47, 128, 237, 0.12);
+}
+
+.glossary-mode-btn.is-active {
+  background: var(--accent);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(47, 128, 237, 0.28);
+}
+
+.glossary-mode-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .glossary-toolbar {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  margin-top: 12px;
+}
+
+.glossary-toolbar[hidden],
+.glossary-cards[hidden],
+.glossary-comic[hidden] {
+  display: none !important;
 }
 
 .glossary-search-wrap {
@@ -1735,6 +1882,7 @@ body.light-theme .arch-block {
   align-items: center;
   justify-content: space-between;
   gap: 8px;
+  flex-wrap: wrap;
 }
 
 .glossary-card-title {
@@ -1793,6 +1941,226 @@ body.light-theme .arch-block {
 
 .glossary-card.is-hidden {
   display: none;
+}
+
+.glossary-steps {
+  background: rgba(47, 128, 237, 0.05);
+  border: 1px solid rgba(47, 128, 237, 0.18);
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin: 6px 0;
+}
+
+.glossary-steps-title {
+  display: block;
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+
+.glossary-steps ol {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.glossary-steps li {
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: var(--text);
+}
+
+/* ===== Glossary Illustrated Comic Strip ===== */
+.glossary-comic {
+  display: grid;
+  gap: 18px;
+}
+
+.comic-intro {
+  background: linear-gradient(135deg, #fff9db 0%, #eef5ff 100%);
+  border: 2px solid #1b2a41;
+  border-radius: 14px;
+  padding: 14px 18px;
+  box-shadow: 4px 4px 0 rgba(27, 42, 65, 0.25);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.comic-intro-bit {
+  width: 86px;
+  height: 82px;
+  flex: 0 0 86px;
+  display: block;
+}
+
+.comic-intro-text h3 {
+  margin: 0 0 4px;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #1b2a41;
+}
+
+.comic-intro-text p {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.48;
+  color: #29415e;
+}
+
+.comic-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 18px;
+}
+
+.comic-panel {
+  background: #ffffff;
+  border: 2px solid #1b2a41;
+  border-radius: 14px;
+  box-shadow: 4px 4px 0 rgba(27, 42, 65, 0.22);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.comic-panel:hover {
+  transform: translateY(-2px);
+  box-shadow: 6px 6px 0 rgba(27, 42, 65, 0.24);
+}
+
+.comic-panel-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: #f8fbff;
+  border-bottom: 2px solid #1b2a41;
+}
+
+.comic-panel-num {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  border-radius: 50%;
+  background: #ffd54f;
+  border: 2px solid #1b2a41;
+  color: #1b2a41;
+  font-size: 0.84rem;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.comic-panel-head h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 800;
+  color: #1b2a41;
+}
+
+.comic-panel-art {
+  border-bottom: 2px solid #1b2a41;
+  background: #f4f8fe;
+}
+
+.comic-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.comic-panel-caption {
+  margin: 0;
+  padding: 12px 14px 10px;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: #1f324d;
+  flex: 1 1 auto;
+}
+
+.comic-panel-tags {
+  list-style: none;
+  margin: 0;
+  padding: 0 14px 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.comic-tag-btn {
+  border: 1.5px solid #2f80ed;
+  background: #eaf3ff;
+  color: #124885;
+  border-radius: 999px;
+  padding: 3px 10px;
+  font: inherit;
+  font-size: 0.74rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+
+.comic-tag-btn:hover {
+  background: #2f80ed;
+  color: #ffffff;
+}
+
+.comic-tag-btn:focus-visible {
+  outline: 2px solid #1b2a41;
+  outline-offset: 2px;
+}
+
+.comic-end {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 16px 20px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #eaf8f0 0%, #eef5ff 100%);
+  border: 2px solid #1b2a41;
+  box-shadow: 4px 4px 0 rgba(27, 42, 65, 0.22);
+}
+
+.comic-end p {
+  margin: 0;
+  font-size: 0.94rem;
+  font-weight: 700;
+  color: #1b2a41;
+}
+
+.comic-end-btn {
+  border: 2px solid #1b2a41;
+  border-radius: 10px;
+  background: #ffd54f;
+  color: #1b2a41;
+  padding: 9px 16px;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 2px 2px 0 #1b2a41;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.15s ease;
+}
+
+.comic-end-btn:hover {
+  background: #ffca28;
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 #1b2a41;
+}
+
+.comic-end-btn:focus-visible {
+  outline: 2px solid #2f80ed;
+  outline-offset: 2px;
 }
 
 /* ===== Celebration Overlay ===== */
@@ -2038,6 +2406,42 @@ body.light-theme .arch-block {
 
   .glossary-cards {
     grid-template-columns: 1fr;
+  }
+
+  .arch-block-illus {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .arch-illus-block {
+    max-width: 100%;
+  }
+
+  .glossary-mode-switch {
+    width: 100%;
+  }
+
+  .glossary-mode-btn {
+    flex: 1 1 auto;
+    justify-content: center;
+    padding: 8px 10px;
+    font-size: 0.8rem;
+  }
+
+  .comic-intro {
+    flex-direction: column;
+    text-align: center;
+    padding: 14px;
+  }
+
+  .comic-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .comic-end {
+    justify-content: center;
+    text-align: center;
   }
 
   .glossary-filters {
