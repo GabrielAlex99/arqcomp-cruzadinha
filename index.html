@@ -111,9 +111,9 @@
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
                 Reiniciar
               </button>
-              <button id="pdf-button" type="button">
+              <button id="pdf-button" type="button" class="btn-pdf" title="Exportar ou imprimir guia didático ilustrado de estudos em PDF">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M12 18v-6M9 15h6"/></svg>
-                PDF
+                <span>Baixar Guia de Estudos (PDF)</span>
               </button>
             </div>
           </div>
@@ -175,14 +175,6 @@
           </div>
           <p class="review-panel-subtitle">Diagramas visuais e explicativos de cada conceito para fixação dos conteúdos.</p>
           <div id="review-content" class="review-content"></div>
-        </section>
-
-        <section id="study-print" class="study-print" aria-hidden="true">
-          <header class="study-print-header">
-            <h2>Guia Personalizado de Revisao</h2>
-            <p>Arquitetura Computacional</p>
-          </header>
-          <div id="study-guide-content"></div>
         </section>
       </div>
     </section>
@@ -319,6 +311,10 @@
       </div>
     </section>
   </main>
+
+  <section id="study-print" class="study-print" aria-hidden="true">
+    <div id="study-guide-content"></div>
+  </section>
 
   <script src="script.js"></script>
 </body>

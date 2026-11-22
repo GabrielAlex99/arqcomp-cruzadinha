@@ -156,14 +156,14 @@ const CONCEPT_DIAGRAMS = {
   </svg>`,
 
   ULA: `<svg viewBox="0 0 240 100" class="concept-diagram-svg" aria-label="Diagrama ilustrado da ULA">
-    <path d="M40 15h60l15 35 15-35h60v25l-45 42v10H85v-10L40 40z" fill="rgba(42,159,99,0.1)" stroke="#2a9f63" stroke-width="2" stroke-linejoin="round"/>
-    <path d="M65 5v10M165 5v10" stroke="#2f80ed" stroke-width="2" stroke-linecap="round"/>
-    <text x="65" y="12" text-anchor="middle" font-size="7.5" font-weight="bold" fill="currentColor">Entrada A</text>
-    <text x="165" y="12" text-anchor="middle" font-size="7.5" font-weight="bold" fill="currentColor">Entrada B</text>
-    <text x="115" y="33" text-anchor="middle" font-size="12" font-weight="900" fill="#2a9f63">+  −  ×  ÷</text>
-    <text x="115" y="47" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#2a9f63">E / OU / &lt; / =</text>
-    <path d="M115 82v14M110 92l5 4 5-4" stroke="#2a9f63" stroke-width="2" stroke-linecap="round"/>
-    <text x="115" y="98" text-anchor="middle" font-size="8" font-weight="bold" fill="currentColor">Resultado + Flags (Zero, Carry, Sinal)</text>
+    <path d="M40 16h56l19 22 19-22h56v22l-40 38H80L40 38z" fill="rgba(42,159,99,0.1)" stroke="#2a9f63" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M68 6v10M162 6v10" stroke="#2f80ed" stroke-width="2" stroke-linecap="round"/>
+    <text x="42" y="12" text-anchor="middle" font-size="7.5" font-weight="bold" fill="currentColor">Entrada A</text>
+    <text x="188" y="12" text-anchor="middle" font-size="7.5" font-weight="bold" fill="currentColor">Entrada B</text>
+    <text x="115" y="52" text-anchor="middle" font-size="11" font-weight="900" fill="#2a9f63">+  −  ×  ÷</text>
+    <text x="115" y="66" text-anchor="middle" font-size="8.5" font-weight="bold" fill="#2a9f63">E / OU / &lt; / =</text>
+    <path d="M115 76v10M111 82l4 4 4-4" stroke="#2a9f63" stroke-width="2" stroke-linecap="round"/>
+    <text x="115" y="96" text-anchor="middle" font-size="7.5" font-weight="bold" fill="currentColor">Resultado + Flags (Zero, Carry, Sinal)</text>
   </svg>`,
 
   UC: `<svg viewBox="0 0 240 100" class="concept-diagram-svg" aria-label="Diagrama ilustrado da Unidade de Controle">
@@ -449,6 +449,89 @@ const MEMORY_TIPS = {
   MICROCONTROLADOR: "Microcontrolador: computador completo em um único chip.",
   DUALCORE: "DUALCORE: dois núcleos físicos para paralelismo.",
   QUADCORE: "QUADCORE: quatro núcleos para multitarefa."
+};
+
+const CONCEPT_STEPS = {
+  CPU: [
+    "Busca a próxima instrução na memória (Cache ou RAM) usando o endereço apontado pelo PC.",
+    "A Unidade de Controle (UC) decodifica a instrução em sinais elétricos de comando.",
+    "A ULA executa a operação e grava o resultado imediato nos Registradores internos."
+  ],
+  ULA: [
+    "Recebe dois valores binários (Entrada A e Entrada B) vindos dos Registradores.",
+    "Realiza cálculos aritméticos (+, −, ×, ÷) ou comparações lógicas (E, OU, <, =).",
+    "Devolve o resultado e atualiza as flags de estado (Zero, Carry e Sinal)."
+  ],
+  UC: [
+    "Lê a instrução carregada no Registrador de Instrução (IR).",
+    "Decodifica o código da operação (opcode) seguindo o ritmo dos pulsos de clock.",
+    "Emite sinais de leitura, escrita e seleção para sincronizar ULA, memória e barramentos."
+  ],
+  REGISTRADORES: [
+    "Recebem dados e endereços imediatos diretamente pelo barramento interno da CPU.",
+    "Mantêm operandos (R0..R7), instrução atual (IR) e próximo endereço (PC) em 1 ciclo.",
+    "Alimentam a ULA instantaneamente sem esperar o tempo de acesso da RAM."
+  ],
+  RAM: [
+    "Carrega do SSD/HD o sistema operacional e os programas abertos no momento.",
+    "Permite leitura e escrita direta em qualquer endereço físico (acesso aleatório).",
+    "Mantém os dados ativos enquanto houver energia elétrica (memória volátil)."
+  ],
+  ROM: [
+    "Armazena permanentemente de fábrica o firmware inicial (BIOS ou UEFI).",
+    "Ao ligar a máquina, executa os testes de hardware iniciais (POST).",
+    "Localiza e carrega o sistema operacional sem perder dados ao desligar."
+  ],
+  EEPROM: [
+    "Conserva configurações críticas e dados de calibração mesmo sem energia.",
+    "Recebe pulsos elétricos direcionados para apagar e regravar bytes específicos.",
+    "Atualiza parâmetros pontuais sem precisar apagar todo o conteúdo do chip."
+  ],
+  FLASH: [
+    "Organiza as informações em páginas e blocos de células eletrônicas NAND.",
+    "Para regravar dados, apaga blocos inteiros eletricamente e grava as novas páginas.",
+    "Preserva arquivos em SSDs e pendrives sem partes móveis mecânicas."
+  ],
+  CACHE: [
+    "Intercepta o pedido da CPU antes que ela precise consultar a RAM mais lenta.",
+    "Se encontrar o dado (Cache Hit), entrega em nanossegundos ao processador.",
+    "Se faltar (Cache Miss), busca na RAM e guarda uma cópia para acessos futuros."
+  ],
+  MEMORIADEMASSA: [
+    "Recebe arquivos, sistemas e programas enviados pela memória principal para gravação.",
+    "Armazena grandes volumes (GB/TB) em discos magnéticos (HD) ou módulos SSD.",
+    "Preserva tudo permanentemente após desligar, recarregando na RAM quando aberto."
+  ],
+  DMA: [
+    "A CPU informa ao controlador DMA a origem, o destino e o tamanho do bloco.",
+    "O DMA assume o barramento e transfere os dados direto entre periférico e RAM.",
+    "Ao concluir, envia um aviso (interrupção) à CPU, que ficou livre durante a cópia."
+  ],
+  ADDRESSBUS: [
+    "A CPU coloca nas trilhas do barramento o endereço binário desejado.",
+    "O sinal trafega em sentido único (unidirecional) até a RAM ou periféricos.",
+    "A posição exata de memória é selecionada para leitura ou escrita pelo Data Bus."
+  ],
+  DATABUS: [
+    "Com o endereço já selecionado, abre-se o canal de mão dupla (bidirecional).",
+    "Na leitura, conduz instruções e valores da memória ou periféricos até a CPU.",
+    "Na escrita, leva os resultados processados pela CPU de volta para a memória."
+  ],
+  MICROCONTROLADOR: [
+    "Reúne CPU, RAM, memória Flash/EEPROM e portas de E/S (GPIO) em um único chip.",
+    "Lê sinais de sensores externos continuamente pelas portas de entrada.",
+    "Executa o código embarcado e aciona motores, displays ou relés automaticamente."
+  ],
+  DUALCORE: [
+    "Divide as tarefas do sistema operacional entre dois núcleos físicos independentes.",
+    "Cada núcleo executa seu próprio ciclo buscar-decodificar-executar ao mesmo tempo.",
+    "Compartilha o cache L2/L3 e a RAM para coordenar programas sem travamentos."
+  ],
+  QUADCORE: [
+    "Distribui até quatro fluxos de trabalho entre quatro núcleos físicos dedicados.",
+    "Processa aplicativos pesados, jogos e tarefas em segundo plano em paralelo real.",
+    "Sincroniza dados entre os núcleos usando o cache compartilhado e o barramento."
+  ]
 };
 
 const DIAGNOSTIC_STORAGE_KEY = "cruzadinha_arqcomp_dificuldades_v1";
@@ -763,7 +846,7 @@ function renderClues(words, startNumbers, onClueClick) {
     li.dataset.wordKey = item.key;
     li.setAttribute("role", "button");
     li.setAttribute("tabindex", "0");
-    li.setAttribute("title", `Clique para focar "${item.word}" no tabuleiro`);
+    li.setAttribute("title", "Clique para selecionar esta pista no tabuleiro");
 
     li.addEventListener("click", () => {
       if (onClueClick) onClueClick(item);
@@ -797,7 +880,7 @@ function updateClueBar(entry, startNumbers) {
   if (!clueBar || !dirSpan || !numSpan || !textSpan || !entry) return;
 
   const number = startNumbers.get(`${entry.row},${entry.col}`) || "";
-  dirSpan.textContent = entry.dir === "H" ? "H" : "V";
+  dirSpan.textContent = entry.dir === "H" ? "Horizontal" : "Vertical";
   numSpan.textContent = `${number}.`;
   textSpan.textContent = entry.clue;
   clueBar.hidden = false;
@@ -1361,7 +1444,7 @@ function renderLearningPanel(entries) {
   });
 }
 
-function fillStudyGuide(incorrectEntries) {
+function fillStudyGuide(incorrectEntries = [], hasChecked = false) {
   const container = document.getElementById("study-guide-content");
   if (!container) {
     showAppNotice("Área de impressão do PDF não foi encontrada.");
@@ -1370,44 +1453,260 @@ function fillStudyGuide(incorrectEntries) {
   const diagnostics = loadDiagnostics();
   container.innerHTML = "";
 
-  if (incorrectEntries.length === 0) {
-    const message = document.createElement("p");
-    message.textContent = "Nenhum conceito com erro na última conferência. Parabéns pelo domínio do conteúdo!";
-    container.appendChild(message);
-    return;
+  const incorrectWords = new Set((incorrectEntries || []).map((e) => e.word));
+  const today = new Date().toLocaleDateString("pt-BR");
+
+  let statusText = "Guia Didático Completo de Referência";
+  if (hasChecked) {
+    if (incorrectWords.size === 0) {
+      statusText = "16 de 16 Acertos (Excelente Domínio!)";
+    } else {
+      const correctCount = 16 - incorrectWords.size;
+      statusText = `${correctCount} de 16 Acertos (${incorrectWords.size} em Reforço)`;
+    }
   }
 
-  const dateLine = document.createElement("p");
-  dateLine.textContent = `Gerado em: ${new Date().toLocaleDateString("pt-BR")}`;
-  container.appendChild(dateLine);
+  // 1. Header
+  const header = document.createElement("header");
+  header.className = "study-print-header";
+  header.innerHTML = `
+    <div class="study-print-title-group">
+      <h1 class="study-print-title">Guia Didático e Ilustrado de Arquitetura de Computadores</h1>
+      <p class="study-print-subtitle">Material de Fixação Passo a Passo com Diagramas Esquematizados e Fluxo de Execução</p>
+    </div>
+    <div class="study-print-meta-grid">
+      <div class="study-print-meta-card">
+        <span class="study-print-meta-label">Data de Emissão</span>
+        <span class="study-print-meta-val">${today}</span>
+      </div>
+      <div class="study-print-meta-card">
+        <span class="study-print-meta-label">Conteúdo Abrangido</span>
+        <span class="study-print-meta-val">16 Componentes Ilustrados</span>
+      </div>
+      <div class="study-print-meta-card">
+        <span class="study-print-meta-label">Diagnóstico Atual</span>
+        <span class="study-print-meta-val">${statusText}</span>
+      </div>
+    </div>
+  `;
+  container.appendChild(header);
 
-  for (const entry of incorrectEntries) {
-    const data = LEARNING_DATA[entry.word];
-    const item = document.createElement("article");
-    item.className = "study-guide-item";
+  // 2. Section: Execution Flow Step-by-Step + Visual Overview Diagram
+  const flowSection = document.createElement("section");
+  flowSection.className = "study-print-section study-print-section-keep";
+  flowSection.innerHTML = `
+    <h2 class="study-print-section-title">
+      <span class="study-print-section-number">1</span>
+      Passo a Passo do Fluxo de Execução da Arquitetura (Ciclo de Instrução)
+    </h2>
+    <p class="study-print-section-desc">Veja como cada componente atua em sequência desde a leitura de uma instrução até o armazenamento definitivo:</p>
+    <div class="execution-flow-diagram-box">
+      <svg viewBox="0 0 680 96" class="execution-flow-svg" aria-label="Diagrama visual do fluxo passo a passo da arquitetura">
+        <rect x="8" y="10" width="114" height="54" rx="6" fill="rgba(47,128,237,0.12)" stroke="#2f80ed" stroke-width="1.5"/>
+        <text x="65" y="28" text-anchor="middle" font-size="9" font-weight="bold" fill="#0f2c59">1. BUSCA (FETCH)</text>
+        <text x="65" y="42" text-anchor="middle" font-size="7.5" fill="#2f80ed" font-weight="bold">Address Bus ➔ RAM</text>
+        <text x="65" y="54" text-anchor="middle" font-size="7" fill="#3b516b">Localiza a instrução</text>
 
-    const title = document.createElement("h3");
-    title.textContent = entry.word;
+        <path d="M122 37h18M135 32l6 5-6 5" fill="none" stroke="#2f80ed" stroke-width="1.8" stroke-linecap="round"/>
 
-    const definition = document.createElement("p");
-    definition.innerHTML = `<strong>Definição:</strong> ${entry.clue}`;
+        <rect x="144" y="10" width="114" height="54" rx="6" fill="rgba(242,153,74,0.14)" stroke="#d9822b" stroke-width="1.5"/>
+        <text x="201" y="28" text-anchor="middle" font-size="9" font-weight="bold" fill="#0f2c59">2. DECODIFICA</text>
+        <text x="201" y="42" text-anchor="middle" font-size="7.5" fill="#b46312" font-weight="bold">Unidade de Controle</text>
+        <text x="201" y="54" text-anchor="middle" font-size="7" fill="#3b516b">Interpreta o comando</text>
 
-    const functioning = document.createElement("p");
-    functioning.innerHTML = `<strong>Funcionamento na arquitetura:</strong> ${data.explanation} ${data.example}`;
+        <path d="M258 37h18M271 32l6 5-6 5" fill="none" stroke="#2f80ed" stroke-width="1.8" stroke-linecap="round"/>
 
-    const tip = document.createElement("p");
-    tip.innerHTML = `<strong>Dica de memorização:</strong> ${MEMORY_TIPS[entry.word]}`;
+        <rect x="280" y="10" width="114" height="54" rx="6" fill="rgba(42,159,99,0.14)" stroke="#2a9f63" stroke-width="1.5"/>
+        <text x="337" y="28" text-anchor="middle" font-size="9" font-weight="bold" fill="#0f2c59">3. EXECUTA</text>
+        <text x="337" y="42" text-anchor="middle" font-size="7.5" fill="#1e7e4e" font-weight="bold">ULA + Registradores</text>
+        <text x="337" y="54" text-anchor="middle" font-size="7" fill="#3b516b">Calcula e compara</text>
 
-    const history = document.createElement("p");
-    history.innerHTML = `<strong>Frequência de dificuldade:</strong> ${diagnostics[entry.word] || 0} conferência(s).`;
+        <path d="M394 37h18M407 32l6 5-6 5" fill="none" stroke="#2f80ed" stroke-width="1.8" stroke-linecap="round"/>
 
-    item.appendChild(title);
-    item.appendChild(definition);
-    item.appendChild(functioning);
-    item.appendChild(tip);
-    item.appendChild(history);
-    container.appendChild(item);
+        <rect x="416" y="10" width="114" height="54" rx="6" fill="rgba(155,81,224,0.12)" stroke="#9b51e0" stroke-width="1.5"/>
+        <text x="473" y="28" text-anchor="middle" font-size="9" font-weight="bold" fill="#0f2c59">4. TRANSFERE</text>
+        <text x="473" y="42" text-anchor="middle" font-size="7.5" fill="#7c3aed" font-weight="bold">Data Bus &amp; DMA</text>
+        <text x="473" y="54" text-anchor="middle" font-size="7" fill="#3b516b">Move blocos de dados</text>
+
+        <path d="M530 37h18M543 32l6 5-6 5" fill="none" stroke="#2f80ed" stroke-width="1.8" stroke-linecap="round"/>
+
+        <rect x="552" y="10" width="118" height="54" rx="6" fill="rgba(100,116,139,0.14)" stroke="#64748b" stroke-width="1.5"/>
+        <text x="611" y="28" text-anchor="middle" font-size="9" font-weight="bold" fill="#0f2c59">5. PERSISTE</text>
+        <text x="611" y="42" text-anchor="middle" font-size="7.5" fill="#475569" font-weight="bold">Flash, ROM &amp; Massa</text>
+        <text x="611" y="54" text-anchor="middle" font-size="7" fill="#3b516b">Grava permanentemente</text>
+
+        <path d="M611 64v17H65V67M60 72l5-6 5 6" fill="none" stroke="#2f80ed" stroke-width="1.4" stroke-dasharray="4,3"/>
+        <rect x="225" y="73" width="230" height="16" rx="8" fill="#ffffff" stroke="#c8daf0" stroke-width="1"/>
+        <text x="340" y="84" text-anchor="middle" font-size="7.5" font-weight="bold" fill="#1a569d">Ciclo contínuo sincronizado pelo clock (próxima instrução no PC)</text>
+      </svg>
+    </div>
+    <div class="execution-flow-grid">
+      <div class="execution-flow-card">
+        <span class="execution-flow-step-tag">Passo 1</span>
+        <h4 class="execution-flow-step-title">Busca (Fetch)</h4>
+        <p class="execution-flow-step-desc">O PC nos <strong>REGISTRADORES</strong> aponta o endereço. O <strong>ADDRESS BUS</strong> busca na <strong>CACHE</strong> ou <strong>RAM</strong> e traz os bits pelo <strong>DATA BUS</strong>.</p>
+      </div>
+      <div class="execution-flow-card">
+        <span class="execution-flow-step-tag">Passo 2</span>
+        <h4 class="execution-flow-step-title">Decodificação</h4>
+        <p class="execution-flow-step-desc">A <strong>UC</strong> (Unidade de Controle) interpreta o opcode da instrução e gera pulsos sincronizados de clock para os circuitos internos.</p>
+      </div>
+      <div class="execution-flow-card">
+        <span class="execution-flow-step-tag">Passo 3</span>
+        <h4 class="execution-flow-step-title">Execução</h4>
+        <p class="execution-flow-step-desc">A <strong>ULA</strong> executa cálculos e comparações. Em CPUs <strong>DUALCORE</strong> ou <strong>QUADCORE</strong>, vários núcleos operam em paralelo.</p>
+      </div>
+      <div class="execution-flow-card">
+        <span class="execution-flow-step-tag">Passo 4</span>
+        <h4 class="execution-flow-step-title">E/S e Barramentos</h4>
+        <p class="execution-flow-step-desc">O <strong>DATA BUS</strong> transfere dados processados. O controlador <strong>DMA</strong> move blocos de periféricos sem sobrecarregar a <strong>CPU</strong>.</p>
+      </div>
+      <div class="execution-flow-card">
+        <span class="execution-flow-step-tag">Passo 5</span>
+        <h4 class="execution-flow-step-title">Persistência</h4>
+        <p class="execution-flow-step-desc">A <strong>ROM</strong>/<strong>EEPROM</strong> guarda o firmware de partida. Arquivos definitivos ficam em <strong>FLASH</strong> ou <strong>MEMÓRIA DE MASSA</strong>.</p>
+      </div>
+    </div>
+  `;
+  container.appendChild(flowSection);
+
+  // 3. Section: Memory Hierarchy Pyramid (Properly Proportioned SVG)
+  const hierarchySection = document.createElement("section");
+  hierarchySection.className = "study-print-section study-print-section-keep";
+  hierarchySection.innerHTML = `
+    <h2 class="study-print-section-title">
+      <span class="study-print-section-number">2</span>
+      Pirâmide Hierárquica de Memórias (Velocidade vs. Custo vs. Capacidade)
+    </h2>
+    <p class="study-print-section-desc">Quanto mais próxima do processador, mais rápida e cara por byte é a memória; quanto mais na base, maior sua capacidade de armazenamento:</p>
+    <div class="memory-hierarchy-box">
+      <svg viewBox="0 0 680 170" class="memory-hierarchy-svg" aria-label="Pirâmide de Hierarquia de Memória">
+        <!-- Left Scale Indicators -->
+        <rect x="6" y="12" width="84" height="36" rx="5" fill="rgba(47,128,237,0.12)" stroke="#2f80ed" stroke-width="1"/>
+        <text x="48" y="26" text-anchor="middle" font-size="8" font-weight="bold" fill="#1a569d">▲ TOPO</text>
+        <text x="48" y="37" text-anchor="middle" font-size="7" fill="#0f2c59">+ Rápida / + Cara</text>
+        <path d="M48 52v64M44 58l4-6 4 6M44 110l4 6 4-6" fill="none" stroke="#64748b" stroke-width="1.4" stroke-linecap="round"/>
+        <rect x="6" y="120" width="84" height="36" rx="5" fill="rgba(100,116,139,0.12)" stroke="#64748b" stroke-width="1"/>
+        <text x="48" y="134" text-anchor="middle" font-size="8" font-weight="bold" fill="#334155">▼ BASE</text>
+        <text x="48" y="145" text-anchor="middle" font-size="7" fill="#0f2c59">+ Espaço / - Custo</text>
+
+        <!-- Pyramid Tiers (Truncated top so text always fits comfortably inside) -->
+        <polygon points="215,12 315,12 335,38 195,38" fill="rgba(235,87,87,0.18)" stroke="#eb5757" stroke-width="1.5"/>
+        <text x="265" y="28" text-anchor="middle" font-size="8.5" font-weight="bold" fill="#0f2c59">1. REGISTRADORES</text>
+
+        <polygon points="192,42 338,42 358,68 172,68" fill="rgba(47,128,237,0.18)" stroke="#2f80ed" stroke-width="1.5"/>
+        <text x="265" y="58" text-anchor="middle" font-size="8.5" font-weight="bold" fill="#0f2c59">2. CACHE (L1 / L2 / L3)</text>
+
+        <polygon points="169,72 361,72 381,98 149,98" fill="rgba(42,159,99,0.18)" stroke="#2a9f63" stroke-width="1.5"/>
+        <text x="265" y="88" text-anchor="middle" font-size="8.5" font-weight="bold" fill="#0f2c59">3. MEMÓRIA RAM</text>
+
+        <polygon points="146,102 384,102 404,128 126,128" fill="rgba(242,153,74,0.18)" stroke="#d9822b" stroke-width="1.5"/>
+        <text x="265" y="118" text-anchor="middle" font-size="8.5" font-weight="bold" fill="#0f2c59">4. FLASH / EEPROM / ROM</text>
+
+        <polygon points="123,132 407,132 427,158 103,158" fill="rgba(100,116,139,0.18)" stroke="#64748b" stroke-width="1.5"/>
+        <text x="265" y="148" text-anchor="middle" font-size="8.5" font-weight="bold" fill="#0f2c59">5. MEMÓRIA DE MASSA (HD / SSD)</text>
+
+        <!-- Right Callout Connectors & Labels -->
+        <path d="M328 25h112" stroke="#eb5757" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="446" y="28" font-size="8" fill="#1f2937"><tspan font-weight="bold" fill="#b91c1c">Dentro da CPU</tspan> • Acesso em 1 ciclo de clock</text>
+
+        <path d="M351 55h89" stroke="#2f80ed" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="446" y="58" font-size="8" fill="#1f2937"><tspan font-weight="bold" fill="#1d4ed8">Atalho SRAM</tspan> • Reduz o gargalo com a RAM</text>
+
+        <path d="M374 85h66" stroke="#2a9f63" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="446" y="88" font-size="8" fill="#1f2937"><tspan font-weight="bold" fill="#15803d">Principal Volátil</tspan> • Programas abertos em uso</text>
+
+        <path d="M397 115h43" stroke="#d9822b" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="446" y="118" font-size="8" fill="#1f2937"><tspan font-weight="bold" fill="#b45309">Não Volátil</tspan> • BIOS, configurações e blocos NAND</text>
+
+        <path d="M420 145h20" stroke="#64748b" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="446" y="148" font-size="8" fill="#1f2937"><tspan font-weight="bold" fill="#334155">Persistente</tspan> • Terabytes para arquivos e SO</text>
+      </svg>
+    </div>
+  `;
+  container.appendChild(hierarchySection);
+
+  // 4. Section: 16 Illustrated Concepts with Step-by-Step Breakdown
+  const cardsSection = document.createElement("section");
+  cardsSection.className = "study-print-section";
+  cardsSection.innerHTML = `
+    <h2 class="study-print-section-title">
+      <span class="study-print-section-number">3</span>
+      Fichas Didáticas Ilustradas Passo a Passo (16 Componentes)
+    </h2>
+    <p class="study-print-section-desc">Cada ficha apresenta o diagrama esquemático, a definição técnica, o funcionamento passo a passo em 3 etapas, um exemplo prático e uma dica de fixação:</p>
+  `;
+
+  const grid = document.createElement("div");
+  grid.className = "study-guide-grid";
+
+  // Sort concepts: incorrect words first, then alphabetical
+  const sortedWords = [...WORDS].sort((a, b) => {
+    const aInc = incorrectWords.has(a.word) ? 1 : 0;
+    const bInc = incorrectWords.has(b.word) ? 1 : 0;
+    if (aInc !== bInc) return bInc - aInc;
+    return a.word.localeCompare(b.word);
+  });
+
+  for (const entry of sortedWords) {
+    const data = LEARNING_DATA[entry.word] || { explanation: "", example: "" };
+    const steps = CONCEPT_STEPS[entry.word] || [];
+    const category = CATEGORIES[entry.word] || "arquitetura";
+    const categoryLabel = CATEGORY_LABELS[category] || "Componente";
+    const isPriority = incorrectWords.has(entry.word);
+    const difficultyCount = diagnostics[entry.word] || 0;
+
+    const card = document.createElement("article");
+    card.className = `study-guide-card ${isPriority ? "is-priority-review" : ""}`;
+
+    const priorityCountLabel = difficultyCount > 0
+      ? ` (${difficultyCount} erro${difficultyCount === 1 ? "" : "s"})`
+      : "";
+    const priorityBadge = isPriority
+      ? `<span class="study-guide-badge priority-badge">&#9888; Reforço Prioritário${priorityCountLabel}</span>`
+      : "";
+
+    const stepsHtml = steps.length > 0
+      ? `<div class="study-guide-steps-box">
+          <span class="study-guide-steps-heading">Funcionamento passo a passo:</span>
+          <ol class="study-guide-steps">
+            ${steps.map((step) => `<li>${step}</li>`).join("")}
+          </ol>
+        </div>`
+      : `<p class="study-guide-card-row"><strong>Como funciona:</strong> ${data.explanation}</p>`;
+
+    card.innerHTML = `
+      <div class="study-guide-card-header">
+        <h3 class="study-guide-card-title">${entry.word}</h3>
+        <div class="study-guide-card-badges">
+          ${priorityBadge}
+          <span class="study-guide-badge">${categoryLabel}</span>
+        </div>
+      </div>
+      <div class="study-guide-card-diagram">
+        ${CONCEPT_DIAGRAMS[entry.word] || ""}
+      </div>
+      <div class="study-guide-card-body">
+        <p class="study-guide-card-row"><strong>O que é:</strong> ${entry.clue}</p>
+        ${stepsHtml}
+        <p class="study-guide-card-row"><strong>Na prática:</strong> ${data.example}</p>
+        <div class="study-guide-tip-box">
+          <strong>Dica de fixação:</strong> ${MEMORY_TIPS[entry.word]}
+        </div>
+      </div>
+    `;
+
+    grid.appendChild(card);
   }
+
+  cardsSection.appendChild(grid);
+  container.appendChild(cardsSection);
+
+  // 5. Footer
+  const footer = document.createElement("footer");
+  footer.className = "study-print-footer";
+  footer.textContent = "Guia Didático de Arquitetura Computacional — Material educativo gerado localmente via impressão nativa do navegador.";
+  container.appendChild(footer);
 }
 
 function printStudyGuide() {
@@ -2017,12 +2316,7 @@ function setupControls(state) {
   });
 
   pdfButton.addEventListener("click", () => {
-    if (!hasCheckedAtLeastOnce) {
-      showAppNotice("Primeiro clique em Conferir para gerar o material personalizado.", "warning");
-      return;
-    }
-
-    fillStudyGuide(lastIncorrectEntries);
+    fillStudyGuide(lastIncorrectEntries, hasCheckedAtLeastOnce);
     printStudyGuide();
   });
 

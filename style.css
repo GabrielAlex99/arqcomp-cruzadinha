@@ -683,12 +683,23 @@ body.light-theme .controls-actions .btn-study {
   color: #12437b;
 }
 
+.controls-actions .btn-pdf,
 .controls-actions #pdf-button {
-  background: #eaf3ff;
+  background: var(--clue-bg);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
+.controls-actions .btn-pdf:hover,
+.controls-actions #pdf-button:hover {
+  background: #d4e7ff;
+}
+
+body.light-theme .controls-actions .btn-pdf,
 body.light-theme .controls-actions #pdf-button {
-  background: #e0ecff;
+  background: #e5efff;
+  border-color: #7faee6;
+  color: #11427a;
 }
 
 /* ===== Clue Bar ===== */
@@ -719,14 +730,18 @@ body.light-theme .controls-actions #pdf-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: auto;
+  min-width: 86px;
+  height: 26px;
+  padding: 0 12px;
   background: var(--accent);
   color: #fff;
-  border-radius: 6px;
+  border-radius: 999px;
   font-size: 0.72rem;
   font-weight: 800;
-  flex: 0 0 24px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  flex: 0 0 auto;
 }
 
 .clue-bar-number {
@@ -1940,6 +1955,10 @@ body.light-theme .arch-block {
     grid-template-columns: repeat(2, 1fr);
   }
 
+  .top-controls .controls-actions #pdf-button {
+    grid-column: 1 / -1;
+  }
+
   .architecture-controls .controls-actions {
     width: 100%;
     display: grid;
@@ -2006,64 +2025,371 @@ body.light-theme .arch-block {
 
 /* ===== Print ===== */
 @media print {
-  body.printing-study-guide * {
-    visibility: hidden !important;
+  @page {
+    margin: 10mm 12mm;
+    size: A4 portrait;
   }
 
-  body.printing-study-guide .study-print,
-  body.printing-study-guide .study-print * {
-    visibility: visible !important;
+  body {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background: #ffffff !important;
+    color: #111827 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body.printing-study-guide > :not(.study-print) {
+    display: none !important;
   }
 
   body.printing-study-guide .study-print {
     display: block !important;
-    position: absolute;
-    left: 0;
-    top: 0;
+    position: static;
     width: 100%;
     margin: 0;
     padding: 0;
-    background: #fff;
-    color: #000;
-    font-family: "Segoe UI", Arial, sans-serif;
+    background: #ffffff;
+    color: #111827;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
   }
 
-  body.printing-study-guide .study-print-header {
-    border-bottom: 1px solid #000;
+  /* Print Header */
+  .study-print-header {
+    border-bottom: 2px solid #2f80ed;
+    padding-bottom: 10px;
     margin-bottom: 14px;
-    padding-bottom: 8px;
-  }
-
-  body.printing-study-guide .study-print-header h2 {
-    margin: 0 0 4px;
-    font-size: 20px;
-  }
-
-  body.printing-study-guide .study-print-header p {
-    margin: 0;
-    font-size: 12px;
-  }
-
-  body.printing-study-guide #study-guide-content {
-    display: block;
-  }
-
-  body.printing-study-guide .study-guide-item {
     break-inside: avoid;
     page-break-inside: avoid;
-    border: 1px solid #000;
-    margin-bottom: 10px;
+  }
+
+  .study-print-title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .study-print-title {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #0f2c59;
+    letter-spacing: -0.01em;
+  }
+
+  .study-print-subtitle {
+    margin: 0;
+    font-size: 0.8rem;
+    color: #4a6280;
+    font-weight: 500;
+  }
+
+  .study-print-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .study-print-meta-card {
+    background: #f4f8fe !important;
+    border: 1px solid #cce0f8;
+    border-radius: 6px;
+    padding: 6px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .study-print-meta-label {
+    font-size: 0.63rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #4b6a93;
+  }
+
+  .study-print-meta-val {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #0f2c59;
+  }
+
+  /* Print Sections */
+  .study-print-section {
+    margin-bottom: 14px;
+  }
+
+  .study-print-section-keep {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .study-print-section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+    font-weight: 800;
+    color: #0f2c59;
+    margin: 0 0 6px 0;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #d5e4f7;
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  .study-print-section-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 21px;
+    height: 21px;
+    background: #2f80ed !important;
+    color: #ffffff !important;
+    border-radius: 50%;
+    font-size: 0.72rem;
+    font-weight: 800;
+    flex: 0 0 21px;
+  }
+
+  .study-print-section-desc {
+    margin: 0 0 8px 0;
+    font-size: 0.76rem;
+    color: #556c88;
+    line-height: 1.35;
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  /* Overview Diagram + Step by Step Execution Flow */
+  .execution-flow-diagram-box {
+    background: #f8fbff !important;
+    border: 1px solid #cddff6;
+    border-radius: 6px;
+    padding: 6px 8px;
+    margin-bottom: 8px;
+  }
+
+  .execution-flow-svg {
+    width: 100%;
+    max-height: 92px;
+    display: block;
+    margin: 0 auto;
+  }
+
+  .execution-flow-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+
+  .execution-flow-card {
+    background: #f8fbff !important;
+    border: 1px solid #c7ddf7;
+    border-radius: 6px;
+    padding: 7px 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-align: left;
+  }
+
+  .execution-flow-step-tag {
+    align-self: flex-start;
+    font-size: 0.62rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #1a569d;
+    background: #e1effe !important;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .execution-flow-step-title {
+    font-size: 0.73rem;
+    font-weight: 800;
+    color: #0f2c59;
+    margin: 0;
+  }
+
+  .execution-flow-step-desc {
+    font-size: 0.66rem;
+    color: #3b516b;
+    line-height: 1.32;
+    margin: 0;
+  }
+
+  /* Memory Hierarchy Pyramid */
+  .memory-hierarchy-box {
+    background: #f7fafc !important;
+    border: 1px solid #cddde9;
+    border-radius: 6px;
     padding: 8px 10px;
+    margin-bottom: 8px;
   }
 
-  body.printing-study-guide .study-guide-item h3 {
-    margin: 0 0 6px;
-    font-size: 15px;
+  .memory-hierarchy-svg {
+    width: 100%;
+    max-height: 158px;
+    display: block;
+    margin: 0 auto;
   }
 
-  body.printing-study-guide .study-guide-item p {
-    margin: 4px 0;
-    font-size: 12px;
-    line-height: 1.4;
+  /* Concepts Grid */
+  .study-guide-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .study-guide-card {
+    border: 1px solid #c8daf0;
+    border-radius: 8px;
+    padding: 9px 10px;
+    background: #ffffff !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .study-guide-card.is-priority-review {
+    border: 1.5px solid #d9383a;
+    background: #fffcfc !important;
+  }
+
+  .study-guide-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .study-guide-card-title {
+    margin: 0;
+    font-size: 0.92rem;
+    font-weight: 800;
+    color: #0f2c59;
+    letter-spacing: 0.02em;
+  }
+
+  .study-guide-card-badges {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+
+  .study-guide-badge {
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: #e8f2fe !important;
+    color: #1a569d;
+    border: 1px solid #b9d7fb;
+  }
+
+  .study-guide-badge.priority-badge {
+    background: #fde8e8 !important;
+    color: #b01818;
+    border-color: #f8b4b4;
+  }
+
+  .study-guide-card-diagram {
+    width: 100%;
+    height: 76px;
+    border-radius: 6px;
+    background: #f4f8fe !important;
+    border: 1px solid #dae7f7;
+    color: #0f2c59;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 6px;
+    overflow: hidden;
+  }
+
+  .study-guide-card-diagram svg {
+    max-height: 68px;
+    width: 100%;
+  }
+
+  .study-guide-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 0.7rem;
+    line-height: 1.35;
+    color: #2b3b4e;
+  }
+
+  .study-guide-card-row {
+    margin: 0;
+  }
+
+  .study-guide-card-row strong {
+    color: #0f2c59;
+    font-weight: 700;
+  }
+
+  .study-guide-steps-box {
+    background: #f8fbff !important;
+    border: 1px solid #d9e7f7;
+    border-radius: 5px;
+    padding: 5px 8px;
+  }
+
+  .study-guide-steps-heading {
+    display: block;
+    font-size: 0.66rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: #1a569d;
+    margin-bottom: 3px;
+  }
+
+  .study-guide-steps {
+    margin: 0;
+    padding-left: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .study-guide-steps li {
+    font-size: 0.67rem;
+    line-height: 1.3;
+    color: #23374d;
+  }
+
+  .study-guide-tip-box {
+    background: #fffbe8 !important;
+    border: 1px solid #f6e09c;
+    border-radius: 5px;
+    padding: 4px 8px;
+    font-size: 0.67rem;
+    color: #725008;
+    margin-top: auto;
+    line-height: 1.3;
+  }
+
+  .study-guide-tip-box strong {
+    color: #553b03;
+  }
+
+  .study-print-footer {
+    margin-top: 14px;
+    padding-top: 8px;
+    border-top: 1px solid #d5e4f7;
+    font-size: 0.68rem;
+    color: #5a708c;
+    text-align: center;
   }
 }
