@@ -105,7 +105,7 @@
               </button>
               <button id="toggle-study-button" type="button" class="btn-study" title="Mostrar ou ocultar o modo de aprendizagem ativa">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 7h8M8 11h5"/></svg>
-                <span id="toggle-study-btn-text">Ocultar Aprendizagem</span>
+                <span id="toggle-study-btn-text">Mostrar Aprendizagem</span>
               </button>
               <button id="reset-button" type="button">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
@@ -126,6 +126,7 @@
             <span id="clue-bar-text" class="clue-bar-text"></span>
           </div>
           <div id="board" class="board" role="grid" aria-label="Tabuleiro da cruzadinha"></div>
+          <p class="board-scroll-hint" aria-hidden="true">&#8596; Deslize para os lados para ver o tabuleiro inteiro</p>
         </section>
 
         <section class="clues-section">
@@ -155,7 +156,7 @@
           </div>
         </section>
 
-        <section id="review-panel" class="review-panel review-panel-open">
+        <section id="review-panel" class="review-panel is-collapsed">
           <div class="review-panel-header">
             <div class="review-panel-title-wrap">
               <h2 class="panel-title">
@@ -168,12 +169,12 @@
               </h2>
               <span class="review-panel-badge">16 Conceitos Ilustrados</span>
             </div>
-            <button id="review-toggle-btn" class="review-toggle-btn" type="button" aria-expanded="true">
-              <span id="review-toggle-text">Ocultar revisão</span>
+            <button id="review-toggle-btn" class="review-toggle-btn" type="button" aria-expanded="false" aria-controls="review-content">
+              <span id="review-toggle-text">Mostrar revisão</span>
               <svg class="toggle-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
             </button>
           </div>
-          <p class="review-panel-subtitle">Diagramas visuais e explicativos de cada conceito para fixação dos conteúdos.</p>
+          <p class="review-panel-subtitle">Diagramas visuais e explicativos de cada conceito. Atenção: contém as respostas da cruzadinha!</p>
           <div id="review-content" class="review-content"></div>
         </section>
       </div>
@@ -308,6 +309,7 @@
           </div>
         </header>
         <div id="glossary-cards" class="glossary-cards"></div>
+        <p id="glossary-empty" class="glossary-empty" role="status" hidden>Nenhum conceito encontrado. Tente outra palavra ou escolha &quot;Todos&quot; nos filtros.</p>
       </div>
     </section>
   </main>

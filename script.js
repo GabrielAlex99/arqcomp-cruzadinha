@@ -2080,6 +2080,7 @@ function setupArchitectureChallenge() {
 function setupGlossary() {
   const cardsContainer = document.getElementById("glossary-cards");
   const searchInput = document.getElementById("glossary-search");
+  const emptyMessage = document.getElementById("glossary-empty");
   const filterButtons = document.querySelectorAll(".filter-btn");
 
   if (!cardsContainer) return;
@@ -2125,11 +2126,17 @@ function setupGlossary() {
   let currentSearch = "";
 
   function filterCards() {
+    let visibleCount = 0;
     cards.forEach((card) => {
       const matchCat = currentCategory === "all" || card.dataset.category === currentCategory;
       const matchSearch = !currentSearch || card.dataset.search.includes(currentSearch);
-      card.classList.toggle("is-hidden", !(matchCat && matchSearch));
+      const isVisible = matchCat && matchSearch;
+      card.classList.toggle("is-hidden", !isVisible);
+      if (isVisible) visibleCount += 1;
     });
+    if (emptyMessage) {
+      emptyMessage.hidden = visibleCount > 0;
+    }
   }
 
   if (searchInput) {
@@ -2208,6 +2215,9 @@ function setupControls(state) {
     });
   }
 
+  // O painel de revisão contém as respostas: começa recolhido para não estragar o jogo.
+  setStudyPanelVisibility(false);
+
   function onRevealWord(entry) {
     timer.start();
     revealedWordKeys.add(entry.key);
@@ -2281,9 +2291,8 @@ function setupControls(state) {
     hasCheckedAtLeastOnce = true;
     previousResults = results;
 
-    setStudyPanelVisibility(true, true);
-
     if (correctCount === totalWords) {
+      setStudyPanelVisibility(true, false);
       timer.stop();
       showCelebration(timer.getTimeFormatted());
       binaryMode.activateMode();
