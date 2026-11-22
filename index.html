@@ -233,33 +233,47 @@
         </header>
 
         <section class="architecture-controls">
-          <p id="arch-status" aria-live="polite">0 de 9 componentes corretos</p>
-          <div class="controls-actions">
-            <button id="arch-check" type="button">
+          <div class="architecture-controls-bar">
+            <p id="arch-status" aria-live="polite">0 de 9 componentes corretos</p>
+            <div class="controls-actions">
+              <button id="arch-check" type="button">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M20 6L9 17l-5-5" />
+                </svg>
+                Conferir
+              </button>
+              <button id="arch-reset" type="button">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M1 4v6h6" />
+                  <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
+                </svg>
+                Reiniciar
+              </button>
+              <button id="arch-solve" type="button" class="btn-reveal">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" fill="none" />
+                  <circle cx="12" cy="12" r="3" fill="none" />
+                </svg>
+                Resolver
+              </button>
+            </div>
+          </div>
+          <div id="arch-feedback" class="arch-feedback" hidden aria-live="polite"></div>
+        </section>
+
+        <section class="architecture-bank-panel" aria-label="Banco de peças arrastáveis">
+          <div class="arch-bank-header">
+            <div class="arch-bank-title-group">
+              <h3>Banco de peças</h3>
+              <span id="arch-bank-hint" class="arch-bank-hint">Arraste ou clique numa peça e depois no encaixe</span>
+            </div>
+            <button id="arch-quick-check" type="button" class="arch-quick-check" title="Conferir encaixes atuais">
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M20 6L9 17l-5-5" />
               </svg>
               Conferir
             </button>
-            <button id="arch-reset" type="button">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M1 4v6h6" />
-                <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
-              </svg>
-              Reiniciar
-            </button>
-            <button id="arch-solve" type="button" class="btn-reveal">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" fill="none" />
-                <circle cx="12" cy="12" r="3" fill="none" />
-              </svg>
-              Resolver
-            </button>
           </div>
-        </section>
-
-        <section class="architecture-bank-panel">
-          <h3>Banco de peças</h3>
           <div id="arch-cards-bank" class="arch-cards-bank"></div>
         </section>
 

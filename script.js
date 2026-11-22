@@ -1843,11 +1843,15 @@ function setupBinaryEasterEgg() {
 
 function setupArchitectureChallenge() {
   const bank = document.getElementById("arch-cards-bank");
+  const bankPanel = document.querySelector(".architecture-bank-panel");
+  const bankHint = document.getElementById("arch-bank-hint");
   const diagram = document.getElementById("arch-diagram");
   const checkButton = document.getElementById("arch-check");
+  const quickCheckButton = document.getElementById("arch-quick-check");
   const resetButton = document.getElementById("arch-reset");
   const solveButton = document.getElementById("arch-solve");
   const status = document.getElementById("arch-status");
+  const feedbackBox = document.getElementById("arch-feedback");
 
   if (!bank || !diagram || !checkButton || !resetButton || !status) {
     return;
@@ -1888,11 +1892,72 @@ function setupArchitectureChallenge() {
     }
   }
 
+  function updateBankHint() {
+    const remaining = bank.querySelectorAll(".arch-card").length;
+    bank.classList.toggle("is-empty", remaining === 0);
+    if (!bankHint) return;
+
+    if (selectedCardId) {
+      const card = cardsById.get(selectedCardId);
+      const label = card ? card.textContent : selectedCardId;
+      const inSlot = locationByCard.get(selectedCardId) !== "bank";
+      bankHint.textContent = inSlot
+        ? `Selecionada: ${label} — clique em outro encaixe ou aqui no banco para devolver`
+        : `Selecionada: ${label} — clique em um encaixe abaixo`;
+      bankHint.classList.add("is-active");
+      return;
+    }
+
+    bankHint.classList.remove("is-active");
+    if (remaining === 0) {
+      bankHint.textContent = "Todas as 9 peças encaixadas! Clique em Conferir.";
+    } else {
+      bankHint.textContent = `${remaining} peça${remaining === 1 ? "" : "s"} no banco — arraste ou clique na peça e depois no encaixe`;
+    }
+  }
+
+  function setSlotCardFeedback(slot, state, detailText) {
+    const slotCard = slot.closest(".arch-slot-card");
+    if (!slotCard) return;
+
+    slotCard.classList.remove("is-correct", "is-incorrect", "is-empty");
+    const oldBadge = slotCard.querySelector(".arch-slot-badge");
+    if (oldBadge) oldBadge.remove();
+    const oldNote = slotCard.querySelector(".arch-slot-note");
+    if (oldNote) oldNote.remove();
+
+    if (!state) return;
+
+    slotCard.classList.add(`is-${state}`);
+    const badge = document.createElement("span");
+    badge.className = `arch-slot-badge arch-slot-badge-${state}`;
+    if (state === "correct") {
+      badge.textContent = "✓ Correto";
+    } else if (state === "incorrect") {
+      badge.textContent = "✗ Incorreto";
+    } else {
+      badge.textContent = "• Sem peça";
+    }
+    slotCard.appendChild(badge);
+
+    if (detailText) {
+      const note = document.createElement("span");
+      note.className = `arch-slot-note arch-slot-note-${state}`;
+      note.textContent = detailText;
+      slotCard.appendChild(note);
+    }
+  }
+
   function clearSlotState() {
     slots.forEach((slot) => {
-      slot.classList.remove("arch-correct", "arch-incorrect", "is-over");
+      slot.classList.remove("arch-correct", "arch-incorrect", "arch-empty", "is-over");
       slot.removeAttribute("title");
+      setSlotCardFeedback(slot, null, "");
     });
+    if (feedbackBox) {
+      feedbackBox.hidden = true;
+      feedbackBox.innerHTML = "";
+    }
   }
 
   function setSelectedCard(cardId) {
@@ -1900,6 +1965,7 @@ function setupArchitectureChallenge() {
     for (const [id, card] of cardsById.entries()) {
       card.classList.toggle("is-selected", id === selectedCardId);
     }
+    updateBankHint();
   }
 
   function updateSlotHasCard(slot) {
@@ -1907,7 +1973,7 @@ function setupArchitectureChallenge() {
     slot.classList.toggle("has-card", hasCard);
   }
 
-  function moveCardToBank(cardId) {
+  function moveCardToBank(cardId, clearState = false) {
     const card = cardsById.get(cardId);
     if (!card) return;
     const previousLocation = locationByCard.get(cardId);
@@ -1919,9 +1985,13 @@ function setupArchitectureChallenge() {
         updateSlotHasCard(previousSlot);
       }
     }
+    if (clearState) {
+      clearSlotState();
+    }
+    updateBankHint();
   }
 
-  function placeCardInSlot(cardId, slot) {
+  function placeCardInSlot(cardId, slot, clearState = true) {
     const card = cardsById.get(cardId);
     if (!card || !slot) return;
 
@@ -1945,7 +2015,9 @@ function setupArchitectureChallenge() {
       const oldSlot = slotById.get(currentLocation);
       if (oldSlot) updateSlotHasCard(oldSlot);
     }
-    clearSlotState();
+    if (clearState) {
+      clearSlotState();
+    }
     setSelectedCard(null);
   }
 
@@ -1957,7 +2029,8 @@ function setupArchitectureChallenge() {
     card.dataset.cardId = component.id;
     card.draggable = true;
 
-    card.addEventListener("click", () => {
+    card.addEventListener("click", (event) => {
+      event.stopPropagation();
       if (selectedCardId === component.id) {
         setSelectedCard(null);
       } else {
@@ -1976,26 +2049,109 @@ function setupArchitectureChallenge() {
     return card;
   }
 
-  function evaluateDiagram() {
+  function renderArchFeedback(correctLabels, wrongLabels, emptyCount) {
+    if (!feedbackBox) return;
+
+    if (correctLabels.length === slots.length) {
+      feedbackBox.innerHTML = `<p class="arch-feedback-success"><strong>&#10003; Parabéns!</strong> Você acertou todos os ${slots.length} componentes da arquitetura.</p>`;
+      feedbackBox.hidden = false;
+      return;
+    }
+
+    if (correctLabels.length === 0 && wrongLabels.length === 0) {
+      feedbackBox.innerHTML = `<p class="arch-feedback-empty-msg">Nenhum encaixe foi preenchido ainda. Arraste ou clique nas peças do banco e coloque nos blocos do diagrama.</p>`;
+      feedbackBox.hidden = false;
+      return;
+    }
+
+    const parts = [];
+    if (correctLabels.length > 0) {
+      parts.push(`
+        <div class="arch-feedback-group">
+          <span class="arch-feedback-label is-correct">&#10003; Acertos (${correctLabels.length}):</span>
+          <div class="arch-feedback-chips">
+            ${correctLabels.map((label) => `<span class="arch-chip is-correct">${label}</span>`).join("")}
+          </div>
+        </div>
+      `);
+    }
+    if (wrongLabels.length > 0) {
+      parts.push(`
+        <div class="arch-feedback-group">
+          <span class="arch-feedback-label is-incorrect">&#10007; No lugar errado (${wrongLabels.length}):</span>
+          <div class="arch-feedback-chips">
+            ${wrongLabels.map((label) => `<span class="arch-chip is-incorrect">${label}</span>`).join("")}
+          </div>
+        </div>
+      `);
+    }
+    if (emptyCount > 0) {
+      parts.push(`
+        <div class="arch-feedback-group">
+          <span class="arch-feedback-label is-empty">&#8226; Faltando preencher:</span>
+          <span class="arch-chip is-empty">${emptyCount} encaixe${emptyCount === 1 ? "" : "s"} sem peça</span>
+        </div>
+      `);
+    }
+
+    feedbackBox.innerHTML = parts.join("");
+    feedbackBox.hidden = false;
+  }
+
+  function evaluateDiagram(fromQuickButton = false) {
     clearSlotState();
     let correct = 0;
+    const correctLabels = [];
+    const wrongLabels = [];
+    let emptyCount = 0;
     const diagnostics = loadArchDiagnostics();
 
     slots.forEach((slot) => {
       const card = slot.querySelector(".arch-card");
       const expected = slot.dataset.expected;
-      const isCorrect = !!card && card.dataset.cardId === expected;
-      slot.classList.add(isCorrect ? "arch-correct" : "arch-incorrect");
-      if (isCorrect) {
+
+      if (!card) {
+        slot.classList.add("arch-empty");
+        setSlotCardFeedback(slot, "empty", "Encaixe uma peça aqui");
+        emptyCount += 1;
+        diagnostics[expected] = (diagnostics[expected] || 0) + 1;
+        return;
+      }
+
+      if (card.dataset.cardId === expected) {
+        slot.classList.add("arch-correct");
+        setSlotCardFeedback(slot, "correct", "");
+        correctLabels.push(card.textContent);
         correct += 1;
       } else {
-        slot.title = `Incorreto! Esperado: ${expected}`;
+        slot.classList.add("arch-incorrect");
+        setSlotCardFeedback(slot, "incorrect", `"${card.textContent}" não pertence a este bloco`);
+        wrongLabels.push(card.textContent);
         diagnostics[expected] = (diagnostics[expected] || 0) + 1;
       }
     });
 
     saveArchDiagnostics(diagnostics);
     status.textContent = `${correct} de ${slots.length} componentes corretos`;
+    renderArchFeedback(correctLabels, wrongLabels, emptyCount);
+
+    if (fromQuickButton) {
+      if (correct === slots.length) {
+        showAppNotice("Parabéns! Todos os 9 componentes estão corretos.", "info", "arch-eval");
+      } else if (wrongLabels.length > 0) {
+        showAppNotice(
+          `${correct} certo(s) · ${wrongLabels.length} incorreto(s): ${wrongLabels.join(", ")}`,
+          "warning",
+          "arch-eval"
+        );
+      } else {
+        showAppNotice(
+          `${correct} certo(s) · faltam ${emptyCount} encaixe(s) para preencher.`,
+          "info",
+          "arch-eval"
+        );
+      }
+    }
   }
 
   function resetDiagram() {
@@ -2008,6 +2164,7 @@ function setupArchitectureChallenge() {
       moveCardToBank(component.id);
     }
     slots.forEach((slot) => updateSlotHasCard(slot));
+    updateBankHint();
   }
 
   function solveDiagram() {
@@ -2015,10 +2172,18 @@ function setupArchitectureChallenge() {
     setSelectedCard(null);
     slots.forEach((slot) => {
       const expected = slot.dataset.expected;
-      placeCardInSlot(expected, slot);
+      placeCardInSlot(expected, slot, false);
+    });
+    slots.forEach((slot) => {
       slot.classList.add("arch-correct");
+      setSlotCardFeedback(slot, "correct", "");
     });
     status.textContent = `${slots.length} de ${slots.length} componentes corretos`;
+    if (feedbackBox) {
+      feedbackBox.innerHTML = `<p class="arch-feedback-success"><strong>&#10003; Gabarito preenchido:</strong> todos os ${slots.length} componentes estão na posição correta.</p>`;
+      feedbackBox.hidden = false;
+    }
+    updateBankHint();
   }
 
   slots.forEach((slot) => {
@@ -2052,14 +2217,42 @@ function setupArchitectureChallenge() {
     });
   });
 
+  if (bankPanel) {
+    bankPanel.addEventListener("dragover", (event) => {
+      event.preventDefault();
+      bankPanel.classList.add("is-drop-target");
+    });
+
+    bankPanel.addEventListener("dragleave", (event) => {
+      if (!bankPanel.contains(event.relatedTarget)) {
+        bankPanel.classList.remove("is-drop-target");
+      }
+    });
+
+    bankPanel.addEventListener("drop", (event) => {
+      event.preventDefault();
+      bankPanel.classList.remove("is-drop-target");
+      const cardId = event.dataTransfer.getData("text/plain") || selectedCardId;
+      if (!cardId) return;
+      moveCardToBank(cardId, true);
+      setSelectedCard(null);
+    });
+  }
+
   bank.addEventListener("click", (event) => {
     const maybeCard = event.target.closest(".arch-card");
     if (!maybeCard && selectedCardId) {
+      if (locationByCard.get(selectedCardId) !== "bank") {
+        moveCardToBank(selectedCardId, true);
+      }
       setSelectedCard(null);
     }
   });
 
-  checkButton.addEventListener("click", evaluateDiagram);
+  checkButton.addEventListener("click", () => evaluateDiagram(false));
+  if (quickCheckButton) {
+    quickCheckButton.addEventListener("click", () => evaluateDiagram(true));
+  }
   resetButton.addEventListener("click", resetDiagram);
   if (solveButton) {
     solveButton.addEventListener("click", solveDiagram);

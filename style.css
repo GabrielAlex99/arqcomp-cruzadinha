@@ -1352,20 +1352,118 @@ body.light-theme .review-card-diagram {
 
 .architecture-controls {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
   gap: 10px;
-  flex-wrap: wrap;
   background: var(--ctrl-bg);
   border: 1px solid var(--panel-border);
   border-radius: 12px;
   padding: 10px 12px;
 }
 
+.architecture-controls-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
 #arch-status {
   margin: 0;
   font-weight: 700;
   color: var(--progress-text);
+}
+
+.arch-feedback {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid var(--panel-border);
+}
+
+.arch-feedback[hidden] {
+  display: none;
+}
+
+.arch-feedback-success {
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #e6f6ed;
+  border: 1px solid #96d8b3;
+  color: #165c3a;
+  font-size: 0.88rem;
+}
+
+.arch-feedback-empty-msg {
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #fff8e6;
+  border: 1px solid #f0d38c;
+  color: #7a5209;
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.arch-feedback-group {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.arch-feedback-label {
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.arch-feedback-label.is-correct {
+  color: #186a41;
+}
+
+.arch-feedback-label.is-incorrect {
+  color: #a61e34;
+}
+
+.arch-feedback-label.is-empty {
+  color: #8a5607;
+}
+
+.arch-feedback-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.arch-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.arch-chip.is-correct {
+  background: #e6f6ed;
+  color: #165c3a;
+  border: 1px solid #96d8b3;
+}
+
+.arch-chip.is-incorrect {
+  background: #fdecef;
+  color: #9e1b32;
+  border: 1px solid #efb3be;
+}
+
+.arch-chip.is-empty {
+  background: #fff6e0;
+  color: #8a5607;
+  border: 1px solid #f0d08a;
 }
 
 .architecture-bank-panel,
@@ -1377,11 +1475,93 @@ body.light-theme .review-card-diagram {
   padding: 10px 12px;
 }
 
+.architecture-bank-panel {
+  position: sticky;
+  top: 10px;
+  z-index: 25;
+  border-color: #9cc2ee;
+  box-shadow: 0 10px 24px rgba(10, 28, 56, 0.22);
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.architecture-bank-panel.is-drop-target {
+  border-color: var(--accent);
+  background: #eef6ff;
+}
+
+.arch-bank-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.arch-bank-title-group {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.architecture-bank-panel h3 {
+  margin: 0;
+  color: var(--progress-text);
+  font-size: 0.92rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.arch-bank-hint {
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.arch-bank-hint.is-active {
+  color: var(--accent);
+}
+
+.arch-quick-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: #ffffff;
+  border-radius: 8px;
+  padding: 5px 12px;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.arch-quick-check:hover {
+  background: #1f6ed4;
+}
+
+.arch-quick-check:focus-visible {
+  outline: 2px solid #0f2c59;
+  outline-offset: 2px;
+}
+
+.arch-quick-check svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 .architecture-diagram-panel {
   overflow-x: auto;
 }
 
-.architecture-bank-panel h3,
 .architecture-diagram-panel h3 {
   margin: 0 0 8px;
   color: var(--progress-text);
@@ -1395,7 +1575,11 @@ body.light-theme .review-card-diagram {
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
-  min-height: 44px;
+  min-height: 40px;
+}
+
+.arch-cards-bank.is-empty {
+  min-height: 0;
 }
 
 .arch-card {
@@ -1476,15 +1660,77 @@ body.light-theme .arch-block {
 }
 
 .arch-slot-card {
-  border: 1px solid #d6e4f6;
-  border-radius: 8px;
+  position: relative;
+  border: 1.5px solid #d6e4f6;
+  border-radius: 10px;
   background: #fff;
-  padding: 8px;
+  padding: 10px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: space-between;
   gap: 8px;
+  transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.arch-slot-card.is-correct {
+  border-color: #2a9f63;
+  background: #f1fbf5;
+  box-shadow: 0 0 0 2px rgba(42, 159, 99, 0.14);
+}
+
+.arch-slot-card.is-incorrect {
+  border-color: #d15267;
+  background: #fff5f7;
+  box-shadow: 0 0 0 2px rgba(209, 82, 103, 0.16);
+}
+
+.arch-slot-card.is-empty {
+  border-color: #d9822b;
+  background: #fffbf2;
+}
+
+.arch-slot-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.arch-slot-badge-correct {
+  background: #d7f3e3;
+  color: #155c38;
+  border: 1px solid #8fd6ae;
+}
+
+.arch-slot-badge-incorrect {
+  background: #fbdce2;
+  color: #9e1b32;
+  border: 1px solid #eba4b2;
+}
+
+.arch-slot-badge-empty {
+  background: #ffefc8;
+  color: #8a5607;
+  border: 1px solid #ebc775;
+}
+
+.arch-slot-note {
+  font-size: 0.74rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.arch-slot-note-incorrect {
+  color: #a61e34;
+}
+
+.arch-slot-note-empty {
+  color: #8a5607;
 }
 
 .arch-slot-card p {
@@ -1637,13 +1883,32 @@ body.light-theme .arch-block {
 }
 
 .arch-slot.arch-correct {
+  border-style: solid;
   border-color: #2a9f63;
   background: #e6f6ed;
 }
 
+.arch-slot.arch-correct .arch-card {
+  border-color: #2a9f63;
+  background: #d7f3e3;
+  color: #145333;
+}
+
 .arch-slot.arch-incorrect {
+  border-style: solid;
   border-color: #d15267;
   background: #fdecef;
+}
+
+.arch-slot.arch-incorrect .arch-card {
+  border-color: #d15267;
+  background: #fbdce2;
+  color: #8c172b;
+}
+
+.arch-slot.arch-empty {
+  border-color: #d9822b;
+  background: #fff8e6;
 }
 
 .arch-slot-tooltip {
@@ -2391,6 +2656,27 @@ body.light-theme .arch-block {
   .arch-slot {
     max-width: none;
     width: 100%;
+  }
+
+  .architecture-bank-panel {
+    top: 6px;
+    padding: 8px 10px;
+    max-height: 28vh;
+    overflow-y: auto;
+  }
+
+  .arch-bank-header {
+    margin-bottom: 6px;
+  }
+
+  .arch-cards-bank {
+    gap: 6px;
+    min-height: 32px;
+  }
+
+  .arch-card {
+    padding: 5px 8px;
+    font-size: 0.76rem;
   }
 
   .board-section,
