@@ -667,6 +667,22 @@ body.light-theme .circuit-ornament {
   background: #e8ddff;
 }
 
+.controls-actions .btn-study {
+  background: var(--clue-bg);
+  border-color: var(--accent-strong);
+  color: var(--clue-active-text);
+}
+
+.controls-actions .btn-study:hover {
+  background: #d8eaff;
+}
+
+body.light-theme .controls-actions .btn-study {
+  background: #e0ecff;
+  border-color: #8bb5e8;
+  color: #12437b;
+}
+
 .controls-actions #pdf-button {
   background: #eaf3ff;
 }
@@ -1044,10 +1060,35 @@ body.light-theme .clues-section h2 {
   flex-wrap: wrap;
 }
 
-.review-panel-header h2 {
+.review-panel-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.review-panel-title-wrap h2 {
   margin: 0;
   color: var(--progress-text);
   font-size: 1.15rem;
+}
+
+.review-panel-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(47, 128, 237, 0.12);
+  color: var(--accent);
+  border: 1px solid rgba(47, 128, 237, 0.25);
+}
+
+body.light-theme .review-panel-badge {
+  background: #e0ecff;
+  color: #1a569d;
+  border-color: #9ec4ef;
 }
 
 .review-toggle-btn {
@@ -1105,7 +1146,7 @@ body.light-theme .clues-section h2 {
 
 .review-content {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
   gap: 16px;
 }
 
@@ -1118,12 +1159,7 @@ body.light-theme .clues-section h2 {
   flex-direction: column;
   gap: 12px;
   box-shadow: 0 4px 14px rgba(10, 24, 45, 0.05);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.25s ease;
-  opacity: 0;
-  transform: translateY(8px);
-}
-
-.review-panel.review-panel-open .review-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
   opacity: 1;
   transform: translateY(0);
 }
@@ -1133,40 +1169,35 @@ body.light-theme .clues-section h2 {
   box-shadow: 0 8px 20px rgba(10, 24, 45, 0.1);
 }
 
-.review-card-top {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.review-card-illus {
-  width: 48px;
-  height: 48px;
-  flex: 0 0 48px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, rgba(47, 128, 237, 0.12) 0%, rgba(158, 198, 255, 0.25) 100%);
-  border: 1px solid rgba(47, 128, 237, 0.22);
+.review-card-diagram {
+  width: 100%;
+  height: 100px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(235, 244, 255, 0.7) 0%, rgba(220, 235, 255, 0.35) 100%);
+  border: 1px solid rgba(175, 210, 255, 0.45);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--accent);
-  padding: 7px;
+  padding: 6px 8px;
+  overflow: hidden;
 }
 
-body.light-theme .review-card-illus {
-  background: linear-gradient(135deg, #e8f2ff 0%, #d8eaff 100%);
+body.light-theme .review-card-diagram {
+  background: linear-gradient(180deg, #f4f8fe 0%, #e9f2fd 100%);
+  border-color: #cce0f8;
 }
 
-.concept-illus-svg {
+.concept-diagram-svg {
   width: 100%;
   height: 100%;
+  max-height: 90px;
 }
 
-.review-card-header-info {
+.review-card-top {
   display: flex;
-  flex-direction: column;
-  gap: 3px;
-  flex: 1 1 auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
 }
 
 .review-card-title {

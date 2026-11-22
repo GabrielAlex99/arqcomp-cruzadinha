@@ -92,7 +92,7 @@ const WORDS = [
   },
   {
     word: "RAM",
-    clue: "Memória principal volátil de leitura e escrita que armazena programas ativos durante o uso.",
+    clue: "Memória principal volátil de leitura e escrita para dados e instruções durante a execução.",
     row: 7,
     col: 3,
     dir: "H"
@@ -139,23 +139,230 @@ const CATEGORY_LABELS = {
   arquitetura: "Arquitetura"
 };
 
-const CONCEPT_ICONS = {
-  CPU: `<svg viewBox="0 0 48 48" class="concept-illus-svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="10" y="10" width="28" height="28" rx="4"/><rect x="18" y="18" width="12" height="12" rx="2" fill="currentColor" opacity="0.2"/><path d="M10 16H4M10 24H4M10 32H4M38 16h6M38 24h6M38 32h6M16 10V4M24 10V4M32 10V4M16 38v6M24 38v6M32 38v6"/></svg>`,
-  ULA: `<svg viewBox="0 0 48 48" class="concept-illus-svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 8h12l4 14 4-14h12v12l-10 16v6H18v-6L8 20z" fill="currentColor" opacity="0.15"/><path d="M13 14h6M16 11v6M29 14h6M19 28l-3 4M29 32l3-4"/></svg>`,
-  UC: `<svg viewBox="0 0 48 48" class="concept-illus-svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="16" fill="currentColor" opacity="0.15"/><path d="M24 8v16l8 8M12 24h4M32 24h4M24 12v4M24 32v4"/><circle cx="24" cy="24" r="3" fill="currentColor"/></svg>`,
-  REGISTRADORES: `<svg viewBox="0 0 48 48" class="concept-illus-svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="10" width="36" height="28" rx="4" fill="currentColor" opacity="0.15"/><path d="M6 24h36M18 10v28M30 10v28M25 4l-4 8h6l-4 8" stroke-width="2.2"/></svg>`,
-  RAM: `<svg viewBox="0 0 48 48" class="concept-illus-svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="16" width="36" height="16" rx="2" fill="currentColor" opacity="0.15"/><circle cx="12" cy="24" r="2" fill="currentColor"/><circle cx="20" cy="24" r="2" fill="currentColor"/><circle cx="28" cy="24" r="2" fill="currentColor"/><circle cx="36" cy="24" r="2" fill="currentColor"/><path d="M10 32v4M16 32v4M22 32v4M26 32v4M32 32v4M38 32v4"/></svg>`,
-  ROM: `<svg viewBox="0 0 48 48" class="concept-illus-svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="12" width="32" height="24" rx="4" fill="currentColor" opacity="0.15"/><rect x="18" y="22" width="12" height="10" rx="2"/><path d="M20 22v-4a4 4 0 0 1 8 0v4M8 18H4M8 30H4M40 18h4M40 30h4"/></svg>`,
-  EEPROM: `<svg viewBox="0 0 48 48" class="concept-illus-svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="10" y="12" width="28" height="24" rx="3" fill="currentColor" opacity="0.15"/><path d="M6 20h4M6 28h4M38 20h4M38 28h4M26 16l-6 9h8l-6 9"/></svg>`,
-  FLASH: `<svg viewBox="0 0 48 48" class="concept-illus-svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="32" height="32" rx="4" fill="currentColor" opacity="0.15"/><path d="M8 18h32M8 28h32M18 8v32M28 8v32"/><circle cx="13" cy="13" r="1.5" fill="currentColor"/><circle cx="23" cy="23" r="1.5" fill="currentColor"/><circle cx="33" cy="33" r="1.5" fill="currentColor"/></svg>`,
-  CACHE: `<svg viewBox="0 0 48 48" class="concept-illus-svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14h8v20H4zM36 14h8v20h-8z"/><rect x="18" y="10" width="12" height="28" rx="3" fill="currentColor" opacity="0.2"/><path d="M12 20h6M12 28h6M30 20h6M30 28h6"/><path d="M22 20l4 4-4 4"/></svg>`,
-  MEMORIADEMASSA: `<svg viewBox="0 0 48 48" class="concept-illus-svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="10" y="8" width="28" height="32" rx="4" fill="currentColor" opacity="0.15"/><circle cx="24" cy="22" r="8"/><circle cx="24" cy="22" r="2" fill="currentColor"/><circle cx="16" cy="34" r="2" fill="currentColor"/><path d="M24 34h10"/></svg>`,
-  DMA: `<svg viewBox="0 0 48 48" class="concept-illus-svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="2"/><rect x="30" y="6" width="12" height="12" rx="2"/><rect x="18" y="30" width="12" height="12" rx="2" fill="currentColor" opacity="0.15"/><path d="M12 18v16a2 2 0 0 0 2 2h4M36 18v16a2 2 0 0 1-2 2h-4"/><path d="M20 34l-2 2 2 2M28 34l2 2-2 2"/></svg>`,
-  ADDRESSBUS: `<svg viewBox="0 0 48 48" class="concept-illus-svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 14h28M6 24h32M6 34h28"/><path d="M30 8l8 6-8 6M34 18l8 6-8 6M30 28l8 6-8 6"/><circle cx="12" cy="14" r="2" fill="currentColor"/><circle cx="12" cy="24" r="2" fill="currentColor"/><circle cx="12" cy="34" r="2" fill="currentColor"/></svg>`,
-  DATABUS: `<svg viewBox="0 0 48 48" class="concept-illus-svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16h24M12 24h24M12 32h24"/><path d="M16 12l-6 4 6 4M32 12l6 4-6 4M16 28l-6 4 6 4M32 28l6 4-6 4"/></svg>`,
-  MICROCONTROLADOR: `<svg viewBox="0 0 48 48" class="concept-illus-svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="10" y="10" width="28" height="28" rx="4" fill="currentColor" opacity="0.15"/><path d="M10 16H4M10 24H4M10 32H4M38 16h6M38 24h6M38 32h6M16 10V4M24 10V4M32 10V4M16 38v6M24 38v6M32 38v6"/><rect x="15" y="15" width="8" height="8" rx="1"/><rect x="25" y="15" width="8" height="8" rx="1"/><rect x="15" y="25" width="18" height="8" rx="1"/></svg>`,
-  DUALCORE: `<svg viewBox="0 0 48 48" class="concept-illus-svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="32" height="32" rx="4" fill="currentColor" opacity="0.15"/><rect x="12" y="14" width="10" height="20" rx="2" fill="currentColor" opacity="0.2"/><rect x="26" y="14" width="10" height="20" rx="2" fill="currentColor" opacity="0.2"/><path d="M24 10v28"/></svg>`,
-  QUADCORE: `<svg viewBox="0 0 48 48" class="concept-illus-svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="32" height="32" rx="4" fill="currentColor" opacity="0.15"/><rect x="13" y="13" width="9" height="9" rx="2" fill="currentColor" opacity="0.2"/><rect x="26" y="13" width="9" height="9" rx="2" fill="currentColor" opacity="0.2"/><rect x="13" y="26" width="9" height="9" rx="2" fill="currentColor" opacity="0.2"/><rect x="26" y="26" width="9" height="9" rx="2" fill="currentColor" opacity="0.2"/><path d="M8 24h32M24 8v32"/></svg>`
+const CONCEPT_DIAGRAMS = {
+  CPU: `<svg viewBox="0 0 240 100" class="concept-diagram-svg" aria-label="Diagrama ilustrado da CPU">
+    <rect x="15" y="8" width="210" height="84" rx="8" fill="rgba(47,128,237,0.06)" stroke="#2f80ed" stroke-width="2"/>
+    <rect x="25" y="18" width="55" height="42" rx="4" fill="rgba(47,128,237,0.15)" stroke="#2f80ed" stroke-width="1.5"/>
+    <text x="52" y="38" text-anchor="middle" font-size="11" font-weight="bold" fill="currentColor">UC</text>
+    <text x="52" y="50" text-anchor="middle" font-size="7.5" fill="currentColor" opacity="0.8">Controle</text>
+    <rect x="92" y="18" width="55" height="42" rx="4" fill="rgba(42,159,99,0.15)" stroke="#2a9f63" stroke-width="1.5"/>
+    <text x="119" y="38" text-anchor="middle" font-size="11" font-weight="bold" fill="currentColor">ULA</text>
+    <text x="119" y="50" text-anchor="middle" font-size="7.5" fill="currentColor" opacity="0.8">Cálculos</text>
+    <rect x="160" y="18" width="55" height="42" rx="4" fill="rgba(235,87,87,0.15)" stroke="#eb5757" stroke-width="1.5"/>
+    <text x="187" y="36" text-anchor="middle" font-size="9.5" font-weight="bold" fill="currentColor">REGS</text>
+    <text x="187" y="48" text-anchor="middle" font-size="7" fill="currentColor" opacity="0.8">R0, R1, PC</text>
+    <path d="M52 60v12h135v-12M119 60v12" stroke="#2f80ed" stroke-width="2" stroke-dasharray="3,3"/>
+    <text x="120" y="82" text-anchor="middle" font-size="8" font-weight="bold" fill="currentColor">Barramento Interno e Ciclo de Instrução</text>
+  </svg>`,
+
+  ULA: `<svg viewBox="0 0 240 100" class="concept-diagram-svg" aria-label="Diagrama ilustrado da ULA">
+    <path d="M40 15h60l15 35 15-35h60v25l-45 42v10H85v-10L40 40z" fill="rgba(42,159,99,0.1)" stroke="#2a9f63" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M65 5v10M165 5v10" stroke="#2f80ed" stroke-width="2" stroke-linecap="round"/>
+    <text x="65" y="12" text-anchor="middle" font-size="7.5" font-weight="bold" fill="currentColor">Entrada A</text>
+    <text x="165" y="12" text-anchor="middle" font-size="7.5" font-weight="bold" fill="currentColor">Entrada B</text>
+    <text x="115" y="33" text-anchor="middle" font-size="12" font-weight="900" fill="#2a9f63">+  −  ×  ÷</text>
+    <text x="115" y="47" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#2a9f63">E / OU / &lt; / =</text>
+    <path d="M115 82v14M110 92l5 4 5-4" stroke="#2a9f63" stroke-width="2" stroke-linecap="round"/>
+    <text x="115" y="98" text-anchor="middle" font-size="8" font-weight="bold" fill="currentColor">Resultado + Flags (Zero, Carry, Sinal)</text>
+  </svg>`,
+
+  UC: `<svg viewBox="0 0 240 100" class="concept-diagram-svg" aria-label="Diagrama ilustrado da Unidade de Controle">
+    <rect x="20" y="14" width="70" height="66" rx="6" fill="rgba(47,128,237,0.12)" stroke="#2f80ed" stroke-width="2"/>
+    <text x="55" y="34" text-anchor="middle" font-size="9" font-weight="bold" fill="currentColor">Instrução</text>
+    <text x="55" y="48" text-anchor="middle" font-size="8" fill="#2f80ed">"ADD R1, R2"</text>
+    <text x="55" y="66" text-anchor="middle" font-size="7.5" fill="currentColor" opacity="0.8">Decodificador</text>
+    <path d="M90 35h50M135 30l5 5-5 5" stroke="#2f80ed" stroke-width="2"/>
+    <path d="M90 60h50M135 55l5 5-5 5" stroke="#2f80ed" stroke-width="2"/>
+    <rect x="145" y="12" width="78" height="72" rx="6" fill="rgba(242,153,74,0.12)" stroke="#f2994a" stroke-width="2"/>
+    <text x="184" y="28" text-anchor="middle" font-size="8" font-weight="bold" fill="#f2994a">Sinais de Controle:</text>
+    <text x="184" y="44" text-anchor="middle" font-size="7.5" fill="currentColor">⏱ Pulso Clock</text>
+    <text x="184" y="58" text-anchor="middle" font-size="7.5" fill="currentColor">📥 Sinal Read</text>
+    <text x="184" y="72" text-anchor="middle" font-size="7.5" fill="currentColor">📤 Sinal Write</text>
+  </svg>`,
+
+  REGISTRADORES: `<svg viewBox="0 0 240 100" class="concept-diagram-svg" aria-label="Diagrama ilustrado de Registradores">
+    <rect x="15" y="10" width="210" height="80" rx="8" fill="rgba(235,87,87,0.06)" stroke="#eb5757" stroke-width="2"/>
+    <text x="120" y="24" text-anchor="middle" font-size="8" font-weight="bold" fill="#eb5757">Dentro do Processador (Acesso em 1 ciclo de clock)</text>
+    <g transform="translate(23, 30)">
+      <rect x="0" y="0" width="42" height="34" rx="4" fill="rgba(235,87,87,0.15)" stroke="#eb5757" stroke-width="1.5"/>
+      <text x="21" y="16" text-anchor="middle" font-size="8.5" font-weight="bold" fill="currentColor">PC</text>
+      <text x="21" y="27" text-anchor="middle" font-size="6.5" fill="currentColor" opacity="0.8">Contador</text>
+      <rect x="49" y="0" width="42" height="34" rx="4" fill="rgba(235,87,87,0.15)" stroke="#eb5757" stroke-width="1.5"/>
+      <text x="70" y="16" text-anchor="middle" font-size="8.5" font-weight="bold" fill="currentColor">IR</text>
+      <text x="70" y="27" text-anchor="middle" font-size="6.5" fill="currentColor" opacity="0.8">Instrução</text>
+      <rect x="98" y="0" width="42" height="34" rx="4" fill="rgba(235,87,87,0.15)" stroke="#eb5757" stroke-width="1.5"/>
+      <text x="119" y="16" text-anchor="middle" font-size="8.5" font-weight="bold" fill="currentColor">ACC</text>
+      <text x="119" y="27" text-anchor="middle" font-size="6.5" fill="currentColor" opacity="0.8">Acumulador</text>
+      <rect x="147" y="0" width="46" height="34" rx="4" fill="rgba(235,87,87,0.15)" stroke="#eb5757" stroke-width="1.5"/>
+      <text x="170" y="16" text-anchor="middle" font-size="8.5" font-weight="bold" fill="currentColor">R0..R7</text>
+      <text x="170" y="27" text-anchor="middle" font-size="6.5" fill="currentColor" opacity="0.8">Gerais</text>
+    </g>
+    <text x="120" y="80" text-anchor="middle" font-size="7.5" font-weight="bold" fill="currentColor">⚡ Latência Mínima (alimenta a ULA diretamente)</text>
+  </svg>`,
+
+  RAM: `<svg viewBox="0 0 240 100" class="concept-diagram-svg" aria-label="Diagrama ilustrado da Memória RAM">
+    <rect x="15" y="14" width="210" height="48" rx="6" fill="rgba(42,159,99,0.12)" stroke="#2a9f63" stroke-width="2"/>
+    <rect x="28" y="24" width="28" height="24" rx="2" fill="rgba(42,159,99,0.3)" stroke="#2a9f63"/>
+    <rect x="64" y="24" width="28" height="24" rx="2" fill="rgba(42,159,99,0.3)" stroke="#2a9f63"/>
+    <rect x="100" y="24" width="28" height="24" rx="2" fill="rgba(42,159,99,0.3)" stroke="#2a9f63"/>
+    <rect x="136" y="24" width="28" height="24" rx="2" fill="rgba(42,159,99,0.3)" stroke="#2a9f63"/>
+    <rect x="172" y="24" width="28" height="24" rx="2" fill="rgba(42,159,99,0.3)" stroke="#2a9f63"/>
+    <path d="M25 62v8M45 62v8M65 62v8M85 62v8M105 62v8M125 62v8M145 62v8M165 62v8M185 62v8M205 62v8" stroke="#f2c94c" stroke-width="2.5"/>
+    <text x="120" y="83" text-anchor="middle" font-size="8" font-weight="bold" fill="currentColor">⚡ Memória Principal Volátil (Leitura &amp; Escrita Dinâmica)</text>
+    <text x="120" y="94" text-anchor="middle" font-size="7" fill="#eb5757">Perde os dados quando o computador é desligado</text>
+  </svg>`,
+
+  ROM: `<svg viewBox="0 0 240 100" class="concept-diagram-svg" aria-label="Diagrama ilustrado da Memória ROM">
+    <rect x="25" y="14" width="190" height="66" rx="6" fill="rgba(155,81,224,0.1)" stroke="#9b51e0" stroke-width="2"/>
+    <path d="M15 35h10M15 55h10M215 35h10M215 55h10" stroke="#9b51e0" stroke-width="2"/>
+    <circle cx="58" cy="47" r="18" fill="rgba(155,81,224,0.2)" stroke="#9b51e0" stroke-width="1.5"/>
+    <rect x="52" y="44" width="12" height="10" rx="2" fill="#9b51e0"/>
+    <path d="M54 44v-4a4 4 0 0 1 8 0v4" fill="none" stroke="#9b51e0" stroke-width="2"/>
+    <text x="140" y="38" text-anchor="middle" font-size="10" font-weight="bold" fill="currentColor">BIOS / UEFI (Firmware)</text>
+    <text x="140" y="52" text-anchor="middle" font-size="8" fill="#9b51e0">🔒 Não Volátil (Apenas Leitura)</text>
+    <text x="140" y="66" text-anchor="middle" font-size="7" fill="currentColor" opacity="0.8">Instruções de partida gravadas de fábrica</text>
+  </svg>`,
+
+  EEPROM: `<svg viewBox="0 0 240 100" class="concept-diagram-svg" aria-label="Diagrama ilustrado da EEPROM">
+    <rect x="20" y="14" width="200" height="68" rx="6" fill="rgba(47,128,237,0.08)" stroke="#2f80ed" stroke-width="2"/>
+    <text x="120" y="28" text-anchor="middle" font-size="8.5" font-weight="bold" fill="currentColor">Regravação Elétrica Byte a Byte</text>
+    <g transform="translate(34, 36)">
+      <rect x="0" y="0" width="36" height="24" rx="3" fill="rgba(47,128,237,0.2)" stroke="#2f80ed"/>
+      <text x="18" y="15" text-anchor="middle" font-size="8" font-family="monospace" fill="currentColor">0x01</text>
+      <rect x="46" y="0" width="36" height="24" rx="3" fill="rgba(242,201,76,0.3)" stroke="#f2c94c" stroke-width="1.5"/>
+      <text x="64" y="15" text-anchor="middle" font-size="8" font-family="monospace" fill="currentColor">0xFF</text>
+      <text x="64" y="-3" text-anchor="middle" font-size="6.5" font-weight="bold" fill="#f2994a">⚡ pulso</text>
+      <rect x="92" y="0" width="36" height="24" rx="3" fill="rgba(47,128,237,0.2)" stroke="#2f80ed"/>
+      <text x="110" y="15" text-anchor="middle" font-size="8" font-family="monospace" fill="currentColor">0xA4</text>
+      <rect x="138" y="0" width="36" height="24" rx="3" fill="rgba(47,128,237,0.2)" stroke="#2f80ed"/>
+      <text x="156" y="15" text-anchor="middle" font-size="8" font-family="monospace" fill="currentColor">0x00</text>
+    </g>
+    <text x="120" y="74" text-anchor="middle" font-size="7" fill="currentColor" opacity="0.8">Modifica células individuais sem apagar o chip inteiro</text>
+  </svg>`,
+
+  FLASH: `<svg viewBox="0 0 240 100" class="concept-diagram-svg" aria-label="Diagrama ilustrado da Memória Flash">
+    <rect x="20" y="12" width="200" height="72" rx="6" fill="rgba(242,153,74,0.08)" stroke="#f2994a" stroke-width="2"/>
+    <text x="120" y="26" text-anchor="middle" font-size="8.5" font-weight="bold" fill="#f2994a">Memória Flash (NAND) - Base de SSDs e Pendrives</text>
+    <g transform="translate(30, 32)">
+      <rect x="0" y="0" width="85" height="36" rx="4" fill="rgba(242,153,74,0.18)" stroke="#f2994a"/>
+      <text x="42" y="16" text-anchor="middle" font-size="7.5" font-weight="bold" fill="currentColor">Bloco 1 (512 KB)</text>
+      <text x="42" y="28" text-anchor="middle" font-size="6.5" fill="currentColor" opacity="0.8">Apagamento em Bloco</text>
+      <rect x="95" y="0" width="85" height="36" rx="4" fill="rgba(242,153,74,0.18)" stroke="#f2994a"/>
+      <text x="137" y="16" text-anchor="middle" font-size="7.5" font-weight="bold" fill="currentColor">Bloco 2 (512 KB)</text>
+      <text x="137" y="28" text-anchor="middle" font-size="6.5" fill="currentColor" opacity="0.8">Páginas de 4 KB</text>
+    </g>
+    <text x="120" y="79" text-anchor="middle" font-size="7" fill="currentColor">Não volátil, sem partes móveis mecânicas e com alta densidade</text>
+  </svg>`,
+
+  CACHE: `<svg viewBox="0 0 240 100" class="concept-diagram-svg" aria-label="Diagrama ilustrado da Memória Cache">
+    <rect x="10" y="24" width="46" height="48" rx="4" fill="rgba(235,87,87,0.15)" stroke="#eb5757" stroke-width="1.5"/>
+    <text x="33" y="46" text-anchor="middle" font-size="8.5" font-weight="bold" fill="currentColor">CPU</text>
+    <text x="33" y="58" text-anchor="middle" font-size="6.5" fill="currentColor" opacity="0.8">0.5 ns</text>
+    <path d="M56 44h18M68 40l6 4-6 4M74 54H56M62 50l-6 4 6 4" stroke="#2f80ed" stroke-width="1.5"/>
+    <rect x="76" y="16" width="82" height="64" rx="6" fill="rgba(47,128,237,0.18)" stroke="#2f80ed" stroke-width="2"/>
+    <text x="117" y="34" text-anchor="middle" font-size="9" font-weight="bold" fill="#2f80ed">CACHE (L1/L2)</text>
+    <text x="117" y="48" text-anchor="middle" font-size="7.5" fill="currentColor">Atalho Ultrarrápido</text>
+    <text x="117" y="62" text-anchor="middle" font-size="6.5" fill="#2a9f63" font-weight="bold">95% de acertos (Hit)</text>
+    <path d="M158 44h18M170 40l6 4-6 4M176 54h-18M164 50l-6 4 6 4" stroke="#2a9f63" stroke-width="1.5"/>
+    <rect x="178" y="24" width="50" height="48" rx="4" fill="rgba(42,159,99,0.15)" stroke="#2a9f63" stroke-width="1.5"/>
+    <text x="203" y="46" text-anchor="middle" font-size="8.5" font-weight="bold" fill="currentColor">RAM</text>
+    <text x="203" y="58" text-anchor="middle" font-size="6.5" fill="currentColor" opacity="0.8">50 ns</text>
+    <text x="120" y="92" text-anchor="middle" font-size="7.5" font-weight="bold" fill="currentColor">Reduz drasticamente o gargalo de velocidade com a RAM</text>
+  </svg>`,
+
+  MEMORIADEMASSA: `<svg viewBox="0 0 240 100" class="concept-diagram-svg" aria-label="Diagrama ilustrado da Memória de Massa">
+    <rect x="25" y="14" width="85" height="66" rx="6" fill="rgba(47,128,237,0.1)" stroke="#2f80ed" stroke-width="1.5"/>
+    <circle cx="67" cy="42" r="18" fill="none" stroke="#2f80ed" stroke-width="1.5"/>
+    <circle cx="67" cy="42" r="5" fill="#2f80ed"/>
+    <path d="M67 42l16 12" stroke="#eb5757" stroke-width="2"/>
+    <text x="67" y="72" text-anchor="middle" font-size="7.5" font-weight="bold" fill="currentColor">HD (Magnético)</text>
+    <rect x="125" y="14" width="85" height="66" rx="6" fill="rgba(42,159,99,0.1)" stroke="#2a9f63" stroke-width="1.5"/>
+    <rect x="135" y="26" width="28" height="20" rx="2" fill="rgba(42,159,99,0.25)" stroke="#2a9f63"/>
+    <rect x="170" y="26" width="28" height="20" rx="2" fill="rgba(42,159,99,0.25)" stroke="#2a9f63"/>
+    <text x="167" y="58" text-anchor="middle" font-size="7" fill="currentColor">Chips Flash</text>
+    <text x="167" y="72" text-anchor="middle" font-size="7.5" font-weight="bold" fill="currentColor">SSD (Estado Sólido)</text>
+    <text x="120" y="92" text-anchor="middle" font-size="7.5" font-weight="bold" fill="currentColor">Armazenamento permanente de Terabytes para arquivos e SO</text>
+  </svg>`,
+
+  DMA: `<svg viewBox="0 0 240 100" class="concept-diagram-svg" aria-label="Diagrama ilustrado do DMA">
+    <rect x="15" y="12" width="60" height="34" rx="4" fill="rgba(235,87,87,0.12)" stroke="#eb5757" stroke-width="1.5"/>
+    <text x="45" y="28" text-anchor="middle" font-size="8" font-weight="bold" fill="currentColor">CPU Livre</text>
+    <text x="45" y="38" text-anchor="middle" font-size="6.5" fill="#2a9f63">Executando Apps ⚡</text>
+    <rect x="90" y="44" width="60" height="34" rx="4" fill="rgba(47,128,237,0.2)" stroke="#2f80ed" stroke-width="2"/>
+    <text x="120" y="60" text-anchor="middle" font-size="8" font-weight="bold" fill="currentColor">DMA Controller</text>
+    <text x="120" y="70" text-anchor="middle" font-size="6.5" fill="#2f80ed">Ponte Direta</text>
+    <rect x="165" y="12" width="60" height="34" rx="4" fill="rgba(42,159,99,0.12)" stroke="#2a9f63" stroke-width="1.5"/>
+    <text x="195" y="28" text-anchor="middle" font-size="8" font-weight="bold" fill="currentColor">RAM</text>
+    <text x="195" y="38" text-anchor="middle" font-size="6.5" fill="currentColor" opacity="0.8">Recepção de Dados</text>
+    <path d="M45 46v24h45M150 70h45V46" fill="none" stroke="#2f80ed" stroke-width="2" stroke-dasharray="3,3"/>
+    <text x="120" y="90" text-anchor="middle" font-size="7.5" font-weight="bold" fill="currentColor">Transfere blocos periférico ➔ RAM sem interromper a CPU</text>
+  </svg>`,
+
+  ADDRESSBUS: `<svg viewBox="0 0 240 100" class="concept-diagram-svg" aria-label="Diagrama ilustrado do Address Bus">
+    <rect x="15" y="24" width="50" height="48" rx="5" fill="rgba(47,128,237,0.15)" stroke="#2f80ed" stroke-width="1.5"/>
+    <text x="40" y="46" text-anchor="middle" font-size="9" font-weight="bold" fill="currentColor">CPU</text>
+    <text x="40" y="58" text-anchor="middle" font-size="6.5" fill="currentColor" opacity="0.8">Origem</text>
+    <path d="M65 40h105M165 35l10 5-10 5M65 56h105M165 51l10 5-10 5" stroke="#2f80ed" stroke-width="2.2"/>
+    <text x="120" y="34" text-anchor="middle" font-size="7.5" font-weight="bold" fill="#2f80ed">Endereço "0x2A4F" ➔</text>
+    <text x="120" y="70" text-anchor="middle" font-size="7" fill="currentColor" opacity="0.9">Sentido ÚNICO (Unidirecional)</text>
+    <rect x="175" y="24" width="50" height="48" rx="5" fill="rgba(42,159,99,0.15)" stroke="#2a9f63" stroke-width="1.5"/>
+    <text x="200" y="46" text-anchor="middle" font-size="9" font-weight="bold" fill="currentColor">RAM</text>
+    <text x="200" y="58" text-anchor="middle" font-size="6.5" fill="currentColor" opacity="0.8">Destino</text>
+    <text x="120" y="88" text-anchor="middle" font-size="7.5" font-weight="bold" fill="currentColor">Informa ONDE está a informação na memória</text>
+  </svg>`,
+
+  DATABUS: `<svg viewBox="0 0 240 100" class="concept-diagram-svg" aria-label="Diagrama ilustrado do Data Bus">
+    <rect x="15" y="24" width="50" height="48" rx="5" fill="rgba(47,128,237,0.15)" stroke="#2f80ed" stroke-width="1.5"/>
+    <text x="40" y="50" text-anchor="middle" font-size="9" font-weight="bold" fill="currentColor">CPU</text>
+    <path d="M75 40h90M80 35l-8 5 8 5M160 35l8 5-8 5M75 56h90M80 51l-8 5 8 5M160 51l8 5-8 5" stroke="#f2994a" stroke-width="2.2"/>
+    <text x="120" y="34" text-anchor="middle" font-size="8" font-weight="bold" fill="#f2994a">⇄ Tráfego de Dados ⇄</text>
+    <text x="120" y="70" text-anchor="middle" font-size="7" fill="currentColor" opacity="0.9">Duas Vias (Bidirecional)</text>
+    <rect x="175" y="24" width="50" height="48" rx="5" fill="rgba(42,159,99,0.15)" stroke="#2a9f63" stroke-width="1.5"/>
+    <text x="200" y="50" text-anchor="middle" font-size="9" font-weight="bold" fill="currentColor">RAM</text>
+    <text x="120" y="88" text-anchor="middle" font-size="7.5" font-weight="bold" fill="currentColor">Transporta O CONTEÚDO real (instruções e valores)</text>
+  </svg>`,
+
+  MICROCONTROLADOR: `<svg viewBox="0 0 240 100" class="concept-diagram-svg" aria-label="Diagrama ilustrado do Microcontrolador">
+    <rect x="20" y="10" width="200" height="76" rx="8" fill="rgba(47,128,237,0.06)" stroke="#2f80ed" stroke-width="2"/>
+    <path d="M12 25h8M12 45h8M12 65h8M220 25h8M220 45h8M220 65h8M60 6v4M120 6v4M180 6v4M60 86v4M120 86v4M180 86v4" stroke="#2f80ed" stroke-width="2"/>
+    <rect x="32" y="20" width="38" height="30" rx="3" fill="rgba(47,128,237,0.2)" stroke="#2f80ed"/>
+    <text x="51" y="37" text-anchor="middle" font-size="8" font-weight="bold" fill="currentColor">CPU</text>
+    <rect x="76" y="20" width="38" height="30" rx="3" fill="rgba(42,159,99,0.2)" stroke="#2a9f63"/>
+    <text x="95" y="37" text-anchor="middle" font-size="8" font-weight="bold" fill="currentColor">RAM</text>
+    <rect x="120" y="20" width="40" height="30" rx="3" fill="rgba(242,153,74,0.2)" stroke="#f2994a"/>
+    <text x="140" y="37" text-anchor="middle" font-size="7.5" font-weight="bold" fill="currentColor">FLASH</text>
+    <rect x="166" y="20" width="42" height="30" rx="3" fill="rgba(155,81,224,0.2)" stroke="#9b51e0"/>
+    <text x="187" y="37" text-anchor="middle" font-size="7.5" font-weight="bold" fill="currentColor">I/O Ports</text>
+    <text x="120" y="68" text-anchor="middle" font-size="7.5" font-weight="bold" fill="currentColor">Computador Completo em 1 Único Chip (SoC)</text>
+    <text x="120" y="79" text-anchor="middle" font-size="6.5" fill="currentColor" opacity="0.8">Arduino, Micro-ondas, Sensores e Sistemas Embarcados</text>
+  </svg>`,
+
+  DUALCORE: `<svg viewBox="0 0 240 100" class="concept-diagram-svg" aria-label="Diagrama ilustrado Dual-Core">
+    <rect x="25" y="10" width="190" height="78" rx="8" fill="rgba(47,128,237,0.06)" stroke="#2f80ed" stroke-width="2"/>
+    <rect x="35" y="18" width="78" height="42" rx="4" fill="rgba(47,128,237,0.18)" stroke="#2f80ed" stroke-width="1.5"/>
+    <text x="74" y="36" text-anchor="middle" font-size="9" font-weight="bold" fill="currentColor">Núcleo 1</text>
+    <text x="74" y="48" text-anchor="middle" font-size="7" fill="#2a9f63">Execução A ➔</text>
+    <rect x="127" y="18" width="78" height="42" rx="4" fill="rgba(47,128,237,0.18)" stroke="#2f80ed" stroke-width="1.5"/>
+    <text x="166" y="36" text-anchor="middle" font-size="9" font-weight="bold" fill="currentColor">Núcleo 2</text>
+    <text x="166" y="48" text-anchor="middle" font-size="7" fill="#2a9f63">Execução B ➔</text>
+    <rect x="35" y="64" width="170" height="18" rx="3" fill="rgba(242,153,74,0.15)" stroke="#f2994a" stroke-width="1"/>
+    <text x="120" y="76" text-anchor="middle" font-size="7.5" font-weight="bold" fill="currentColor">Cache L2/L3 Compartilhado</text>
+  </svg>`,
+
+  QUADCORE: `<svg viewBox="0 0 240 100" class="concept-diagram-svg" aria-label="Diagrama ilustrado Quad-Core">
+    <rect x="25" y="8" width="190" height="82" rx="8" fill="rgba(42,159,99,0.06)" stroke="#2a9f63" stroke-width="2"/>
+    <g transform="translate(35, 16)">
+      <rect x="0" y="0" width="78" height="26" rx="3" fill="rgba(42,159,99,0.18)" stroke="#2a9f63"/>
+      <text x="39" y="16" text-anchor="middle" font-size="8" font-weight="bold" fill="currentColor">Núcleo 1</text>
+      <rect x="92" y="0" width="78" height="26" rx="3" fill="rgba(42,159,99,0.18)" stroke="#2a9f63"/>
+      <text x="131" y="16" text-anchor="middle" font-size="8" font-weight="bold" fill="currentColor">Núcleo 2</text>
+      <rect x="0" y="32" width="78" height="26" rx="3" fill="rgba(42,159,99,0.18)" stroke="#2a9f63"/>
+      <text x="39" y="48" text-anchor="middle" font-size="8" font-weight="bold" fill="currentColor">Núcleo 3</text>
+      <rect x="92" y="32" width="78" height="26" rx="3" fill="rgba(42,159,99,0.18)" stroke="#2a9f63"/>
+      <text x="131" y="48" text-anchor="middle" font-size="8" font-weight="bold" fill="currentColor">Núcleo 4</text>
+    </g>
+    <text x="120" y="84" text-anchor="middle" font-size="7.5" font-weight="bold" fill="currentColor">4 Processadores Físicos em Paralelo Real</text>
+  </svg>`
 };
 
 const LEARNING_DATA = {
@@ -1107,8 +1314,6 @@ function updateReinforceIndicator() {
 function renderLearningPanel(entries) {
   const panel = document.getElementById("review-panel");
   const content = document.getElementById("review-content");
-  const toggleBtn = document.getElementById("review-toggle-btn");
-  const toggleText = document.getElementById("review-toggle-text");
 
   if (!panel || !content) return;
 
@@ -1116,7 +1321,7 @@ function renderLearningPanel(entries) {
     entries.forEach((entry, index) => {
       const data = LEARNING_DATA[entry.word];
       const cat = CATEGORIES[entry.word] || "arquitetura";
-      const icon = CONCEPT_ICONS[entry.word] || "";
+      const diagram = CONCEPT_DIAGRAMS[entry.word] || "";
       const tip = MEMORY_TIPS[entry.word] || "";
 
       const card = document.createElement("article");
@@ -1124,14 +1329,12 @@ function renderLearningPanel(entries) {
       card.style.setProperty("--delay", `${index * 30}ms`);
 
       card.innerHTML = `
+        <div class="review-card-diagram" aria-hidden="true">
+          ${diagram}
+        </div>
         <div class="review-card-top">
-          <div class="review-card-illus" aria-hidden="true">
-            ${icon}
-          </div>
-          <div class="review-card-header-info">
-            <h3 class="review-card-title">${entry.word}</h3>
-            <span class="review-card-badge">${CATEGORY_LABELS[cat] || cat}</span>
-          </div>
+          <h3 class="review-card-title">${entry.word}</h3>
+          <span class="review-card-badge">${CATEGORY_LABELS[cat] || cat}</span>
         </div>
         <div class="review-card-body">
           <div class="review-card-bullet">
@@ -1145,7 +1348,7 @@ function renderLearningPanel(entries) {
         </div>
         <div class="review-card-tip">
           <span aria-hidden="true">&#128204;</span>
-          <span>${tip}</span>
+          <span><strong>Dica:</strong> ${tip}</span>
         </div>
       `;
 
@@ -1153,24 +1356,6 @@ function renderLearningPanel(entries) {
     });
   }
 
-  // Setup toggle button behavior
-  if (toggleBtn && !toggleBtn.dataset.bound) {
-    toggleBtn.dataset.bound = "true";
-    toggleBtn.addEventListener("click", () => {
-      const isCollapsed = panel.classList.toggle("is-collapsed");
-      toggleBtn.setAttribute("aria-expanded", !isCollapsed);
-      if (toggleText) {
-        toggleText.textContent = isCollapsed ? "Expandir revisão" : "Ocultar revisão";
-      }
-    });
-  }
-
-  panel.hidden = false;
-  panel.classList.remove("is-collapsed");
-  if (toggleBtn) toggleBtn.setAttribute("aria-expanded", "true");
-  if (toggleText) toggleText.textContent = "Ocultar revisão";
-
-  panel.classList.remove("review-panel-open");
   requestAnimationFrame(() => {
     panel.classList.add("review-panel-open");
   });
@@ -1606,7 +1791,7 @@ function setupGlossary() {
     const word = item.word;
     const cat = CATEGORIES[word] || "arquitetura";
     const learning = LEARNING_DATA[word] || {};
-    const icon = CONCEPT_ICONS[word] || "";
+    const diagram = CONCEPT_DIAGRAMS[word] || "";
     const tip = MEMORY_TIPS[word] || "";
 
     const card = document.createElement("article");
@@ -1616,11 +1801,11 @@ function setupGlossary() {
     card.dataset.search = `${word} ${item.clue} ${learning.explanation || ""} ${learning.example || ""} ${tip}`.toLowerCase();
 
     card.innerHTML = `
+      <div class="review-card-diagram" aria-hidden="true">
+        ${diagram}
+      </div>
       <div class="glossary-card-header">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <div class="review-card-illus" style="width:38px;height:38px;padding:5px;" aria-hidden="true">${icon}</div>
-          <h3 class="glossary-card-title">${word}</h3>
-        </div>
+        <h3 class="glossary-card-title">${word}</h3>
         <span class="glossary-badge">${CATEGORY_LABELS[cat] || cat}</span>
       </div>
       <div class="glossary-card-body">
@@ -1672,7 +1857,11 @@ function setupControls(state) {
   const resetButton = document.getElementById("reset-button");
   const pdfButton = document.getElementById("pdf-button");
   const hintButton = document.getElementById("hint-button");
+  const toggleStudyBtn = document.getElementById("toggle-study-button");
+  const toggleStudyText = document.getElementById("toggle-study-btn-text");
   const reviewPanel = document.getElementById("review-panel");
+  const reviewToggleBtn = document.getElementById("review-toggle-btn");
+  const reviewToggleText = document.getElementById("review-toggle-text");
 
   if (!checkButton || !resetButton || !pdfButton) return;
 
@@ -1684,6 +1873,41 @@ function setupControls(state) {
 
   updateProgress(0, totalWords);
   updateReinforceIndicator();
+
+  function setStudyPanelVisibility(show, scroll = false) {
+    if (!reviewPanel) return;
+    if (show) {
+      reviewPanel.hidden = false;
+      reviewPanel.classList.remove("is-collapsed");
+      reviewPanel.classList.add("review-panel-open");
+      if (toggleStudyText) toggleStudyText.textContent = "Ocultar Aprendizagem";
+      if (reviewToggleText) reviewToggleText.textContent = "Ocultar revisão";
+      if (reviewToggleBtn) reviewToggleBtn.setAttribute("aria-expanded", "true");
+      if (scroll) {
+        reviewPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    } else {
+      reviewPanel.classList.add("is-collapsed");
+      reviewPanel.classList.remove("review-panel-open");
+      if (toggleStudyText) toggleStudyText.textContent = "Mostrar Aprendizagem";
+      if (reviewToggleText) reviewToggleText.textContent = "Mostrar revisão";
+      if (reviewToggleBtn) reviewToggleBtn.setAttribute("aria-expanded", "false");
+    }
+  }
+
+  if (toggleStudyBtn) {
+    toggleStudyBtn.addEventListener("click", () => {
+      const isCurrentlyOpen = !reviewPanel.hidden && !reviewPanel.classList.contains("is-collapsed");
+      setStudyPanelVisibility(!isCurrentlyOpen, !isCurrentlyOpen);
+    });
+  }
+
+  if (reviewToggleBtn) {
+    reviewToggleBtn.addEventListener("click", () => {
+      const isCurrentlyOpen = !reviewPanel.classList.contains("is-collapsed");
+      setStudyPanelVisibility(!isCurrentlyOpen, false);
+    });
+  }
 
   function onRevealWord(entry) {
     timer.start();
@@ -1757,7 +1981,8 @@ function setupControls(state) {
     updateReinforceIndicator();
     hasCheckedAtLeastOnce = true;
     previousResults = results;
-    renderLearningPanel(entries);
+
+    setStudyPanelVisibility(true, true);
 
     if (correctCount === totalWords) {
       timer.stop();
@@ -1780,10 +2005,6 @@ function setupControls(state) {
       clueBar.hidden = true;
     }
 
-    if (reviewPanel) {
-      reviewPanel.hidden = true;
-      reviewPanel.classList.remove("review-panel-open");
-    }
     lastIncorrectEntries = [];
     previousResults = null;
     binaryMode.deactivateMode();
@@ -1842,6 +2063,9 @@ function init() {
       gridCols: gridData.cols,
       timer
     });
+
+    // Pre-populate learning panel immediately
+    renderLearningPanel(entries);
 
     setupControls({
       entries,
