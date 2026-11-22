@@ -139,102 +139,89 @@ const CATEGORY_LABELS = {
   arquitetura: "Arquitetura"
 };
 
+const CONCEPT_ICONS = {
+  CPU: `<svg viewBox="0 0 48 48" class="concept-illus-svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="10" y="10" width="28" height="28" rx="4"/><rect x="18" y="18" width="12" height="12" rx="2" fill="currentColor" opacity="0.2"/><path d="M10 16H4M10 24H4M10 32H4M38 16h6M38 24h6M38 32h6M16 10V4M24 10V4M32 10V4M16 38v6M24 38v6M32 38v6"/></svg>`,
+  ULA: `<svg viewBox="0 0 48 48" class="concept-illus-svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 8h12l4 14 4-14h12v12l-10 16v6H18v-6L8 20z" fill="currentColor" opacity="0.15"/><path d="M13 14h6M16 11v6M29 14h6M19 28l-3 4M29 32l3-4"/></svg>`,
+  UC: `<svg viewBox="0 0 48 48" class="concept-illus-svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="16" fill="currentColor" opacity="0.15"/><path d="M24 8v16l8 8M12 24h4M32 24h4M24 12v4M24 32v4"/><circle cx="24" cy="24" r="3" fill="currentColor"/></svg>`,
+  REGISTRADORES: `<svg viewBox="0 0 48 48" class="concept-illus-svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="10" width="36" height="28" rx="4" fill="currentColor" opacity="0.15"/><path d="M6 24h36M18 10v28M30 10v28M25 4l-4 8h6l-4 8" stroke-width="2.2"/></svg>`,
+  RAM: `<svg viewBox="0 0 48 48" class="concept-illus-svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="16" width="36" height="16" rx="2" fill="currentColor" opacity="0.15"/><circle cx="12" cy="24" r="2" fill="currentColor"/><circle cx="20" cy="24" r="2" fill="currentColor"/><circle cx="28" cy="24" r="2" fill="currentColor"/><circle cx="36" cy="24" r="2" fill="currentColor"/><path d="M10 32v4M16 32v4M22 32v4M26 32v4M32 32v4M38 32v4"/></svg>`,
+  ROM: `<svg viewBox="0 0 48 48" class="concept-illus-svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="12" width="32" height="24" rx="4" fill="currentColor" opacity="0.15"/><rect x="18" y="22" width="12" height="10" rx="2"/><path d="M20 22v-4a4 4 0 0 1 8 0v4M8 18H4M8 30H4M40 18h4M40 30h4"/></svg>`,
+  EEPROM: `<svg viewBox="0 0 48 48" class="concept-illus-svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="10" y="12" width="28" height="24" rx="3" fill="currentColor" opacity="0.15"/><path d="M6 20h4M6 28h4M38 20h4M38 28h4M26 16l-6 9h8l-6 9"/></svg>`,
+  FLASH: `<svg viewBox="0 0 48 48" class="concept-illus-svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="32" height="32" rx="4" fill="currentColor" opacity="0.15"/><path d="M8 18h32M8 28h32M18 8v32M28 8v32"/><circle cx="13" cy="13" r="1.5" fill="currentColor"/><circle cx="23" cy="23" r="1.5" fill="currentColor"/><circle cx="33" cy="33" r="1.5" fill="currentColor"/></svg>`,
+  CACHE: `<svg viewBox="0 0 48 48" class="concept-illus-svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14h8v20H4zM36 14h8v20h-8z"/><rect x="18" y="10" width="12" height="28" rx="3" fill="currentColor" opacity="0.2"/><path d="M12 20h6M12 28h6M30 20h6M30 28h6"/><path d="M22 20l4 4-4 4"/></svg>`,
+  MEMORIADEMASSA: `<svg viewBox="0 0 48 48" class="concept-illus-svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="10" y="8" width="28" height="32" rx="4" fill="currentColor" opacity="0.15"/><circle cx="24" cy="22" r="8"/><circle cx="24" cy="22" r="2" fill="currentColor"/><circle cx="16" cy="34" r="2" fill="currentColor"/><path d="M24 34h10"/></svg>`,
+  DMA: `<svg viewBox="0 0 48 48" class="concept-illus-svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="2"/><rect x="30" y="6" width="12" height="12" rx="2"/><rect x="18" y="30" width="12" height="12" rx="2" fill="currentColor" opacity="0.15"/><path d="M12 18v16a2 2 0 0 0 2 2h4M36 18v16a2 2 0 0 1-2 2h-4"/><path d="M20 34l-2 2 2 2M28 34l2 2-2 2"/></svg>`,
+  ADDRESSBUS: `<svg viewBox="0 0 48 48" class="concept-illus-svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 14h28M6 24h32M6 34h28"/><path d="M30 8l8 6-8 6M34 18l8 6-8 6M30 28l8 6-8 6"/><circle cx="12" cy="14" r="2" fill="currentColor"/><circle cx="12" cy="24" r="2" fill="currentColor"/><circle cx="12" cy="34" r="2" fill="currentColor"/></svg>`,
+  DATABUS: `<svg viewBox="0 0 48 48" class="concept-illus-svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16h24M12 24h24M12 32h24"/><path d="M16 12l-6 4 6 4M32 12l6 4-6 4M16 28l-6 4 6 4M32 28l6 4-6 4"/></svg>`,
+  MICROCONTROLADOR: `<svg viewBox="0 0 48 48" class="concept-illus-svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="10" y="10" width="28" height="28" rx="4" fill="currentColor" opacity="0.15"/><path d="M10 16H4M10 24H4M10 32H4M38 16h6M38 24h6M38 32h6M16 10V4M24 10V4M32 10V4M16 38v6M24 38v6M32 38v6"/><rect x="15" y="15" width="8" height="8" rx="1"/><rect x="25" y="15" width="8" height="8" rx="1"/><rect x="15" y="25" width="18" height="8" rx="1"/></svg>`,
+  DUALCORE: `<svg viewBox="0 0 48 48" class="concept-illus-svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="32" height="32" rx="4" fill="currentColor" opacity="0.15"/><rect x="12" y="14" width="10" height="20" rx="2" fill="currentColor" opacity="0.2"/><rect x="26" y="14" width="10" height="20" rx="2" fill="currentColor" opacity="0.2"/><path d="M24 10v28"/></svg>`,
+  QUADCORE: `<svg viewBox="0 0 48 48" class="concept-illus-svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="32" height="32" rx="4" fill="currentColor" opacity="0.15"/><rect x="13" y="13" width="9" height="9" rx="2" fill="currentColor" opacity="0.2"/><rect x="26" y="13" width="9" height="9" rx="2" fill="currentColor" opacity="0.2"/><rect x="13" y="26" width="9" height="9" rx="2" fill="currentColor" opacity="0.2"/><rect x="26" y="26" width="9" height="9" rx="2" fill="currentColor" opacity="0.2"/><path d="M8 24h32M24 8v32"/></svg>`
+};
+
 const LEARNING_DATA = {
   CPU: {
-    explanation:
-      "A CPU coordena o ciclo buscar-decodificar-executar e controla o processamento geral do sistema.",
-    example:
-      "Exemplo: ao abrir um navegador, a CPU interpreta instruções e distribui tarefas."
+    explanation: "Unidade central que orquestra o ciclo buscar-decodificar-executar das instruções.",
+    example: "Ao iniciar qualquer programa, a CPU coordena tarefas e instrui os outros componentes."
   },
   ULA: {
-    explanation:
-      "A ULA executa operações aritméticas e lógicas, como soma, subtração e comparações binárias.",
-    example:
-      "Exemplo: calcular a média de notas usa somas e comparações feitas na ULA."
+    explanation: "Núcleo de cálculo responsável por operações aritméticas (+, −) e lógicas (E, OU, comparações).",
+    example: "Calcular médias, pontuações em jogos ou verificar se senha digitada é igual à salva."
   },
   UC: {
-    explanation:
-      "A UC define sinais de controle para sincronizar CPU, registradores, memória e barramentos.",
-    example:
-      "Exemplo: durante um LOAD, a UC aciona leitura da RAM e escrita em registrador."
+    explanation: "Setor maestro que decodifica instruções e envia sinais de sincronismo a todo o sistema.",
+    example: "Garante que dados da RAM cheguem aos registradores no momento exato do clock."
   },
   REGISTRADORES: {
-    explanation:
-      "Registradores armazenam dados imediatos com latência mínima dentro do processador.",
-    example:
-      "Exemplo: o contador de programa e acumuladores guardam endereços e resultados temporários."
+    explanation: "Memórias de latência quase zero posicionadas dentro do processador para uso imediato.",
+    example: "Guardam a instrução atual e os valores das variáveis temporárias em cálculo ativo."
   },
   RAM: {
-    explanation:
-      "A RAM mantém dados e código em uso; é volátil e perde conteúdo sem energia.",
-    example:
-      "Exemplo: editores e jogos carregam recursos na RAM para resposta rápida."
+    explanation: "Memória principal de leitura e escrita veloz, volátil (apaga sem energia elétrica).",
+    example: "Mantém janelas abertas do navegador e arquivos do aplicativo enquanto estão em uso."
   },
   ROM: {
-    explanation:
-      "A ROM guarda firmware essencial e instruções permanentes de inicialização.",
-    example:
-      "Exemplo: BIOS/UEFI inicia testes de hardware antes de carregar o sistema operacional."
+    explanation: "Memória permanente de fábrica (não volátil) para firmware de inicialização inicial.",
+    example: "Contém as rotinas de boot (BIOS/UEFI) para ligar e testar o hardware do computador."
   },
   EEPROM: {
-    explanation:
-      "A EEPROM permite regravação elétrica byte a byte em memória não volátil.",
-    example:
-      "Exemplo: armazenamento de configurações persistentes de dispositivos embarcados."
+    explanation: "Memória não volátil reprogramável byte a byte usando pulsos elétricos sem luz UV.",
+    example: "Armazena configurações permanentes de placas-mãe e dispositivos embarcados."
   },
   FLASH: {
-    explanation:
-      "Memória flash é não volátil e regravada em blocos, com alta densidade de armazenamento.",
-    example:
-      "Exemplo: SSDs e pendrives usam flash para guardar arquivos sem energia."
+    explanation: "Evolução da EEPROM que apaga e regrava em blocos inteiros, com altíssima densidade.",
+    example: "Tecnologia base de pendrives, cartões de memória e unidades de estado sólido (SSD)."
   },
   CACHE: {
-    explanation:
-      "Cache reduz a diferença de velocidade entre CPU e RAM com dados acessados frequentemente.",
-    example:
-      "Exemplo: loops repetitivos aproveitam cache L1/L2 para reduzir leituras na RAM."
+    explanation: "Memória ultrarrápida intermediária (L1/L2/L3) que mitiga a lentidão de acesso à RAM.",
+    example: "Armazena trechos repetidos de código (loops) para a CPU não precisar ir à RAM."
   },
   MEMORIADEMASSA: {
-    explanation:
-      "Memória de massa oferece grande capacidade não volátil para armazenamento permanente.",
-    example:
-      "Exemplo: HD/SSD guardam sistema operacional, documentos e aplicações instaladas."
+    explanation: "Armazenamento secundário permanente de grande porte e custo por byte acessível.",
+    example: "Discos rígidos (HD) e SSDs onde ficam salvos o sistema operacional e arquivos."
   },
   DMA: {
-    explanation:
-      "DMA transfere blocos de dados entre periféricos e RAM sem ocupar continuamente a CPU.",
-    example:
-      "Exemplo: controladora de disco move dados para memória enquanto a CPU executa outro processo."
+    explanation: "Canal direto que transfere blocos entre periféricos e RAM liberando a CPU de intermediar.",
+    example: "Permite que a placa de som ou disco envie dados à memória sem sobrecarregar a CPU."
   },
   ADDRESSBUS: {
-    explanation:
-      "O barramento de endereços seleciona posições de memória e linhas de I/O a acessar.",
-    example:
-      "Exemplo: ao ler um byte, a CPU envia o endereço exato pelo ADDRESSBUS."
+    explanation: "Barramento unidirecional que sinaliza exatamente qual posição de memória será lida ou gravada.",
+    example: "A CPU envia o endereço '0x1A0F' pelo barramento para localizar a instrução desejada."
   },
   DATABUS: {
-    explanation:
-      "O barramento de dados transporta efetivamente valores entre CPU, memória e periféricos.",
-    example:
-      "Exemplo: uma instrução carregada da RAM chega ao processador via DATABUS."
+    explanation: "Barramento bidirecional que transporta os dados reais trafegando entre CPU e memória.",
+    example: "Após a CPU enviar o endereço, o conteúdo efetivo retorna através do barramento de dados."
   },
   MICROCONTROLADOR: {
-    explanation:
-      "Microcontrolador integra CPU, memória e periféricos no mesmo chip para sistemas dedicados.",
-    example:
-      "Exemplo: controle de temperatura em eletrodomésticos com sensores e atuadores."
+    explanation: "Computador completo em chip único: agrega processador, RAM, ROM e portas I/O integradas.",
+    example: "Utilizado em sistemas dedicados: micro-ondas, módulos automotivos e placas Arduino."
   },
   DUALCORE: {
-    explanation:
-      "Dual-core possui dois núcleos físicos capazes de processar tarefas em paralelo.",
-    example:
-      "Exemplo: um núcleo renderiza vídeo enquanto outro mantém interface responsiva."
+    explanation: "Processador físico equipado com dois núcleos independentes de processamento paralelo.",
+    example: "Permite executar duas tarefas pesadas concorrentes sem engasgar o sistema operacional."
   },
   QUADCORE: {
-    explanation:
-      "Quad-core integra quatro núcleos físicos para maior paralelismo e melhor multitarefa.",
-    example:
-      "Exemplo: editar imagens, tocar música e navegar simultaneamente com menor travamento."
+    explanation: "Processador com quatro núcleos físicos para multitarefa paralela de alta performance.",
+    example: "Ideal para renderização de vídeos, jogos modernos e compilação simultânea de código."
   }
 };
 
@@ -569,7 +556,7 @@ function renderClues(words, startNumbers, onClueClick) {
     li.dataset.wordKey = item.key;
     li.setAttribute("role", "button");
     li.setAttribute("tabindex", "0");
-    li.setAttribute("title", "Clique para focar esta palavra no tabuleiro");
+    li.setAttribute("title", `Clique para focar "${item.word}" no tabuleiro`);
 
     li.addEventListener("click", () => {
       if (onClueClick) onClueClick(item);
@@ -674,7 +661,7 @@ function showCelebration(timerFormatted) {
   if (!overlay) return;
 
   if (stats) {
-    stats.textContent = `Tempo total: ${timerFormatted} | Todos os 16 conceitos acertados!`;
+    stats.textContent = `Tempo total: ${timerFormatted} | Todos os 16 conceitos dominados!`;
   }
 
   overlay.hidden = false;
@@ -983,7 +970,15 @@ function evaluateWords(entries, inputsByKey) {
   return { results, correctCount };
 }
 
-function applyValidationStyles(entries, results, cellsByKey, clueItemByWordKey, onRevealWord, previousResults = null) {
+function applyValidationStyles(
+  entries,
+  results,
+  cellsByKey,
+  clueItemByWordKey,
+  onRevealWord,
+  revealedWordKeys = new Set(),
+  previousResults = null
+) {
   clearValidationStyles(cellsByKey, clueItemByWordKey);
 
   const cellState = new Map();
@@ -1037,6 +1032,20 @@ function applyValidationStyles(entries, results, cellsByKey, clueItemByWordKey, 
       cell.classList.add("cell-check-incorrect");
     } else if (state.hasCorrect) {
       cell.classList.add("cell-check-correct");
+    }
+  }
+
+  // Preserve revealed styling for explicitly revealed words
+  for (const wordKey of revealedWordKeys) {
+    const entry = entries.find((e) => e.key === wordKey);
+    if (entry) {
+      for (const cellKey of entry.cells) {
+        const cell = cellsByKey.get(cellKey);
+        if (cell) {
+          cell.classList.remove("cell-check-correct");
+          cell.classList.add("cell-revealed");
+        }
+      }
     }
   }
 
@@ -1098,36 +1107,72 @@ function updateReinforceIndicator() {
 function renderLearningPanel(entries) {
   const panel = document.getElementById("review-panel");
   const content = document.getElementById("review-content");
+  const toggleBtn = document.getElementById("review-toggle-btn");
+  const toggleText = document.getElementById("review-toggle-text");
+
   if (!panel || !content) return;
 
   if (content.children.length === 0) {
     entries.forEach((entry, index) => {
       const data = LEARNING_DATA[entry.word];
-      const item = document.createElement("article");
-      item.className = "review-item";
-      item.style.setProperty("--delay", `${index * 35}ms`);
+      const cat = CATEGORIES[entry.word] || "arquitetura";
+      const icon = CONCEPT_ICONS[entry.word] || "";
+      const tip = MEMORY_TIPS[entry.word] || "";
 
-      const title = document.createElement("h3");
-      title.textContent = entry.word;
+      const card = document.createElement("article");
+      card.className = "review-card";
+      card.style.setProperty("--delay", `${index * 30}ms`);
 
-      const text = document.createElement("p");
-      text.textContent = `${data.explanation} ${data.example}`;
+      card.innerHTML = `
+        <div class="review-card-top">
+          <div class="review-card-illus" aria-hidden="true">
+            ${icon}
+          </div>
+          <div class="review-card-header-info">
+            <h3 class="review-card-title">${entry.word}</h3>
+            <span class="review-card-badge">${CATEGORY_LABELS[cat] || cat}</span>
+          </div>
+        </div>
+        <div class="review-card-body">
+          <div class="review-card-bullet">
+            <span class="review-card-bullet-icon">&#9889;</span>
+            <p><strong>Função:</strong> ${data.explanation}</p>
+          </div>
+          <div class="review-card-bullet">
+            <span class="review-card-bullet-icon">&#128161;</span>
+            <p><strong>Exemplo:</strong> ${data.example}</p>
+          </div>
+        </div>
+        <div class="review-card-tip">
+          <span aria-hidden="true">&#128204;</span>
+          <span>${tip}</span>
+        </div>
+      `;
 
-      item.appendChild(title);
-      item.appendChild(text);
-      content.appendChild(item);
+      content.appendChild(card);
+    });
+  }
+
+  // Setup toggle button behavior
+  if (toggleBtn && !toggleBtn.dataset.bound) {
+    toggleBtn.dataset.bound = "true";
+    toggleBtn.addEventListener("click", () => {
+      const isCollapsed = panel.classList.toggle("is-collapsed");
+      toggleBtn.setAttribute("aria-expanded", !isCollapsed);
+      if (toggleText) {
+        toggleText.textContent = isCollapsed ? "Expandir revisão" : "Ocultar revisão";
+      }
     });
   }
 
   panel.hidden = false;
+  panel.classList.remove("is-collapsed");
+  if (toggleBtn) toggleBtn.setAttribute("aria-expanded", "true");
+  if (toggleText) toggleText.textContent = "Ocultar revisão";
+
   panel.classList.remove("review-panel-open");
   requestAnimationFrame(() => {
     panel.classList.add("review-panel-open");
-    const items = content.querySelectorAll(".review-item");
-    items.forEach((item) => item.classList.remove("review-item-open"));
-    requestAnimationFrame(() => {
-      items.forEach((item) => item.classList.add("review-item-open"));
-    });
   });
 }
 
@@ -1561,6 +1606,7 @@ function setupGlossary() {
     const word = item.word;
     const cat = CATEGORIES[word] || "arquitetura";
     const learning = LEARNING_DATA[word] || {};
+    const icon = CONCEPT_ICONS[word] || "";
     const tip = MEMORY_TIPS[word] || "";
 
     const card = document.createElement("article");
@@ -1571,7 +1617,10 @@ function setupGlossary() {
 
     card.innerHTML = `
       <div class="glossary-card-header">
-        <h3 class="glossary-card-title">${word}</h3>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="review-card-illus" style="width:38px;height:38px;padding:5px;" aria-hidden="true">${icon}</div>
+          <h3 class="glossary-card-title">${word}</h3>
+        </div>
         <span class="glossary-badge">${CATEGORY_LABELS[cat] || cat}</span>
       </div>
       <div class="glossary-card-body">
@@ -1628,6 +1677,7 @@ function setupControls(state) {
   if (!checkButton || !resetButton || !pdfButton) return;
 
   const binaryMode = setupBinaryEasterEgg();
+  const revealedWordKeys = new Set();
   let lastIncorrectEntries = [];
   let hasCheckedAtLeastOnce = false;
   let previousResults = null;
@@ -1637,17 +1687,16 @@ function setupControls(state) {
 
   function onRevealWord(entry) {
     timer.start();
+    revealedWordKeys.add(entry.key);
     for (let i = 0; i < entry.cells.length; i += 1) {
       const cellKey = entry.cells[i];
       const input = inputsByKey.get(cellKey);
-      const cell = cellsByKey.get(cellKey);
-      if (input && cell) {
+      if (input) {
         input.value = entry.word[i];
-        cell.classList.add("cell-revealed");
       }
     }
     const { results, correctCount } = evaluateWords(entries, inputsByKey);
-    applyValidationStyles(entries, results, cellsByKey, clueItemByWordKey, onRevealWord, previousResults);
+    applyValidationStyles(entries, results, cellsByKey, clueItemByWordKey, onRevealWord, revealedWordKeys, previousResults);
     updateProgress(correctCount, totalWords);
     lastIncorrectEntries = entries.filter((e) => !results.get(e.key).isCorrect);
     if (correctCount === totalWords) {
@@ -1684,7 +1733,15 @@ function setupControls(state) {
         }
       }
 
-      if (!revealed) {
+      if (revealed) {
+        const { correctCount } = evaluateWords(entries, inputsByKey);
+        updateProgress(correctCount, totalWords);
+        if (correctCount === totalWords) {
+          timer.stop();
+          showCelebration(timer.getTimeFormatted());
+          binaryMode.activateMode();
+        }
+      } else {
         showAppNotice(`Dica para ${activeWord.word}: ${MEMORY_TIPS[activeWord.word]}`, "info");
       }
     });
@@ -1693,7 +1750,7 @@ function setupControls(state) {
   checkButton.addEventListener("click", () => {
     timer.start();
     const { results, correctCount } = evaluateWords(entries, inputsByKey);
-    applyValidationStyles(entries, results, cellsByKey, clueItemByWordKey, onRevealWord, previousResults);
+    applyValidationStyles(entries, results, cellsByKey, clueItemByWordKey, onRevealWord, revealedWordKeys, previousResults);
     updateProgress(correctCount, totalWords);
     lastIncorrectEntries = entries.filter((entry) => !results.get(entry.key).isCorrect);
     registerDifficulties(lastIncorrectEntries.map((entry) => entry.word));
@@ -1713,9 +1770,16 @@ function setupControls(state) {
     for (const input of inputsByKey.values()) {
       input.value = "";
     }
+    revealedWordKeys.clear();
     clearValidationStyles(cellsByKey, clueItemByWordKey);
     updateProgress(0, totalWords);
     timer.reset();
+
+    const clueBar = document.getElementById("clue-bar");
+    if (clueBar) {
+      clueBar.hidden = true;
+    }
+
     if (reviewPanel) {
       reviewPanel.hidden = true;
       reviewPanel.classList.remove("review-panel-open");

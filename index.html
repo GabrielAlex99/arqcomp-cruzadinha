@@ -152,15 +152,21 @@
         </section>
 
         <section id="review-panel" class="review-panel" hidden>
-          <h2 class="panel-title">
-            <svg class="panel-icon" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M4 6h16v12H4z" />
-              <path d="M8 10h8M8 14h5" />
-              <circle cx="17" cy="14" r="2" />
-            </svg>
-            Modo de aprendizagem ativa
-          </h2>
-          <p>Revise os conceitos apos a conferencia das respostas.</p>
+          <div class="review-panel-header">
+            <h2 class="panel-title">
+              <svg class="panel-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 6h16v12H4z" />
+                <path d="M8 10h8M8 14h5" />
+                <circle cx="17" cy="14" r="2" />
+              </svg>
+              Modo de aprendizagem ativa
+            </h2>
+            <button id="review-toggle-btn" class="review-toggle-btn" type="button" aria-expanded="true">
+              <span id="review-toggle-text">Ocultar revisão</span>
+              <svg class="toggle-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+          </div>
+          <p class="review-panel-subtitle">Revise os conceitos ilustrados de forma visual e lúdica após a conferência.</p>
           <div id="review-content" class="review-content"></div>
         </section>
 
