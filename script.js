@@ -1,22 +1,15 @@
 const WORDS = [
   {
-    word: "MICROCONTROLADOR",
-    clue: "Circuito integrado único com processador, memória e periféricos embutidos, usado em sistemas embarcados.",
-    row: 3,
-    col: 3,
-    dir: "H"
-  },
-  {
     word: "MEMORIADEMASSA",
     clue: "Armazenamento secundário não volátil de alta capacidade para guardar arquivos permanentemente, como HDs.",
-    row: 3,
+    row: 0,
     col: 3,
     dir: "V"
   },
   {
     word: "REGISTRADORES",
     clue: "Memórias internas ultrarrápidas dentro do processador que guardam dados temporários durante operações imediatas.",
-    row: 4,
+    row: 1,
     col: 2,
     dir: "H"
   },
@@ -24,92 +17,99 @@ const WORDS = [
     word: "ADDRESSBUS",
     clue: "Conjunto unidirecional de trilhas que transporta a localização exata da memória a ser acessada.",
     row: 1,
-    col: 2,
+    col: 9,
     dir: "V"
   },
   {
-    word: "DATABUS",
-    clue: "Conjunto bidirecional de linhas que transporta efetivamente os conteúdos entre processador, memória e periféricos.",
+    word: "RAM",
+    clue: "Memória principal volátil de leitura e escrita para dados e instruções durante a execução.",
     row: 2,
-    col: 2,
-    dir: "H"
-  },
-  {
-    word: "DUALCORE",
-    clue: "Arquitetura de processador físico equipado com exatamente dois núcleos independentes de processamento.",
-    row: 1,
     col: 0,
-    dir: "H"
-  },
-  {
-    word: "QUADCORE",
-    clue: "Arquitetura de processador físico que integra quatro núcleos independentes para executar tarefas simultâneas.",
-    row: 0,
-    col: 1,
-    dir: "V"
-  },
-  {
-    word: "EEPROM",
-    clue: "Memória não volátil que permite apagar e regravar bytes individualmente usando pulsos elétricos.",
-    row: 1,
-    col: 7,
-    dir: "H"
-  },
-  {
-    word: "FLASH",
-    clue: "Memória não volátil regravável em blocos inteiros, muito usada em pendrives e unidades SSD.",
-    row: 13,
-    col: 1,
-    dir: "H"
-  },
-  {
-    word: "CACHE",
-    clue: "Memória intermediária de altíssima velocidade que acelera o acesso do processador aos dados frequentes.",
-    row: 10,
-    col: 5,
-    dir: "V"
-  },
-  {
-    word: "CPU",
-    clue: "Cérebro eletrônico do computador responsável por buscar, decodificar e executar instruções dos programas.",
-    row: 9,
-    col: 0,
-    dir: "H"
-  },
-  {
-    word: "ULA",
-    clue: "Circuito interno do processador que realiza cálculos matemáticos e comparações entre valores binários.",
-    row: 0,
-    col: 3,
     dir: "V"
   },
   {
     word: "UC",
     clue: "Setor interno do processador que coordena o fluxo de dados e instruções.",
-    row: 0,
-    col: 3,
+    row: 3,
+    col: 5,
+    dir: "V"
+  },
+  {
+    word: "MICROCONTROLADOR",
+    clue: "Circuito integrado único com processador, memória e periféricos embutidos, usado em sistemas embarcados.",
+    row: 4,
+    col: 0,
     dir: "H"
   },
   {
-    word: "RAM",
-    clue: "Memória principal volátil de leitura e escrita para dados e instruções durante a execução.",
+    word: "DUALCORE",
+    clue: "Arquitetura de processador físico equipado com exatamente dois núcleos independentes de processamento.",
+    row: 4,
+    col: 13,
+    dir: "V"
+  },
+  {
+    word: "CACHE",
+    clue: "Memória intermediária de altíssima velocidade que acelera o acesso do processador aos dados frequentes.",
+    row: 6,
+    col: 6,
+    dir: "V"
+  },
+  {
+    word: "FLASH",
+    clue: "Memória não volátil regravável em blocos inteiros, muito usada em pendrives e unidades SSD.",
+    row: 6,
+    col: 11,
+    dir: "H"
+  },
+  {
+    word: "DATABUS",
+    clue: "Conjunto bidirecional de linhas que transporta efetivamente os conteúdos entre processador, memória e periféricos.",
     row: 7,
     col: 3,
     dir: "H"
   },
   {
-    word: "ROM",
-    clue: "Memória não volátil gravada de fábrica que guarda instruções essenciais de inicialização do sistema.",
-    row: 5,
-    col: 5,
+    word: "EEPROM",
+    clue: "Memória não volátil que permite apagar e regravar bytes individualmente usando pulsos elétricos.",
+    row: 8,
+    col: 15,
     dir: "V"
   },
   {
     word: "DMA",
     clue: "Técnica que transfere dados entre periféricos e memória principal sem intervenção contínua do processador.",
-    row: 5,
-    col: 4,
+    row: 9,
+    col: 2,
+    dir: "H"
+  },
+  {
+    word: "QUADCORE",
+    clue: "Arquitetura de processador físico que integra quatro núcleos independentes para executar tarefas simultâneas.",
+    row: 9,
+    col: 8,
+    dir: "H"
+  },
+  {
+    word: "CPU",
+    clue: "Cérebro eletrônico do computador responsável por buscar, decodificar e executar instruções dos programas.",
+    row: 11,
+    col: 1,
     dir: "V"
+  },
+  {
+    word: "ULA",
+    clue: "Circuito interno do processador que realiza cálculos matemáticos e comparações entre valores binários.",
+    row: 13,
+    col: 1,
+    dir: "H"
+  },
+  {
+    word: "ROM",
+    clue: "Memória não volátil gravada de fábrica que guarda instruções essenciais de inicialização do sistema.",
+    row: 13,
+    col: 13,
+    dir: "H"
   }
 ];
 
@@ -671,7 +671,12 @@ function validateAndBuildGrid(words) {
       maxCol = Math.max(maxCol, col);
 
       if (!cellMap.has(key)) {
-        cellMap.set(key, { letter, words: [item.word] });
+        cellMap.set(key, {
+          letter,
+          words: [item.word],
+          h: item.dir === "H" ? item.word : null,
+          v: item.dir === "V" ? item.word : null
+        });
       } else {
         const current = cellMap.get(key);
         if (current.letter !== letter) {
@@ -679,7 +684,40 @@ function validateAndBuildGrid(words) {
             `Conflito de letra em (${row}, ${col}): ${current.letter} x ${letter}`
           );
         }
+        if ((item.dir === "H" && current.h) || (item.dir === "V" && current.v)) {
+          throw new Error(`Sobreposição na mesma direção em (${row}, ${col}): ${item.word}`);
+        }
+        if (item.dir === "H") current.h = item.word;
+        if (item.dir === "V") current.v = item.word;
         current.words.push(item.word);
+      }
+    }
+  }
+
+  // Valida separação estrita: sem colisão ponta-a-ponta e sem palavras paralelas encostadas
+  for (const item of words) {
+    const dr = item.dir === "V" ? 1 : 0;
+    const dc = item.dir === "H" ? 1 : 0;
+    const pr = item.dir === "H" ? 1 : 0;
+    const pc = item.dir === "V" ? 1 : 0;
+
+    const beforeKey = `${item.row - dr},${item.col - dc}`;
+    const afterKey = `${item.row + dr * item.word.length},${item.col + dc * item.word.length}`;
+    if (cellMap.has(beforeKey) || cellMap.has(afterKey)) {
+      throw new Error(`Colisão nas extremidades da palavra: ${item.word}`);
+    }
+
+    for (let i = 0; i < item.word.length; i += 1) {
+      const row = item.row + dr * i;
+      const col = item.col + dc * i;
+      const current = cellMap.get(`${row},${col}`);
+      const isCrossing = Boolean(current.h && current.v);
+      if (!isCrossing) {
+        const sideA = `${row - pr},${col - pc}`;
+        const sideB = `${row + pr},${col + pc}`;
+        if (cellMap.has(sideA) || cellMap.has(sideB)) {
+          throw new Error(`Adjacência paralela indevida em (${row}, ${col}) na palavra ${item.word}`);
+        }
       }
     }
   }
@@ -787,6 +825,8 @@ function renderBoard(gridData, startNumbers) {
   if (!board) {
     return { cellsByKey: new Map(), inputsByKey: new Map() };
   }
+  document.documentElement.style.setProperty("--grid-cols", gridData.cols);
+  board.style.setProperty("--grid-cols", gridData.cols);
   board.style.gridTemplateColumns = `repeat(${gridData.cols}, var(--cell-size))`;
   const cellsByKey = new Map();
   const inputsByKey = new Map();
@@ -799,11 +839,20 @@ function renderBoard(gridData, startNumbers) {
 
       if (!gridData.cellMap.has(key)) {
         cell.classList.add("inactive");
+        cell.setAttribute("aria-hidden", "true");
       } else {
+        const cellInfo = gridData.cellMap.get(key);
         cell.classList.add("active");
+        if (cellInfo.h && cellInfo.v) {
+          cell.classList.add("cell-intersection");
+        }
         const input = document.createElement("input");
         input.type = "text";
-        input.maxLength = 1;
+        input.maxLength = 2;
+        input.autocomplete = "off";
+        input.autocapitalize = "characters";
+        input.spellcheck = false;
+        input.setAttribute("inputmode", "text");
         input.setAttribute("aria-label", `Linha ${row + 1}, coluna ${col + 1}`);
         input.dataset.cellKey = key;
         cell.appendChild(input);
@@ -811,6 +860,7 @@ function renderBoard(gridData, startNumbers) {
         inputsByKey.set(key, input);
 
         if (startNumbers.has(key)) {
+          cell.classList.add("cell-start");
           const number = document.createElement("span");
           number.className = "number";
           number.textContent = startNumbers.get(key);
@@ -842,11 +892,21 @@ function renderClues(words, startNumbers, onClueClick) {
     const number = startNumbers.get(`${item.row},${item.col}`);
     const li = document.createElement("li");
     li.value = number;
-    li.textContent = item.clue;
     li.dataset.wordKey = item.key;
     li.setAttribute("role", "button");
     li.setAttribute("tabindex", "0");
     li.setAttribute("title", "Clique para selecionar esta pista no tabuleiro");
+
+    const clueText = document.createElement("span");
+    clueText.className = "clue-item-text";
+    clueText.textContent = item.clue;
+
+    const lengthBadge = document.createElement("span");
+    lengthBadge.className = "clue-length-badge";
+    lengthBadge.textContent = `${item.word.length} letras`;
+
+    li.appendChild(clueText);
+    li.appendChild(lengthBadge);
 
     li.addEventListener("click", () => {
       if (onClueClick) onClueClick(item);
@@ -871,7 +931,7 @@ function renderClues(words, startNumbers, onClueClick) {
   return clueItemByWordKey;
 }
 
-function updateClueBar(entry, startNumbers) {
+function updateClueBar(entry, startNumbers, isIntersection = false) {
   const clueBar = document.getElementById("clue-bar");
   const dirSpan = document.getElementById("clue-bar-dir");
   const numSpan = document.getElementById("clue-bar-number");
@@ -880,9 +940,14 @@ function updateClueBar(entry, startNumbers) {
   if (!clueBar || !dirSpan || !numSpan || !textSpan || !entry) return;
 
   const number = startNumbers.get(`${entry.row},${entry.col}`) || "";
-  dirSpan.textContent = entry.dir === "H" ? "Horizontal" : "Vertical";
+  const dirArrow = entry.dir === "H" ? "→ Horizontal" : "↓ Vertical";
+  dirSpan.textContent = dirArrow;
+  dirSpan.classList.toggle("is-toggleable", isIntersection);
+  dirSpan.title = isIntersection
+    ? "Cruzamento: clique aqui ou pressione Espaço para alternar entre Horizontal e Vertical"
+    : `Direção da palavra: ${entry.dir === "H" ? "Horizontal" : "Vertical"}`;
   numSpan.textContent = `${number}.`;
-  textSpan.textContent = entry.clue;
+  textSpan.textContent = `${entry.clue} (${entry.word.length} letras)`;
   clueBar.hidden = false;
 }
 
@@ -1049,7 +1114,26 @@ function setupInteractions(state) {
       highlightedClue.classList.add("clue-active");
     }
 
-    updateClueBar(activeWord, startNumbers);
+    const wordsAtActiveCell = cellToWords.get(activeCellKey) || [];
+    const isIntersection = wordsAtActiveCell.length > 1;
+    updateClueBar(activeWord, startNumbers, isIntersection);
+  }
+
+  const clueBarDirBtn = document.getElementById("clue-bar-dir");
+  if (clueBarDirBtn) {
+    clueBarDirBtn.addEventListener("click", () => {
+      const wordsAtCell = cellToWords.get(activeCellKey) || [];
+      if (wordsAtCell.length > 1) {
+        setActiveCell(activeCellKey, { toggleDirection: true, focus: true });
+      }
+    });
+  }
+
+  function clearCellValidation(cellKey) {
+    const cell = cellsByKey.get(cellKey);
+    if (cell) {
+      cell.classList.remove("cell-check-correct", "cell-check-incorrect", "cell-check-empty");
+    }
   }
 
   function setActiveCell(cellKey, options = {}) {
@@ -1163,8 +1247,15 @@ function setupInteractions(state) {
 
     input.addEventListener("input", (event) => {
       timer.start();
-      const sanitized = event.target.value.toUpperCase().replace(/[^A-Z]/g, "").slice(0, 1);
+      const normalized = event.target.value
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toUpperCase()
+        .replace(/[^A-Z]/g, "");
+      const sanitized = normalized.slice(-1);
       event.target.value = sanitized;
+      clearCellValidation(cellKey);
+      lastClickedCellKey = null;
       if (sanitized) {
         const nextCell = moveInsideActiveWord(1);
         if (nextCell) {
@@ -1177,14 +1268,26 @@ function setupInteractions(state) {
       timer.start();
       const key = event.key;
 
-      if (/^[a-zA-Z]$/.test(key)) {
+      if (key === " ") {
         event.preventDefault();
-        input.value = key.toUpperCase();
-        lastClickedCellKey = null;
-        const nextCell = moveInsideActiveWord(1);
-        if (nextCell) {
-          setActiveCell(nextCell);
+        const wordsAtCell = cellToWords.get(cellKey) || [];
+        if (wordsAtCell.length > 1) {
+          setActiveCell(cellKey, { toggleDirection: true, focus: true });
         }
+        return;
+      }
+
+      if (!event.ctrlKey && !event.metaKey && !event.altKey && key.length === 1 && /[a-zA-Z\u00C0-\u00FF]/.test(key)) {
+        input.value = "";
+        lastClickedCellKey = null;
+        return;
+      }
+
+      if (key === "Delete") {
+        event.preventDefault();
+        lastClickedCellKey = null;
+        input.value = "";
+        clearCellValidation(cellKey);
         return;
       }
 
@@ -1193,11 +1296,13 @@ function setupInteractions(state) {
         lastClickedCellKey = null;
         if (input.value) {
           input.value = "";
+          clearCellValidation(cellKey);
         } else {
           const previousCell = moveInsideActiveWord(-1);
           if (previousCell) {
             setActiveCell(previousCell);
             inputsByKey.get(previousCell).value = "";
+            clearCellValidation(previousCell);
           }
         }
         return;
@@ -1232,6 +1337,7 @@ function clearValidationStyles(cellsByKey, clueItemByWordKey) {
     cell.classList.remove(
       "cell-check-correct",
       "cell-check-incorrect",
+      "cell-check-empty",
       "cell-correct-flash",
       "cell-hint-revealed",
       "cell-revealed"
@@ -1239,7 +1345,7 @@ function clearValidationStyles(cellsByKey, clueItemByWordKey) {
   }
 
   for (const clueItem of clueItemByWordKey.values()) {
-    clueItem.classList.remove("clue-correct", "clue-incorrect");
+    clueItem.classList.remove("clue-correct", "clue-incorrect", "clue-pending");
     const oldBtn = clueItem.querySelector(".clue-reveal-btn");
     if (oldBtn) oldBtn.remove();
   }
@@ -1267,7 +1373,9 @@ function applyValidationStyles(
   clueItemByWordKey,
   onRevealWord,
   revealedWordKeys = new Set(),
-  previousResults = null
+  previousResults = null,
+  inputsByKey = null,
+  cellToWords = null
 ) {
   clearValidationStyles(cellsByKey, clueItemByWordKey);
 
@@ -1275,21 +1383,57 @@ function applyValidationStyles(
   const flashCandidates = new Set();
   for (const entry of entries) {
     const status = results.get(entry.key);
+    let hasOwnInput = !status.isBlank;
+    let hasDedicatedInput = !status.isBlank;
+    if (!status.isCorrect && !status.isBlank && inputsByKey && cellToWords) {
+      let nonCorrectCrossingInputs = 0;
+      let nonIntersectionInputs = 0;
+      for (const cellKey of entry.cells) {
+        const val = (inputsByKey.get(cellKey)?.value || "").trim();
+        if (!val) continue;
+        const wordsHere = cellToWords.get(cellKey) || [];
+        const crossingCorrect = wordsHere.some(
+          (other) => other.key !== entry.key && results.get(other.key)?.isCorrect
+        );
+        if (!crossingCorrect) {
+          nonCorrectCrossingInputs += 1;
+        }
+        if (wordsHere.length === 1) {
+          nonIntersectionInputs += 1;
+        }
+      }
+      hasOwnInput = nonCorrectCrossingInputs > 0;
+      hasDedicatedInput = nonIntersectionInputs > 0 || nonCorrectCrossingInputs >= 2;
+    }
+
     for (const cellKey of entry.cells) {
       if (!cellState.has(cellKey)) {
-        cellState.set(cellKey, { hasCorrect: false, hasIncorrect: false });
+        cellState.set(cellKey, {
+          hasCorrect: false,
+          hasAttemptedIncorrect: false,
+          hasBlank: false
+        });
       }
       const state = cellState.get(cellKey);
+      const cellHasValue = Boolean((inputsByKey?.get(cellKey)?.value || "").trim());
       if (status.isCorrect) {
         state.hasCorrect = true;
+      } else if (hasDedicatedInput || (hasOwnInput && cellHasValue)) {
+        state.hasAttemptedIncorrect = true;
       } else {
-        state.hasIncorrect = true;
+        state.hasBlank = true;
       }
     }
 
     const clueItem = clueItemByWordKey.get(entry.key);
     if (clueItem) {
-      clueItem.classList.add(status.isCorrect ? "clue-correct" : "clue-incorrect");
+      if (status.isCorrect) {
+        clueItem.classList.add("clue-correct");
+      } else if (hasDedicatedInput) {
+        clueItem.classList.add("clue-incorrect");
+      } else {
+        clueItem.classList.add("clue-pending");
+      }
       if (!status.isCorrect && onRevealWord) {
         const revealBtn = document.createElement("button");
         revealBtn.type = "button";
@@ -1318,10 +1462,12 @@ function applyValidationStyles(
   for (const [cellKey, state] of cellState.entries()) {
     const cell = cellsByKey.get(cellKey);
     if (!cell) continue;
-    if (state.hasIncorrect) {
-      cell.classList.add("cell-check-incorrect");
-    } else if (state.hasCorrect) {
+    if (state.hasCorrect) {
       cell.classList.add("cell-check-correct");
+    } else if (state.hasAttemptedIncorrect) {
+      cell.classList.add("cell-check-incorrect");
+    } else if (state.hasBlank) {
+      cell.classList.add("cell-check-empty");
     }
   }
 
@@ -1332,7 +1478,7 @@ function applyValidationStyles(
       for (const cellKey of entry.cells) {
         const cell = cellsByKey.get(cellKey);
         if (cell) {
-          cell.classList.remove("cell-check-correct");
+          cell.classList.remove("cell-check-correct", "cell-check-empty");
           cell.classList.add("cell-revealed");
         }
       }
@@ -2354,7 +2500,7 @@ function setupGlossary() {
 }
 
 function setupControls(state) {
-  const { entries, cellsByKey, inputsByKey, clueItemByWordKey, interactions, timer } = state;
+  const { entries, cellToWords, cellsByKey, inputsByKey, clueItemByWordKey, interactions, timer } = state;
   const totalWords = entries.length;
   const checkButton = document.getElementById("check-button");
   const resetButton = document.getElementById("reset-button");
@@ -2426,7 +2572,7 @@ function setupControls(state) {
       }
     }
     const { results, correctCount } = evaluateWords(entries, inputsByKey);
-    applyValidationStyles(entries, results, cellsByKey, clueItemByWordKey, onRevealWord, revealedWordKeys, previousResults);
+    applyValidationStyles(entries, results, cellsByKey, clueItemByWordKey, onRevealWord, revealedWordKeys, previousResults, inputsByKey, cellToWords);
     updateProgress(correctCount, totalWords);
     lastIncorrectEntries = entries.filter((e) => !results.get(e.key).isCorrect);
     if (correctCount === totalWords) {
@@ -2480,7 +2626,7 @@ function setupControls(state) {
   checkButton.addEventListener("click", () => {
     timer.start();
     const { results, correctCount } = evaluateWords(entries, inputsByKey);
-    applyValidationStyles(entries, results, cellsByKey, clueItemByWordKey, onRevealWord, revealedWordKeys, previousResults);
+    applyValidationStyles(entries, results, cellsByKey, clueItemByWordKey, onRevealWord, revealedWordKeys, previousResults, inputsByKey, cellToWords);
     updateProgress(correctCount, totalWords);
     lastIncorrectEntries = entries.filter((entry) => !results.get(entry.key).isCorrect);
     registerDifficulties(lastIncorrectEntries.map((entry) => entry.word));
@@ -2505,19 +2651,12 @@ function setupControls(state) {
     updateProgress(0, totalWords);
     timer.reset();
 
-    const clueBar = document.getElementById("clue-bar");
-    if (clueBar) {
-      clueBar.hidden = true;
-    }
-
     lastIncorrectEntries = [];
     previousResults = null;
     binaryMode.deactivateMode();
     binaryMode.hideToast();
-    const firstInput = inputsByKey.get(entries[0].cells[0]);
-    if (firstInput) {
-      firstInput.focus();
-      firstInput.select();
+    if (interactions && entries[0]) {
+      interactions.selectWord(entries[0]);
     }
   });
 
@@ -2578,6 +2717,7 @@ function init() {
 
     setupControls({
       entries,
+      cellToWords,
       cellsByKey,
       inputsByKey,
       clueItemByWordKey,
